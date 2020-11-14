@@ -114,11 +114,11 @@ class App extends Component {
         let pairs = this.state.pairs.map((each, index) => {
             let tokenA = bytes32ToToken(each.tokenA);
             let tokenB = bytes32ToToken(each.tokenB);
-            let price = new BigNumber(each.price).div(1e9).toFixed(6);
+            let price = new BigNumber(each.price).div(1e9).toFixed(3);
             if (each.flag) {
                 tokenA = bytes32ToToken(each.tokenB);
                 tokenB = bytes32ToToken(each.tokenA);
-                price = new BigNumber(1e9).div(each.price).toFixed(6);
+                price = new BigNumber(1e9).div(each.price).toFixed(3);
             }
             return (
                 <List.Item>
@@ -177,7 +177,8 @@ class App extends Component {
         });
         return (
             <WingBlank>
-                <Flex>
+                <WhiteSpace/>
+                <Flex style={{textAlign: 'center'}}>
                     <Flex.Item>{this.state.account.name}</Flex.Item>
                     <Flex.Item>
                         <a onClick={() => {
@@ -269,6 +270,7 @@ class App extends Component {
                 <WhiteSpace/>
                 <List renderHeader={() => {
                     return <Flex>
+
                         <Flex.Item>FROM</Flex.Item>
                         <Flex.Item></Flex.Item>
                         <Flex.Item>TO</Flex.Item>

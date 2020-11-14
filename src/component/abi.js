@@ -9,7 +9,7 @@ const rpc = new JsonRpc();
 const config = {
     name: "HBank",
     contractAddress: "4XyhwLWrxsWvWsnS8UPzXFCHRiNviE29UquhoWKGWi5RD5Kg6jrLaQda2TPKWAYMu7q2V2F1hFeqdLqRZ3ZXrHAB",
-    github: "https://gitee.com/hbank",
+    github: "https://github.com/dececash/hbank",
     author: "hbank",
     url: document.location.href,
     logo: document.location.protocol + '//' + document.location.host + '/logo.png'
