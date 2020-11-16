@@ -2,10 +2,7 @@
     text-align: center;
 }
 
-.App-logo {
-    height: 40vmin;
-    pointer-events: none;
-}
+
 
 @media (prefers-reduced-motion: no-preference) {
     .App-logo {
@@ -32,19 +29,20 @@
     from {
         transform: rotate(0deg);
     }
+
     to {
         transform: rotate(360deg);
     }
 }
 
 body {
-    background-color: #76bfbd;
-    color: #4a52a0;
+    background-color: #d2f8f8;
+    color: #cccccc;
 }
 
 .am-list-content {
     flex: 1 1;
-    color: #4a52a0 !important;
+    color: #cccccc !important;
     font-size: 20px;
     line-height: 1.5;
     text-align: left;
@@ -54,4 +52,39 @@ body {
     white-space: nowrap;
     padding-top: 7px;
     padding-bottom: 7px;
+}
+
+.listheader {
+    text-align: center;
+    background-color: #1f9b9b;
+    color: #FFFFFF;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 10px 0;
+}
+
+.listheader  .am-flexbox-item {
+    margin-left: 0px !important;
+}
+.header{
+    text-align: center;
+    padding: 10px 0 0 0;
+}
+.title{
+    position: absolute;
+    right: 30px;
+    top: 85px;
+    color: black;
+    font-size: 16px;
+}
+.exchange{
+    color: #1f9b9b;
+}
+.changAccount{
+    color: black;
+    font-size: 16px;
+}
+.changAccount-name{
+    padding: 5px 0;
+    border: 1px solid #1f9b9b;
 }

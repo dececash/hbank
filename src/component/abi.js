@@ -1,8 +1,9 @@
 import seropp from 'sero-pp'
 import serojs from "serojs";
 import BigNumber from 'bignumber.js'
-import {Toast} from "antd-mobile";
-import {JsonRpc} from "./jsonrpc";
+import { Toast } from "antd-mobile";
+import i18n from '../i18n';
+import { JsonRpc } from "./jsonrpc";
 
 const rpc = new JsonRpc();
 
@@ -12,23 +13,27 @@ const config = {
     github: "https://github.com/dececash/hbank",
     author: "hbank",
     url: document.location.href,
-    logo: document.location.protocol + '//' + document.location.host + '/logo.png'
+    logo: document.location.protocol + '//' + document.location.host + '/logo.png',
+    barColor: "#d2f8f8",
+    navColor: "#d2f8f8",
+    barMode: "dark",
+    navMode: "light"
 };
 
 const abiJson = [{
-    "inputs": [{"internalType": "string", "name": "token", "type": "string"}],
+    "inputs": [{ "internalType": "string", "name": "token", "type": "string" }],
     "name": "exchange",
-    "outputs": [{"internalType": "uint256", "name": "value", "type": "uint256"}],
+    "outputs": [{ "internalType": "uint256", "name": "value", "type": "uint256" }],
     "stateMutability": "payable",
     "type": "function"
 }, {
     "inputs": [],
     "name": "manager",
-    "outputs": [{"internalType": "address", "name": "", "type": "address"}],
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
 }, {
-    "inputs": [{"internalType": "uint256", "name": "_start", "type": "uint256"}, {
+    "inputs": [{ "internalType": "uint256", "name": "_start", "type": "uint256" }, {
         "internalType": "uint256",
         "name": "_end",
         "type": "uint256"
@@ -39,7 +44,7 @@ const abiJson = [{
             "internalType": "bytes32",
             "name": "tokenA",
             "type": "bytes32"
-        }, {"internalType": "bytes32", "name": "tokenB", "type": "bytes32"}, {
+        }, { "internalType": "bytes32", "name": "tokenB", "type": "bytes32" }, {
             "internalType": "uint256",
             "name": "price",
             "type": "uint256"
@@ -48,22 +53,22 @@ const abiJson = [{
     "stateMutability": "view",
     "type": "function"
 }, {
-    "inputs": [{"internalType": "string", "name": "tokenA", "type": "string"}, {
+    "inputs": [{ "internalType": "string", "name": "tokenA", "type": "string" }, {
         "internalType": "string",
         "name": "tokenB",
         "type": "string"
-    }, {"internalType": "uint256", "name": "price", "type": "uint256"}],
+    }, { "internalType": "uint256", "name": "price", "type": "uint256" }],
     "name": "setPrice",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
 }, {
-    "inputs": [{"internalType": "string", "name": "token", "type": "string"}, {
+    "inputs": [{ "internalType": "string", "name": "token", "type": "string" }, {
         "internalType": "uint256",
         "name": "value",
         "type": "uint256"
     }], "name": "withdraw", "outputs": [], "stateMutability": "nonpayable", "type": "function"
-}, {"stateMutability": "payable", "type": "receive"}];
+}, { "stateMutability": "payable", "type": "receive" }];
 
 
 const contract = serojs.callContract(abiJson, config.contractAddress);
@@ -81,17 +86,27 @@ class Abi {
                     } else {
                         return reject(rest)
                     }
+
                 })
+                this.getPopupInfo();
             }
         )
     }
 
     initLanguage(callback) {
         seropp.getInfo(function (info) {
+            console.log(info)
             callback(info.language);
         });
     }
 
+    getPopupInfo() {
+        seropp.getInfo(function (info) {
+            localStorage.setItem("language", info.language)
+            i18n.changeLanguage(info.language).catch()
+        });
+    }
+    
     getTransactionReceipt(txHash, callback) {
         seropp.getInfo(function (info) {
             rpc.seroRpc(info.rpc, "sero_getTransactionReceipt", [txHash], function (rest) {
@@ -138,7 +153,7 @@ class Abi {
         }
         let self = this;
         seropp.getAccountDetail(pk, function (item) {
-            callback({pk: item.PK, mainPKr: item.MainPKr, name: item.Name})
+            callback({ pk: item.PK, mainPKr: item.MainPKr, name: item.Name })
         });
     }
 
@@ -180,8 +195,8 @@ class Abi {
             rpc.seroRpc(info.rpc, "sero_getBalance", [contract.address, "latest"], function (rets) {
                 let map = new Map(Object.entries(rets.result.tkn));
                 let balances = [];
-                map.forEach((val, key) =>{
-                    balances.push({token:key,value:new BigNumber(val).dividedBy(1e18).toFixed(3)});
+                map.forEach((val, key) => {
+                    balances.push({ token: key, value: new BigNumber(val).dividedBy(1e18).toFixed(3) });
                 })
                 callback(balances);
             });
