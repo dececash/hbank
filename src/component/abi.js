@@ -9,7 +9,7 @@ const rpc = new JsonRpc();
 
 const config = {
     name: "HBank",
-    contractAddress: "4XyhwLWrxsWvWsnS8UPzXFCHRiNviE29UquhoWKGWi5RD5Kg6jrLaQda2TPKWAYMu7q2V2F1hFeqdLqRZ3ZXrHAB",
+    contractAddress: "3o1Q54KQ6fr2sn15chtheYxJuYPi7j8nr4mBgZpRgSXWmfAnNzEkn6D2BrwtENGNoAsbjnEadAwgB5Gr8YmFTGbd",
     github: "https://github.com/dececash/hbank",
     author: "hbank",
     url: document.location.href,
@@ -20,55 +20,7 @@ const config = {
     navMode: "light"
 };
 
-const abiJson = [{
-    "inputs": [{ "internalType": "string", "name": "token", "type": "string" }],
-    "name": "exchange",
-    "outputs": [{ "internalType": "uint256", "name": "value", "type": "uint256" }],
-    "stateMutability": "payable",
-    "type": "function"
-}, {
-    "inputs": [],
-    "name": "manager",
-    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
-    "stateMutability": "view",
-    "type": "function"
-}, {
-    "inputs": [{ "internalType": "uint256", "name": "_start", "type": "uint256" }, {
-        "internalType": "uint256",
-        "name": "_end",
-        "type": "uint256"
-    }],
-    "name": "pairList",
-    "outputs": [{
-        "components": [{
-            "internalType": "bytes32",
-            "name": "tokenA",
-            "type": "bytes32"
-        }, { "internalType": "bytes32", "name": "tokenB", "type": "bytes32" }, {
-            "internalType": "uint256",
-            "name": "price",
-            "type": "uint256"
-        }], "internalType": "struct Swap.Pair[]", "name": "rets", "type": "tuple[]"
-    }],
-    "stateMutability": "view",
-    "type": "function"
-}, {
-    "inputs": [{ "internalType": "string", "name": "tokenA", "type": "string" }, {
-        "internalType": "string",
-        "name": "tokenB",
-        "type": "string"
-    }, { "internalType": "uint256", "name": "price", "type": "uint256" }],
-    "name": "setPrice",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-}, {
-    "inputs": [{ "internalType": "string", "name": "token", "type": "string" }, {
-        "internalType": "uint256",
-        "name": "value",
-        "type": "uint256"
-    }], "name": "withdraw", "outputs": [], "stateMutability": "nonpayable", "type": "function"
-}, { "stateMutability": "payable", "type": "receive" }];
+const abiJson = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"inputs":[{"internalType":"string","name":"token","type":"string"}],"name":"exchange","outputs":[{"internalType":"uint256","name":"value","type":"uint256"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"keys","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"manager","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_start","type":"uint256"},{"internalType":"uint256","name":"_end","type":"uint256"}],"name":"pairList","outputs":[{"components":[{"internalType":"bytes32","name":"tokenA","type":"bytes32"},{"internalType":"bytes32","name":"tokenB","type":"bytes32"},{"internalType":"uint256","name":"price","type":"uint256"}],"internalType":"struct Swap.Pair[]","name":"rets","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"name":"pairs","outputs":[{"internalType":"bytes32","name":"tokenA","type":"bytes32"},{"internalType":"bytes32","name":"tokenB","type":"bytes32"},{"internalType":"uint256","name":"price","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_manager","type":"address"}],"name":"setManager","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"tokenA","type":"string"},{"internalType":"string","name":"tokenB","type":"string"},{"internalType":"uint256","name":"price","type":"uint256"}],"name":"setPrice","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"token","type":"string"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
 
 
 const contract = serojs.callContract(abiJson, config.contractAddress);
@@ -109,7 +61,7 @@ class Abi {
     
     getTransactionReceipt(txHash, callback) {
         seropp.getInfo(function (info) {
-            rpc.seroRpc(info.rpc, "sero_getTransactionReceipt", [txHash], function (rest) {
+            rpc.seroRpc(info.rpc, "dece_getTransactionReceipt", [txHash], function (rest) {
                 callback(rest)
             });
         });
@@ -173,7 +125,7 @@ class Abi {
 
     getFullAddress(pkrs, callback) {
         seropp.getInfo(function (info) {
-            rpc.seroRpc(info.rpc, "sero_getFullAddress", [pkrs], function (rets) {
+            rpc.seroRpc(info.rpc, "dece_getFullAddress", [pkrs], function (rets) {
                 callback(rets);
             });
         });
@@ -192,13 +144,17 @@ class Abi {
 
     balanceOf(callback) {
         seropp.getInfo(function (info) {
-            rpc.seroRpc(info.rpc, "sero_getBalance", [contract.address, "latest"], function (rets) {
-                let map = new Map(Object.entries(rets.result.tkn));
+            rpc.seroRpc(info.rpc, "dece_getBalance", [contract.address, "latest"], function (rets) {
                 let balances = [];
-                map.forEach((val, key) => {
-                    balances.push({ token: key, value: new BigNumber(val).dividedBy(1e18).toFixed(3) });
-                })
-                callback(balances);
+                if(rets.result.tkn) {
+                    let map = new Map(Object.entries(rets.result.tkn));
+                    map.forEach((val, key) => {
+                        balances.push({ token: key, value: new BigNumber(val).dividedBy(1e18).toFixed(3) });
+                    })
+                }
+                if(callback) {
+                    callback(balances);
+                }
             });
         });
     }
@@ -236,15 +192,22 @@ class Abi {
             data: packData
         };
 
-        seropp.call(callParams, function (callData) {
-            if (callData !== "0x0") {
-                let res = contract.unPackDataEx(_method, callData);
-                if (callback) {
-                    callback(res);
+
+
+        seropp.getInfo(function (info) {
+            rpc.seroRpc(info.rpc, "dece_call", [callParams, "latest"], function (rets) {
+                let data = rets.result
+                console.log("call", callParams, data);
+
+                if (data !== "0x0") {
+                    let res = contract.unPackDataEx(_method, data);
+                    if (callback) {
+                        callback(res);
+                    }
+                } else {
+                    callback("0x0");
                 }
-            } else {
-                callback("0x0");
-            }
+            });
         });
     }
 
@@ -272,17 +235,20 @@ class Abi {
         };
         console.log("estimateParam", estimateParam);
 
-        seropp.estimateGas(estimateParam, function (gas, error) {
-            if (error) {
-                Toast.fail("Failed to execute smart contract")
-            } else {
-                executeData["gas"] = gas;
-                seropp.executeContract(executeData, function (res, error) {
-                    if (callback) {
-                        callback(res)
-                    }
-                })
-            }
+        seropp.getInfo(function (info) {
+            rpc.seroRpc(info.rpc, "dece_estimateGas", [estimateParam], function (ret) {
+                console.log("dece_estimateGas", ret);
+                if (ret.error) {
+                    Toast.fail("Failed to execute smart contract")
+                } else {
+                    executeData["gas"] = ret.result;
+                    seropp.executeContract(executeData, function (res, error) {
+                        if (callback) {
+                            callback(res)
+                        }
+                    })
+                }
+            });
         });
     }
 }

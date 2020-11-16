@@ -18,7 +18,7 @@
     "react-scripts": "4.0.0",
     "sero-pp": "^1.0.7",
     "sero-web3": "^0.3.3",
-    "serojs": "0.0.3",
+    "serojs": "0.0.6",
     "web-vitals": "^0.2.4"
   },
   "scripts": {

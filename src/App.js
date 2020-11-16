@@ -100,6 +100,8 @@ class App extends Component {
     }
 
     render() {
+
+        abi.balanceOf()
         let balances;
 
         let isManager = this.state.isManager;
