@@ -69,11 +69,11 @@ class Abi {
 
     startGetTxReceipt(hash, callback) {
         const self = this;
+        Toast.loading("Loading...", 60)
         this.getTransactionReceipt(hash, function (res) {
             if (res && res.result) {
-                if (callback) {
-                    callback();
-                }
+                Toast.hide();
+                callback()
             } else {
                 setTimeout(function () {
                     self.startGetTxReceipt(hash, callback)
@@ -161,7 +161,6 @@ class Abi {
 
     pairList(mainPKr, callback) {
         this.callMethod(contract, 'pairList', mainPKr, [0, 100], function (rets) {
-            console.log("pairList", rets[0]);
             callback(rets[0]);
         });
     }
@@ -174,12 +173,10 @@ class Abi {
     }
 
     withdraw(pk, mainPKr, token, value, callback) {
-        console.log("withdraw", token, value)
         this.executeMethod(contract, 'withdraw', pk, mainPKr, [token, value], "SERO", 0, callback);
     }
 
     send(pk, mainPKr, token, value, callback) {
-        console.log("send", token, value)
         this.executeMethod(contract, '', pk, mainPKr, [], token, value, callback);
     }
 
@@ -192,13 +189,9 @@ class Abi {
             data: packData
         };
 
-
-
         seropp.getInfo(function (info) {
             rpc.seroRpc(info.rpc, "dece_call", [callParams, "latest"], function (rets) {
                 let data = rets.result
-                console.log("call", callParams, data);
-
                 if (data !== "0x0") {
                     let res = contract.unPackDataEx(_method, data);
                     if (callback) {
@@ -233,18 +226,16 @@ class Abi {
             gasPrice: "0x" + new BigNumber("1000000000").toString(16),
             cy: tokenName
         };
-        console.log("estimateParam", estimateParam);
 
         seropp.getInfo(function (info) {
             rpc.seroRpc(info.rpc, "dece_estimateGas", [estimateParam], function (ret) {
-                console.log("dece_estimateGas", ret);
                 if (ret.error) {
                     Toast.fail("Failed to execute smart contract")
                 } else {
                     executeData["gas"] = ret.result;
                     seropp.executeContract(executeData, function (res, error) {
                         if (callback) {
-                            callback(res)
+                            callback(res, error)
                         }
                     })
                 }

@@ -4,7 +4,7 @@ import React, { Component } from 'react';
 import './App.css';
 import i18n from './i18n'
 
-import { WingBlank, WhiteSpace, List, Flex, Modal, InputItem } from 'antd-mobile';
+import {WingBlank, WhiteSpace, List, Flex, Modal, InputItem, Toast} from 'antd-mobile';
 import abi from './component/abi.js'
 import { bytes32ToToken, showPK } from "./component/common";
 import BigNumber from 'bignumber.js'
@@ -100,10 +100,8 @@ class App extends Component {
     }
 
     render() {
-
-        abi.balanceOf()
+        let self = this;
         let balances;
-
         let isManager = this.state.isManager;
         if (isManager) {
             console.log(this.state.balances)
@@ -168,8 +166,12 @@ class App extends Component {
                                     {
                                         text: `${i18n.t("confirm")}`, onPress: () => {
                                             let value = new BigNumber(this.sendInputRef.state.value).multipliedBy(1e18);
-                                            abi.exchange(this.state.account.pk, this.state.account.mainPKr, tokenB, value, tokenA, function () {
-
+                                            abi.exchange(this.state.account.pk, this.state.account.mainPKr, tokenB, value, tokenA, function (hash, err) {
+                                                if(err) {
+                                                    Toast.fail(err);
+                                                } else {
+                                                    abi.startGetTxReceipt(hash);
+                                                }
                                             })
                                         }
                                     },
@@ -221,7 +223,17 @@ class App extends Component {
                                         text: `${i18n.t("confirm")}`, onPress: () => {
                                             let token = this.tokenInputRef.state.value.trim();
                                             let value = new BigNumber(this.valueInputRef.state.value).multipliedBy(1e18);
-                                            abi.send(this.state.account.pk, this.state.account.mainPKr, token, value);
+                                            abi.send(this.state.account.pk, this.state.account.mainPKr, token, value, function (hash, err) {
+                                                if (err) {
+                                                    Toast.fail(err);
+                                                } else {
+                                                    abi.startGetTxReceipt(hash, function () {
+                                                        abi.balanceOf(function (balances) {
+                                                            self.setState({ balances: balances });
+                                                        })
+                                                    });
+                                                }
+                                            });
                                         }
                                     },
                                 ])
@@ -242,7 +254,17 @@ class App extends Component {
                                         text: `${i18n.t("confirm")}`, onPress: () => {
                                             let token = this.tokenInputRef.state.value.trim();
                                             let value = new BigNumber(this.valueInputRef.state.value).multipliedBy(1e18).toFixed(0);
-                                            abi.withdraw(this.state.account.pk, this.state.account.mainPKr, token, value);
+                                            abi.withdraw(this.state.account.pk, this.state.account.mainPKr, token, value, function (hash, err) {
+                                                if(err) {
+                                                    Toast.fail(err);
+                                                } else {
+                                                    abi.startGetTxReceipt(hash, function () {
+                                                        abi.balanceOf(function (balances) {
+                                                            self.setState({ balances: balances });
+                                                        })
+                                                    });
+                                                }
+                                            });
                                         }
                                     },
                                 ])
@@ -267,7 +289,15 @@ class App extends Component {
                                             let tokenA = this.tokenAInputRef.state.value.trim();
                                             let tokenB = this.tokenBInputRef.state.value.trim();
                                             let price = new BigNumber(this.priceInputRef.state.value).multipliedBy(1e9).toFixed(0);
-                                            abi.setPrice(this.state.account.pk, this.state.account.mainPKr, tokenA, tokenB, price);
+                                            abi.setPrice(this.state.account.pk, this.state.account.mainPKr, tokenA, tokenB, price, function (hash, err) {
+                                                if(err) {
+                                                    Toast.fail(err);
+                                                } else {
+                                                    abi.startGetTxReceipt(hash, function () {
+                                                        self.fetchInfo()
+                                                    });
+                                                }
+                                            });
                                         }
                                     },
                                 ])
