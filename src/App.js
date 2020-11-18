@@ -35,6 +35,7 @@ class App extends Component {
 
         let self = this;
         abi.pairList(mainPKr, function (pairs) {
+
             self.setState({ pairs: pairs });
         })
     }
@@ -117,6 +118,9 @@ class App extends Component {
         let pairs = this.state.pairs.map((each, index) => {
             let tokenA = bytes32ToToken(each.tokenA);
             let tokenB = bytes32ToToken(each.tokenB);
+            if(!tokenA || !tokenB) {
+                return;
+            }
             let price = new BigNumber(each.price).div(1e9).toFixed(3);
             if (each.flag) {
                 tokenA = bytes32ToToken(each.tokenB);
