@@ -6,7 +6,7 @@ import i18n from './i18n'
 
 import {WingBlank, WhiteSpace, List, Flex, Modal, InputItem, Toast} from 'antd-mobile';
 import abi from './component/abi.js'
-import { bytes32ToToken, showPK } from "./component/common";
+import { bytes32ToToken, showPK,trimNumber } from "./component/common";
 import BigNumber from 'bignumber.js'
 import logo from './images/logo.png'
 
@@ -124,12 +124,13 @@ class App extends Component {
             if (new BigNumber(each.price).isZero()) {
                 return;
             }
-            let price = new BigNumber(each.price).div(1e9).toFixed(3);
+            let price = new BigNumber(each.price).div(1e9).toFixed(9);
             if (each.flag) {
                 tokenA = bytes32ToToken(each.tokenB);
                 tokenB = bytes32ToToken(each.tokenA);
-                price = new BigNumber(1e9).div(each.price).toFixed(3);
+                price = new BigNumber(1e9).div(each.price).toFixed(9);
             }
+            price = trimNumber(price, 9);
             return (
                 <List.Item>
                     <Flex style={{ textAlign: 'center' }}>

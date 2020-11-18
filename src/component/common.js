@@ -45,3 +45,28 @@ export function showPK(pk, len) {
     }
     return pk.slice(0, len) + "..." + pk.slice(-len)
 }
+
+export function trimNumber(numberStr, decimalPlaces) {
+    let vals = numberStr.split(".")
+    if (vals.length < 2) {
+        return numberStr;
+    } else {
+        let index = -1;
+        let decimal = vals[1];
+        for (let i = decimal.length - 1; i >= 0; i--) {
+            if (decimal.charAt(i) != '0') {
+                index = i;
+                break;
+            }
+        }
+        decimal = decimal.substring(0, index + 1);
+        let numStr = vals[0];
+        if (decimal.length > decimalPlaces) {
+            decimal = decimal.substring(0, decimalPlaces);
+        }
+        if (decimal.length > 0) {
+            numStr += "." + decimal;
+        }
+        return numStr
+    }
+}
