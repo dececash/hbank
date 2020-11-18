@@ -121,6 +121,9 @@ class App extends Component {
             if(!tokenA || !tokenB) {
                 return;
             }
+            if (new BigNumber(each.price).isZero()) {
+                return;
+            }
             let price = new BigNumber(each.price).div(1e9).toFixed(3);
             if (each.flag) {
                 tokenA = bytes32ToToken(each.tokenB);
