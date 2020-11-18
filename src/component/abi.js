@@ -9,7 +9,7 @@ const rpc = new JsonRpc();
 
 const config = {
     name: "HBank",
-    contractAddress: "3o1Q54KQ6fr2sn15chtheYxJuYPi7j8nr4mBgZpRgSXWmfAnNzEkn6D2BrwtENGNoAsbjnEadAwgB5Gr8YmFTGbd",
+    contractAddress: "NQTmAG6oUJEhEntaqqjzEfiqMGTV6sTWooPTfK4GGeCHEoHhot7w7Bta8MLio4hbTCbtPBS7Fc8j34KjBz8jqTw",
     github: "https://github.com/dececash/hbank",
     author: "hbank",
     url: document.location.href,
@@ -62,7 +62,9 @@ class Abi {
     getTransactionReceipt(txHash, callback) {
         seropp.getInfo(function (info) {
             rpc.seroRpc(info.rpc, "dece_getTransactionReceipt", [txHash], function (rest) {
-                callback(rest)
+                if(callback) {
+                    callback(rest)
+                }
             });
         });
     }
@@ -73,7 +75,9 @@ class Abi {
         this.getTransactionReceipt(hash, function (res) {
             if (res && res.result) {
                 Toast.hide();
-                callback()
+                if(callback) {
+                    callback()
+                }
             } else {
                 setTimeout(function () {
                     self.startGetTxReceipt(hash, callback)
