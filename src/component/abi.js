@@ -9,7 +9,7 @@ const rpc = new JsonRpc();
 
 const config = {
     name: "HBank",
-    contractAddress: "NQTmAG6oUJEhEntaqqjzEfiqMGTV6sTWooPTfK4GGeCHEoHhot7w7Bta8MLio4hbTCbtPBS7Fc8j34KjBz8jqTw",
+    contractAddress: "2Qcy4dZ1dtxqtkWEdAzUJESRcM62Pm8mopQ8x3GnrKTtRzyRurVWcSnKkp4QmsR2QTqu8GMaG9dWxPCTYMnvUWAS",
     github: "https://github.com/dececash/hbank",
     author: "hbank",
     url: document.location.href,
@@ -20,8 +20,7 @@ const config = {
     navMode: "light"
 };
 
-const abiJson = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"inputs":[{"internalType":"string","name":"token","type":"string"}],"name":"exchange","outputs":[{"internalType":"uint256","name":"value","type":"uint256"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"keys","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"manager","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_start","type":"uint256"},{"internalType":"uint256","name":"_end","type":"uint256"}],"name":"pairList","outputs":[{"components":[{"internalType":"bytes32","name":"tokenA","type":"bytes32"},{"internalType":"bytes32","name":"tokenB","type":"bytes32"},{"internalType":"uint256","name":"price","type":"uint256"}],"internalType":"struct Swap.Pair[]","name":"rets","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"name":"pairs","outputs":[{"internalType":"bytes32","name":"tokenA","type":"bytes32"},{"internalType":"bytes32","name":"tokenB","type":"bytes32"},{"internalType":"uint256","name":"price","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_manager","type":"address"}],"name":"setManager","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"tokenA","type":"string"},{"internalType":"string","name":"tokenB","type":"string"},{"internalType":"uint256","name":"price","type":"uint256"}],"name":"setPrice","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"token","type":"string"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}];
-
+const abiJson = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"inputs":[{"internalType":"string","name":"tokenA","type":"string"},{"internalType":"string","name":"tokenB","type":"string"}],"name":"delPair","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"token","type":"string"}],"name":"exchange","outputs":[{"internalType":"uint256","name":"value","type":"uint256"}],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"keys","outputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"manager","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_start","type":"uint256"},{"internalType":"uint256","name":"_end","type":"uint256"}],"name":"pairList","outputs":[{"components":[{"internalType":"bytes32","name":"tokenA","type":"bytes32"},{"internalType":"bytes32","name":"tokenB","type":"bytes32"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"uint256","name":"feeRate","type":"uint256"}],"internalType":"struct Swap.Pair[]","name":"rets","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"bytes32","name":"","type":"bytes32"}],"name":"pairs","outputs":[{"internalType":"bytes32","name":"tokenA","type":"bytes32"},{"internalType":"bytes32","name":"tokenB","type":"bytes32"},{"internalType":"uint256","name":"price","type":"uint256"},{"internalType":"uint256","name":"feeRate","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"tokenA","type":"string"},{"internalType":"string","name":"tokenB","type":"string"},{"internalType":"uint256","name":"feeRate","type":"uint256"}],"name":"setFeeRate","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_manager","type":"address"}],"name":"setManager","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"tokenA","type":"string"},{"internalType":"string","name":"tokenB","type":"string"},{"internalType":"uint256","name":"price","type":"uint256"}],"name":"setPair","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"token","type":"string"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"withdraw","outputs":[],"stateMutability":"nonpayable","type":"function"},{"stateMutability":"payable","type":"receive"}]
 
 const contract = serojs.callContract(abiJson, config.contractAddress);
 
@@ -163,14 +162,25 @@ class Abi {
         });
     }
 
-    pairList(mainPKr, callback) {
-        this.callMethod(contract, 'pairList', mainPKr, [0, 100], function (rets) {
+    pair(mainPKr, tokenA, tokenB, callback) {
+        this.callMethod(contract, 'pair', mainPKr, [tokenA, tokenB], function (rets) {
             callback(rets[0]);
         });
     }
 
-    setPrice(pk, mainPKr, tokenA, tokenB, price, callback) {
-        this.executeMethod(contract, 'setPrice', pk, mainPKr, [tokenA, tokenB, price], "SERO", 0, callback);
+    pairList(mainPKr, callback) {
+        this.callMethod(contract, 'pairList', mainPKr, [0, 100], function (rets) {
+            console.log("pairList", rets[0]);
+            callback(rets[0]);
+        });
+    }
+
+    setFeeRate(pk, mainPKr, tokenA, tokenB, fee, callback) {
+        this.executeMethod(contract, 'setFeeRate', pk, mainPKr, [tokenA, tokenB, fee], "SERO", 0, callback);
+    }
+
+    setPair(pk, mainPKr, tokenA, tokenB, price, callback) {
+        this.executeMethod(contract, 'setPair', pk, mainPKr, [tokenA, tokenB, price], "SERO", 0, callback);
     }
     exchange(pk, mainPKr, token, value, currency, callback) {
         this.executeMethod(contract, 'exchange', pk, mainPKr, [token], currency, value, callback);
