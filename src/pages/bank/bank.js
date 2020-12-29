@@ -122,11 +122,6 @@ class Bank extends Component {
                         </Flex>
                         <WhiteSpace />
                         <WhiteSpace />
-                        {/* <Flex>
-                            <Flex.Item className="tabcontent-box">
-                                
-                            </Flex.Item>
-                        </Flex> */}
                         <WhiteSpace />
                         <WhiteSpace />
                         <Flex>

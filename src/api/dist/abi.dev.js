@@ -30,8 +30,8 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var rpc = new _jsonrpc.JsonRpc();
 var config = {
   name: "HBank",
-  contractAddress: "5LAcvXxv2uo4fHbskEWwZ8zTfrt37bPgj2fKWNzd3jLJLQE7cr9d6343bqay2ZiKs7f8k3bh5csDgxqJKpjo27gA",
-  hbankAddress: "3A12BVv3CzQzQUvEoq7LWX3A7BL5nxyXEanAio5mj8Tw7yaddgdfjFZswyYnwC56c9yE23nminUj8EikkrVAJv1V",
+  contractAddress: "4eX5WETS38nWDbJreHSSkjhZf7ogFDjadwZWpQDdNct5kBTiKypDgvkYQLia9HSsWsAAVJSLwEAhza6YNs5UNTKa",
+  hbankAddress: "22UEfZroKAcg73nBzdpVRJtsVLC1cjFv3atkyeYBreinBcqt3MHdcSmJFiQfUcKi6EbBFrh2NJU6cUuAoL3JivGt",
   github: "https://github.com/dececash/hbank",
   author: "hbank",
   url: document.location.href,
@@ -59,20 +59,6 @@ var abiJson = [{
 }, {
   "inputs": [{
     "internalType": "string",
-    "name": "tokenA",
-    "type": "string"
-  }, {
-    "internalType": "string",
-    "name": "tokenB",
-    "type": "string"
-  }],
-  "name": "delPair",
-  "outputs": [],
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
-  "inputs": [{
-    "internalType": "string",
     "name": "token",
     "type": "string"
   }],
@@ -85,20 +71,16 @@ var abiJson = [{
   "stateMutability": "payable",
   "type": "function"
 }, {
-  "inputs": [],
+  "inputs": [{
+    "internalType": "uint256",
+    "name": "",
+    "type": "uint256"
+  }],
   "name": "keys",
   "outputs": [{
     "internalType": "bytes32",
-    "name": "head",
+    "name": "",
     "type": "bytes32"
-  }, {
-    "internalType": "bytes32",
-    "name": "tail",
-    "type": "bytes32"
-  }, {
-    "internalType": "uint256",
-    "name": "len",
-    "type": "uint256"
   }],
   "stateMutability": "view",
   "type": "function"
@@ -300,7 +282,7 @@ var hbankjson = [{
 }, {
   "inputs": [{
     "internalType": "address[]",
-    "name": "users",
+    "name": "list",
     "type": "address[]"
   }, {
     "internalType": "bool",
@@ -465,7 +447,7 @@ var hbankjson = [{
       "name": "time",
       "type": "uint256"
     }, {
-      "internalType": "enum Hbank.RType",
+      "internalType": "enum Hbank.OperateType",
       "name": "rType",
       "type": "uint8"
     }],
@@ -501,7 +483,7 @@ var hbankjson = [{
         "name": "code",
         "type": "bytes32"
       }, {
-        "internalType": "enum Hbank.STate",
+        "internalType": "enum Hbank.KycState",
         "name": "state",
         "type": "uint8"
       }],
@@ -544,7 +526,7 @@ var hbankjson = [{
       "name": "code",
       "type": "bytes32"
     }, {
-      "internalType": "enum Hbank.STate",
+      "internalType": "enum Hbank.KycState",
       "name": "state",
       "type": "uint8"
     }],

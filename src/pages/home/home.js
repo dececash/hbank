@@ -177,7 +177,7 @@ class Home extends Component {
                                     {
                                         text: `${i18n.t("confirm")}`, onPress: () => {
                                             let value = new BigNumber(this.sendInputRef.state.value).multipliedBy(1e18);
-                                            console.log(value,">>>>>>>>>>>>>")
+                                            console.log(value, ">>>>>>>>>>>>>")
                                             if (this.state.changeType.value == 0) {
                                                 abi.exchange(this.state.account.pk, this.state.account.mainPKr, tokenB, value, tokenA, function (hash, err) {
                                                     if (err) {
@@ -241,7 +241,7 @@ class Home extends Component {
                                 <Flex.Item>&nbsp;</Flex.Item>
                                 <Flex.Item>{i18n.t("Targetasset")}</Flex.Item>
                                 <Flex.Item>{i18n.t("price")}</Flex.Item>
-                                <Flex.Item></Flex.Item>
+                                <Flex.Item>操作</Flex.Item>
                             </Flex>
                             {pairs}
                         </List>

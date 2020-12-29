@@ -37,7 +37,7 @@ class Ratesetting extends Component {
     getBalanceOf() {
         let self = this;
         abi.getInterestsList(self.state.account.mainPKr, function (res) {
-            console.log(res, "1111111111111>>>>>>>>>>");
+            console.log(res)
             let arr = [];
             for (let i = 0; i < res.length; i++) {
                 let obj = {
@@ -46,7 +46,7 @@ class Ratesetting extends Component {
                     url: "",
                     iRate: 0
                 }
-                obj.iRate = res[i].iRate / 10;
+                obj.iRate =new BigNumber(res[i].iRate ).div(10**9).toFixed(3);
                 obj.token = res[i].cy;
                 /**
                  *Upload image name with a
@@ -111,7 +111,7 @@ class Ratesetting extends Component {
 
     setInterest(pk, mainPKr, cy, value) {
         let self = this;
-        abi.setInterest(pk, mainPKr, cy, value * 10, function (hash, err) {
+        abi.setInterest(pk, mainPKr, cy, new BigNumber(value).multipliedBy(10**9).toFixed(0)*1, function (hash, err) {
             if (err) {
                 Toast.fail(err);
             } else {
@@ -156,7 +156,7 @@ class Ratesetting extends Component {
                                                     <Card.Body>
                                                         <Flex style={{ textAlign: 'center' }}>
                                                             <Flex.Item>
-                                                                <span>当前日利率：{item.iRate}%</span>
+                                                                <span>年利率：{item.iRate}%</span>
                                                             </Flex.Item>
                                                             <Flex.Item>
                                                                 <Button size="small" onClick={() => {
@@ -169,15 +169,15 @@ class Ratesetting extends Component {
                                                                             <InputItem
                                                                                 placeholder={item.iRate}
                                                                                 extra="%"
-                                                                                ref={el => this.feeInputRef = el}>Fee:</InputItem>
+                                                                                ref={el => this.feeInputRef = el}>rate:</InputItem>
                                                                         </div>
                                                                     </div>, [
                                                                         { text: `${i18n.t("cancel")}`, onPress: () => console.log('cancel') },
                                                                         {
                                                                             text: `${i18n.t("confirm")}`, onPress: () => {
                                                                                 let token = this.tokenInputRef.state.value.trim();
-                                                                                let fee = this.feeInputRef.state.value;
-                                                                                self.setInterest(self.state.account.pk, self.state.account.mainPKr, token, fee)
+                                                                                let rate = this.feeInputRef.state.value;
+                                                                                self.setInterest(self.state.account.pk, self.state.account.mainPKr, token, rate)
                                                                             }
                                                                         },
                                                                     ])

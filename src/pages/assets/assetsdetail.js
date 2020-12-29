@@ -94,13 +94,13 @@ class Assetsdetail extends Component {
                         obj.state = res.statusList[i];
                         obj.type = res.list[i].rType;
                         obj.time = self.formatTime(res.list[i].time * 1000, 'Y.M.D h:m');
-                        obj.value = new BigNumber(res.list[i].value).dividedBy(10 ** 18).toFixed(2);
+                        obj.value = new BigNumber(res.list[i].value).dividedBy(10 ** 18).toFixed(3);
                         arr.push(obj);
                     }
                 }
-                callback(arr, new BigNumber(res.list[0].value).dividedBy(10 ** 18).toFixed(2),false)
+                console.log(res.list[0])
+                callback(arr, new BigNumber(res.list[0].value).dividedBy(10 ** 18).toFixed(3),false)
             }
-           
         })
     }
 
@@ -187,7 +187,7 @@ class Assetsdetail extends Component {
                     </Flex>
                     <Flex className="item" style={{ marginBottom: "10px", position: "relative", top: '50px' }} >
                         <Flex.Item className="center">
-                            <span>今日预计收益</span>
+                            <span>未提取收益</span>
                         </Flex.Item>
                         <Flex.Item className="center detailnum">
                             {this.state.profitday}

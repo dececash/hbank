@@ -17,9 +17,6 @@
 
 .listheader {
     text-align: center;
-    background-color: #1f9b9b;
-    color: #FFFFFF;
-    font-weight: bold;
     font-size: 16px;
     padding: 10px 0;
 }
@@ -30,9 +27,7 @@
 
 
 
-.exchange {
-    color: #1f9b9b;
-}
+
 
 .changAccount {
     color: black;

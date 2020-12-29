@@ -118,6 +118,10 @@ library CheckList {
     }
     
     function check(List storage self, bytes32 key, bool flag) internal returns(bool) {
+        if(self.status[key] != 1) {
+            return false;
+        }
+        
         if(flag) {
             delete self.status[key];
         } else {
@@ -156,7 +160,7 @@ contract Hbank is BaseInterface,Ownable {
     using SafeMath for uint256;
     
     uint constant DAY= 300;
-    enum RType {
+    enum OperateType {
         _,
         RECHARGE,
         WITHDRAW,
@@ -166,7 +170,7 @@ contract Hbank is BaseInterface,Ownable {
         FINANCE
     }
     
-     enum STate{
+     enum KycState{
          _,
         initial,
         through,
@@ -183,13 +187,13 @@ contract Hbank is BaseInterface,Ownable {
         string phone;
         string email;
         bytes32 code;
-        STate state;
+        KycState state;
     }
     
     struct Record{
         uint value;
         uint time;
-        RType rType;
+        OperateType rType;
     }
     
     struct User {
@@ -347,9 +351,9 @@ contract Hbank is BaseInterface,Ownable {
         
         uint index =Interest.length-1;
         
-        uint profit =_caleProfit(users[msg.sender].balances[token].value, 1, Interest[index].iRate);
+        uint profit=_profit(msg.sender,token,users[msg.sender].balances[token].value,users[msg.sender].balances[token].lasttime);
         
-        list[0] = Record({value:profit, time:now, rType:RType.PROFIT});
+        list[0] = Record({value:profit, time:now, rType:OperateType.PROFIT});
     } 
     
     function getRegisterList() public view returns(RetuserInfo[] memory retuserInfo){
@@ -380,7 +384,8 @@ contract Hbank is BaseInterface,Ownable {
     
     function setInterest(string memory currency,uint iRate) public onlyManager{
         
-        require(iRate < 1000);
+        // require(iRate < 10**10);
+        
         bytes32 token = strings._stringToBytes32(currency);
         
         if(interests[token].length == 0) {
@@ -404,8 +409,7 @@ contract Hbank is BaseInterface,Ownable {
     function register(string memory name, string memory phone,string memory email, bytes32 code) public {
         address sender=msg.sender;
         bytes32 key=addressToBytes32(sender);
-        require(users[sender].userInfo.state == STate._ || users[sender].userInfo.state == STate.initial 
-            || users[sender].userInfo.state == STate.Fail, "state error");
+        require(users[sender].userInfo.state != KycState.through, "state error");
         
         addressList.push(key);
         
@@ -413,7 +417,7 @@ contract Hbank is BaseInterface,Ownable {
         users[sender].userInfo.phone=phone;
         users[sender].userInfo.email=email;
         users[sender].userInfo.code=code;
-        users[sender].userInfo.state=STate.initial;
+        users[sender].userInfo.state=KycState.initial;
     }
     
     function modifyInformation(address userAddress,string memory name, string memory phone,string memory email)public onlyManager{
@@ -422,30 +426,15 @@ contract Hbank is BaseInterface,Ownable {
         users[userAddress].userInfo.email=email;
     }
     
-    function checkUsers(address[] memory users, bool flag) public onlyManager{
+    function checkUsers(address[] memory list, bool flag) public onlyManager{
         
-        for(uint i = 0; i < users.length; i++) {
-            
-            _checkUsers(users[i],flag);
-            
+        for(uint i = 0; i < list.length; i++) {
+            require(users[list[i]].userInfo.state == KycState.initial, "not STate.initial");
+            users[list[i]].userInfo.state= flag ? KycState.through :KycState.Fail ; 
+            addressList.remove(addressToBytes32(list[i]));
         } 
     }
     
-    function  _checkUsers(address user, bool flag) private{
-        require(users[user].userInfo.state == STate.initial, "not STate.initial");
-        if(flag){
-            
-            users[user].userInfo.state=STate.through;
-            
-        }else{
-            
-           users[user].userInfo.state=STate.Fail; 
-           
-        }
-        
-        addressList.remove(addressToBytes32(user));
-        
-    }
         
     function exchange(string memory _tokenA, uint256 value, string memory _tokenB) public returns (uint256) {
         
@@ -457,7 +446,7 @@ contract Hbank is BaseInterface,Ownable {
         
         bytes32 tokenB =strings._stringToBytes32(_tokenB);
         
-        _update(sender, tokeA, value, RType.SELL);
+        _update(sender, tokeA, value, OperateType.SELL);
     
         setCallValues(_tokenA, value, "", bytes32(0));
          
@@ -465,14 +454,15 @@ contract Hbank is BaseInterface,Ownable {
         
         require(value > 0);
         
-        _update(sender, tokenB, value, RType.BUY);
+        _update(sender, tokenB, value, OperateType.BUY);
         
         return value;
      }
     
     function financing(address financeAddr, string memory tokenStr, uint256 value, bytes memory params) public {
         
-        _update(msg.sender, strings._stringToBytes32(tokenStr), value, RType.WITHDRAW);
+        _update(msg.sender, strings._stringToBytes32(tokenStr), value, OperateType.FINANCE);
+        
         setCallValues(tokenStr, value, "", bytes32(0));
         
         require(Finance(financeAddr).financing(params));
@@ -483,18 +473,16 @@ contract Hbank is BaseInterface,Ownable {
         require(interests[token].length > 0, "not set interest");
        
         if(data.length > 0) {
-            address owner;
-            RType rType;
-            require(users[owner].userInfo.state == STate.through , "state error");
-            (owner, rType) = abi.decode(data,(address, RType));
-            if(owner!=address(0) && rType != RType._&& rType != RType.WITHDRAW && rType != RType.SELL){
+            (address owner, OperateType rType) = abi.decode(data,(address, OperateType));
+            if(owner!=address(0) && (rType == OperateType.RECHARGE || rType == OperateType.PROFIT)) {
+                 require(users[owner].userInfo.state == KycState.through , "state error");
                 _update(owner, token, msg.value,rType);
             } else {
                 require(false, "args error");
             }
         } else {
-             require(users[msg.sender].userInfo.state == STate.through , "state error");
-             _update(msg.sender, token, msg.value, RType.RECHARGE);
+             require(users[msg.sender].userInfo.state == KycState.through , "state error");
+             _update(msg.sender, token, msg.value, OperateType.RECHARGE);
         }
     }
     
@@ -504,7 +492,7 @@ contract Hbank is BaseInterface,Ownable {
         
         bytes32 token=strings._stringToBytes32(currency);
         
-        _update(sender, token, value , RType.WITHDRAW);
+        _update(sender, token, value , OperateType.WITHDRAW);
         
         require(value <= users[sender].balances[token].value,"balacne < value");
         
@@ -521,12 +509,12 @@ contract Hbank is BaseInterface,Ownable {
         
         for(uint i = 0; i < keys.length; i++) {
             
-            _cheack(keys[i],flag);
+            _check(keys[i],flag);
             
         } 
     }
     
-    function _cheack(bytes32 key, bool flag) private {
+    function _check(bytes32 key, bool flag) private {
         
         CheckList.Check memory check = checkList.getCheck(key);
         
@@ -545,27 +533,27 @@ contract Hbank is BaseInterface,Ownable {
         }
     }
     
-    function _update(address sender,bytes32 token,uint _value , RType types) private returns (bool){
+    function _update(address sender,bytes32 token,uint _value , OperateType types) private returns (bool){
         
         uint profit=_profit(sender,token,users[sender].balances[token].value,users[sender].balances[token].lasttime);
         
         uint value =  users[sender].balances[token].value;
         
         if(profit !=0){
-            users[sender].records[token].push(Record({value:profit, time:now, rType:RType.PROFIT}));
+            users[sender].records[token].push(Record({value:profit, time:now, rType:OperateType.PROFIT}));
             value = value.add(profit);
         }
         
         users[sender].balances[token].lasttime=now;
         
-        if(types == RType.RECHARGE|| types == RType.BUY||types == RType.FINANCE) {
+        if(types == OperateType.RECHARGE|| types == OperateType.BUY || types == OperateType.PROFIT) {
             users[sender].balances[token].value = value.add(_value);
         } else{
             uint lockedValue = lockedValue(sender, token);
-            require(lockedValue + _value <=  users[sender].balances[token].value, "not enough");
-            if(types==RType.SELL) {
+            require(lockedValue + _value <=  value, "not enough");
+            if(types==OperateType.SELL ||types == OperateType.FINANCE) {
                 users[sender].balances[token].value = value.sub(_value);
-            } else if(types==RType.WITHDRAW) {
+            } else if(types==OperateType.WITHDRAW) {
                 users[sender].balances[token].value = value;
             }
         }
@@ -594,7 +582,7 @@ contract Hbank is BaseInterface,Ownable {
 
     function _caleProfit(uint value, uint nDays, uint rate) private view returns(uint) {
         
-        return value*rate/1000*nDays;
+        return value.mul(rate * nDays).div(365 * 1e11);
     }
     
     function _profit(address sender,bytes32 token,uint amount,uint lasttime) private view returns(uint profit){
@@ -604,7 +592,7 @@ contract Hbank is BaseInterface,Ownable {
         }
         
         require(lasttime >= interests[token][0].time, "lasttime must >= interests[token][0].time");
-        // users[sender].records[token].push(Record({value:value, time:now, rType:RType.RECHARGE}));
+        
         uint nowTime=now;
         
         Interest[] storage list =  interests[token];

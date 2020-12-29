@@ -70,7 +70,7 @@ class Assets extends Component {
                     url: ""
                 }
                 obj.token = res[i].cy;
-                obj.value = new BigNumber(res[i].value).div(10 ** 18).toNumber().toFixed(2);
+                obj.value = new BigNumber(res[i].value).div(10 ** 18).toNumber().toFixed(3);
                 obj.url = 'https://13.124.240.238/images/a' + res[i].cy + '_0.png';
                 arr.push(obj);
             }
