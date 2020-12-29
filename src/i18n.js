@@ -3,8 +3,6 @@ import i18n from 'i18next';
 import en_US from './locales/en_US.json';
 import zh_CN from './locales/zh_CN.json';
 import ko_KR from './locales/ko_KR.json';
-import ja_JP from './locales/ja_JP.json';
-import be_BY from './locales/be_BY.json';
 
 import {initReactI18next} from 'react-i18next';
 
@@ -26,13 +24,7 @@ i18n
             },
             ko_KR: {
                 translation: ko_KR,
-            },
-            ja_JP: {
-                translation: ja_JP,
-            },
-            be_BY: {
-                translation: be_BY,
-            },
+            }
         },
         fallbackLng: lang,
         debug: false,

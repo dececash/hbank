@@ -7,7 +7,7 @@ paths.appBuild = path.resolve(paths.appBuild, '../docs')
 module.exports = override(
     fixBabelImports('import', {
         libraryName: 'antd-mobile',
-        style: 'css',
+        style: true,
     }),
 );
 

@@ -1,0 +1,19 @@
+.IDcard {
+  background: #ffffff;
+}
+.IDcard .center {
+  font-size: 17px;
+  padding: 2px 0;
+  margin-left: 17px !important;
+}
+.IDimg {
+  text-align: center;
+  height: 150px;
+}
+.IDimg img {
+  height: 150px;
+  width: 90%;
+  margin: 0 5%;
+  display: block;
+  margin: auto;
+}

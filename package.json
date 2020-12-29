@@ -4,18 +4,22 @@
   "private": true,
   "homepage": ".",
   "dependencies": {
-    "@testing-library/jest-dom": "^5.11.5",
-    "@testing-library/react": "^11.1.1",
-    "@testing-library/user-event": "^12.2.0",
+    "@babel/helper-validator-identifier": "^7.12.11",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
     "antd-mobile": "^2.3.4",
     "axios": "^0.21.0",
-    "bignumber": "^1.1.0",
+    "bignumber.js": "^9.0.1",
     "i18next": "^19.8.3",
     "i18next-browser-languagedetector": "^6.0.1",
+    "keccak256": "^1.0.2",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-i18next": "^11.7.3",
-    "react-scripts": "4.0.0",
+    "react-router": "^5.2.0",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "4.0.1",
     "sero-pp": "^1.0.7",
     "sero-web3": "^0.3.3",
     "serojs": "0.0.6",
@@ -25,7 +29,7 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test --env=jsdom",
-    "eject": "react-app-rewired eject"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -46,7 +50,7 @@
     ]
   },
   "devDependencies": {
-    "babel-plugin-import": "^1.13.1",
+    "babel-plugin-import": "^1.13.3",
     "customize-cra": "^1.0.0",
     "react-app-rewired": "^2.1.6"
   }

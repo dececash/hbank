@@ -1,0 +1,45 @@
+.home {
+    margin: 0 15px;
+}
+
+.am-list-content {
+    flex: 1 1;
+    font-size: 20px;
+    line-height: 1.5;
+    text-align: left;
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+.listheader {
+    text-align: center;
+    background-color: #1f9b9b;
+    color: #FFFFFF;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 10px 0;
+}
+
+.listheader .am-flexbox-item {
+    margin-left: 0px !important;
+}
+
+
+
+.exchange {
+    color: #1f9b9b;
+}
+
+.changAccount {
+    color: black;
+    font-size: 16px;
+}
+
+.changAccount-name {
+    padding: 5px 0;
+    border: 1px solid #1f9b9b;
+}
