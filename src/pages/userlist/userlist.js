@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Flex, WhiteSpace, List, Checkbox, Button, Toast } from 'antd-mobile';
 import Nav from '../../component/nav';
+import i18n from '../../i18n'
 import logo from '../../images/logo.png';
 import './userlist.css';
 import abi from '../../api/abi';
@@ -35,10 +36,7 @@ class Userlist extends Component {
         abi.getRegisterList(mainPKr, function (res) {
             let arr = [];
             for (let i = 0; i < res.length; i++) {
-                console.log(res[i], ">>>>>>>>>")
                 let codestr = res[i].info.code.substring(2, 42);
-                console.log(res[i].info.code);
-                console.log(codestr);
                 let j = self.hexCharCodeToStr(res[i].info.code).length - 1;
 
                 while (self.hexCharCodeToStr(res[i].info.code)[j] !== '.') {
@@ -72,7 +70,6 @@ class Userlist extends Component {
             self.setState({
                 userlist: arr
             })
-            console.log(arr, "wan")
         })
     }
 
@@ -84,7 +81,6 @@ class Userlist extends Component {
                 arr[i].checked = !arr[i].checked;
             }
         }
-        console.log(arr, ">>>>>>>>>>")
         this.setState({
             datalist: arr
         })
@@ -104,7 +100,7 @@ class Userlist extends Component {
         var curCharCode;
         var resultStr = [];
         for (var i = 0; i < len; i = i + 2) {
-            curCharCode = parseInt(rawStr.substr(i, 2), 16); // ASCII Code Value
+            curCharCode = parseInt(rawStr.substr(i, 2), 16); 
             resultStr.push(String.fromCharCode(curCharCode));
         }
         return resultStr.join("");
@@ -123,7 +119,6 @@ class Userlist extends Component {
         console.log(keys, whether)
         if (keys.length > 0) {
             abi.reviewUser(self.state.account.pk, self.state.account.mainPKr, keys, whether, function (hash, err) {
-                console.log(hash, ">>>>>>>>", err);
                 if (err) {
                     Toast.fail(err);
                 } else {
@@ -144,7 +139,7 @@ class Userlist extends Component {
                         <Flex.Item className="tabcontent-box">
                             <img src={logo} alt="logo" />
                             <p className='title'>
-                                注册审核
+                                {i18n.t("RegistrationReview")}
                             </p>
                         </Flex.Item>
                     </Flex>
@@ -156,36 +151,32 @@ class Userlist extends Component {
                                     {self.state.userlist.map(item => (
                                         <CheckboxItem checked={item.checked} key={item.i} onChange={() => this.onChange(item.i)}>
                                             <Flex>
-                                                <Flex.Item>用户名：{item.name}</Flex.Item>
+                                                <Flex.Item>{i18n.t("username")}：{item.name}</Flex.Item>
                                             </Flex>
                                             <Flex>
-                                                <Flex.Item>电话：{item.phone}</Flex.Item>
+                                                <Flex.Item>{i18n.t("phone")}：{item.phone}</Flex.Item>
                                             </Flex>
                                             <Flex>
-                                                <Flex.Item>邮箱：{item.email}</Flex.Item>
+                                                <Flex.Item>{i18n.t("mail")}：{item.email}</Flex.Item>
                                             </Flex>
                                             <Flex className="textover">
-                                                <Flex.Item>钱包地址：{item.owner}</Flex.Item>
+                                                <Flex.Item>{i18n.t("WalletAddress")}：{item.owner}</Flex.Item>
                                             </Flex>
                                             <Flex>
-                                                <Flex.Item>省份证正面：
-                                                    {/* {item.code} */}
+                                                <Flex.Item>{i18n.t("FrontofIDcard")}
                                                 </Flex.Item>
                                             </Flex>
                                             <div className="IDcard IDimg">
                                                 <img src={item.imgurl} />
                                             </div>
                                             <Flex>
-                                                <Flex.Item>省份证反面
-                                                    {/* ：{item.code} */}
+                                                <Flex.Item>{i18n.t("ReversesideofIDcard")}
                                                 </Flex.Item>
                                             </Flex>
                                             <div className="IDcard IDimg">
                                                 <img src={item.imgurlone} />
                                             </div>
-
                                             <WhiteSpace size="sm" />
-
                                         </CheckboxItem>
                                     ))}
                                 </List>
@@ -194,13 +185,13 @@ class Userlist extends Component {
                                     self.state.userlist.length > 0 ? <div>
                                         <Flex>
                                             <Flex.Item>
-                                                <Button type="primary" size='small' onClick={() => this.getReview(true)}>通过</Button>
+                                                <Button type="primary" size='small' onClick={() => this.getReview(true)}>{i18n.t("Pass")}</Button>
                                             </Flex.Item>
                                             <Flex.Item>
-                                                <Button size='small' onClick={() => this.getReview(false)}>不通过</Button>
+                                                <Button size='small' onClick={() => this.getReview(false)}>{i18n.t("Fail")}</Button>
                                             </Flex.Item>
                                         </Flex>
-                                    </div> : <div className="center">没有审核记录</div>
+                                    </div> : <div className="center">{i18n.t("NoAuditRecord")}</div>
                                 }
                             </div>
                         </div>
@@ -211,5 +202,4 @@ class Userlist extends Component {
         )
     }
 }
-
 export default Userlist;

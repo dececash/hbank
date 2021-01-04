@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Flex, List, InputItem, Modal, WhiteSpace, Toast, Card, Button } from 'antd-mobile';
+import { Flex, InputItem, Modal, WhiteSpace, Toast, Card, Button } from 'antd-mobile';
 import Nav from '../../component/nav';
 import i18n from '../../i18n';
 import BigNumber from 'bignumber.js'
@@ -11,7 +11,6 @@ import logo from '../../images/logo.png';
 import './ratesetting.css';
 import abi from '../../api/abi';
 const alert = Modal.alert;
-
 
 class Ratesetting extends Component {
     constructor(props) {
@@ -31,13 +30,11 @@ class Ratesetting extends Component {
         self.setState({
             account: obj
         })
-
     }
 
     getBalanceOf() {
         let self = this;
         abi.getInterestsList(self.state.account.mainPKr, function (res) {
-            console.log(res)
             let arr = [];
             for (let i = 0; i < res.length; i++) {
                 let obj = {
@@ -46,17 +43,12 @@ class Ratesetting extends Component {
                     url: "",
                     iRate: 0
                 }
-                obj.iRate =new BigNumber(res[i].iRate ).div(10**9).toFixed(3);
+                obj.iRate =new BigNumber(res[i].iRate ).div(10**9).toFixed(3,1);
                 obj.token = res[i].cy;
-                /**
-                 *Upload image name with a
-                 */
                 obj.url = 'https://13.124.240.238/images/a' + res[i].cy + '_0.png';
                 arr.push(obj);
             }
-
             abi.hbankBalanceOf(function (data) {
-                console.log(data, "SISIS")
                 if (data != "") {
                     for (let j = 0; j < data.length; j++) {
                         for (let k = 0; k < arr.length; k++) {
@@ -66,7 +58,6 @@ class Ratesetting extends Component {
                         }
                     }
                 }
-
                 self.setState({
                     dataList: arr
                 })
@@ -124,8 +115,6 @@ class Ratesetting extends Component {
 
     render() {
         let self = this;
-        const Item = List.Item;
-
         return (
             <Nav selectedTab="4">
                 <div className="tabcontent">
@@ -133,7 +122,7 @@ class Ratesetting extends Component {
                         <Flex.Item className="tabcontent-box">
                             <img src={logo} alt="logo" />
                             <p className='title'>
-                                银行管理
+                                {i18n.t("Bankmanagement")}
                             </p>
                         </Flex.Item>
                     </Flex>
@@ -147,19 +136,18 @@ class Ratesetting extends Component {
                                     self.state.dataList.map((item, key) => {
                                         return (
                                             <div>
-                                                <Card>
+                                                <Card key={key}>
                                                     <Card.Header
                                                         title={item.token}
                                                         thumb={item.url}
-                                                        extra={<span>余额：{item.value}</span>}
-                                                    />
-                                                    <Card.Body>
-                                                        <Flex style={{ textAlign: 'center' }}>
-                                                            <Flex.Item>
-                                                                <span>年利率：{item.iRate}%</span>
-                                                            </Flex.Item>
-                                                            <Flex.Item>
-                                                                <Button size="small" onClick={() => {
+                                                        extra={<div>
+                                                            <div><span>
+                                                                {/* {i18n.t("Balance")}： */}
+                                                                {item.value}</span></div>
+                                                                <WhiteSpace />
+                                                            <div><span>
+                                                                {/* {i18n.t("AnnualInterestRate")}： */}
+                                                                {item.iRate}% &nbsp;<a onClick={() => {
                                                                     alert("", <div>
                                                                         <div>
                                                                             <InputItem
@@ -169,7 +157,7 @@ class Ratesetting extends Component {
                                                                             <InputItem
                                                                                 placeholder={item.iRate}
                                                                                 extra="%"
-                                                                                ref={el => this.feeInputRef = el}>rate:</InputItem>
+                                                                                ref={el => this.feeInputRef = el}>RATE:</InputItem>
                                                                         </div>
                                                                     </div>, [
                                                                         { text: `${i18n.t("cancel")}`, onPress: () => console.log('cancel') },
@@ -181,10 +169,10 @@ class Ratesetting extends Component {
                                                                             }
                                                                         },
                                                                     ])
-                                                                }}>设置利率</Button>
-                                                            </Flex.Item>
-                                                        </Flex>
-                                                        <WhiteSpace />
+                                                                }}>{i18n.t("modify")}</a></span></div>
+                                                        </div>}
+                                                    />
+                                                    <Card.Body>
                                                         <Flex style={{ textAlign: 'center' }}>
                                                             <Flex.Item>
                                                                 <Button size="small" onClick={() => {
@@ -208,7 +196,7 @@ class Ratesetting extends Component {
                                                                             }
                                                                         },
                                                                     ])
-                                                                }}>充值</Button>
+                                                                }}>{i18n.t("Recharge")}</Button>
                                                             </Flex.Item>
                                                             <Flex.Item>
                                                                 <Button size="small" onClick={() => {
@@ -232,9 +220,8 @@ class Ratesetting extends Component {
                                                                             }
                                                                         },
                                                                     ])
-                                                                }}>提现</Button>
+                                                                }}>{i18n.t("withdraw")}</Button>
                                                             </Flex.Item>
-
                                                         </Flex>
                                                         <WhiteSpace />
                                                     </Card.Body>
@@ -249,7 +236,6 @@ class Ratesetting extends Component {
                         <WhiteSpace />
                     </div>
                     <WhiteSpace size="sm" />
-
                 </div>
             </Nav>
         )

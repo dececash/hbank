@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Flex, List, Toast, InputItem, Button, WhiteSpace } from 'antd-mobile';
 import Nav from '../../component/nav';
+import i18n from '../../i18n'
 import logo from '../../images/logo.png';
 import './register.css';
 import abi from '../../api/abi';
@@ -16,7 +17,6 @@ class Register extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            managerPkr: "Wqj6U2DEAuaxsRoohRmQSTtEUrZyFb4xeXUoG4ZhQdhrWHhaf9TktfHHyw3QvXgQiuk3Sko2yASHCFA3UezVH2Y945Qr8LqpjtERkmHGz4kyYgYvRTXwoSx961vGHFPwqR2",
             account: {},
             hasError: false,
             emailError: false,
@@ -60,7 +60,6 @@ class Register extends Component {
                     j--;
                 }
                 imgtype = self.hexCharCodeToStr(res[0].code).substring(j, self.hexCharCodeToStr(res[0].code).length);
-                console.log(imgtype);
             }
             self.setState({
                 name: res[0].name,
@@ -87,7 +86,7 @@ class Register extends Component {
         var curCharCode;
         var resultStr = [];
         for (var i = 0; i < len; i = i + 2) {
-            curCharCode = parseInt(rawStr.substr(i, 2), 16); // ASCII Code Value
+            curCharCode = parseInt(rawStr.substr(i, 2), 16);
             resultStr.push(String.fromCharCode(curCharCode));
         }
         return resultStr.join("");
@@ -105,9 +104,7 @@ class Register extends Component {
         var formData = new FormData();
         formData.append("image", files[0]);
         abi.hash(self.state.account.pk, function (res) {
-            console.log(res);
             codestr = res.substring(0, 40);
-            console.log(codestr)
             self.setState({
                 imgtype,
             })
@@ -117,7 +114,7 @@ class Register extends Component {
                 url: urls,
                 data: formData
             }).then((res) => {
-                Toast.success('上传成功', 2);
+                Toast.success(`${i18n.t("UploadSuccessfully")}`, 2);
                 let str = 'https://13.124.240.238/images/' + codestr + '_' + type + imgtype + "?v=" + new Date().getTime();
                 if (type === 0) {
                     self.setState({
@@ -130,7 +127,7 @@ class Register extends Component {
                 }
                 self.forceUpdate();
             }).catch((err) => {
-                Toast.fail('重新选择图片', 2);
+                Toast.fail(`${i18n.t("ReselectPicture")}`, 2);
                 console.log(err);
             })
         });
@@ -192,10 +189,9 @@ class Register extends Component {
         let self = this;
         if (self.state.name.length > 0 && self.state.phone.length > 0 && self.state.email.length > 0) {
             abi.hash(self.state.account.pk, function (code1) {
-                
                 let buf = randomBytes(12);
                 buf.write(imgtype, 12 - imgtype.length);
-                let code ="0x"+code1.substring(0,40) + buf.toString('hex');
+                let code = "0x" + code1.substring(0, 40) + buf.toString('hex');
                 console.log("code1", code);
                 abi.register(self.state.account.pk, self.state.account.pk, self.state.name, self.state.phone, self.state.email, code, function (hash, err) {
                     if (err) {
@@ -218,7 +214,7 @@ class Register extends Component {
                         <Flex.Item className="tabcontent-box">
                             <img src={logo} alt="logo" />
                             <p className='title'>
-                                注册信息
+                                {i18n.t("RegistrationMessage")}
                             </p>
                         </Flex.Item>
                     </Flex>
@@ -226,13 +222,13 @@ class Register extends Component {
                     {
                         self.state.userState == '0' ? <div>
                             <div className="content">
-                                <List renderHeader={() => '注册信息'}>
+                                <List renderHeader={() => `${i18n.t("RegistrationMessage")}`}>
                                     <InputItem
                                         type="text"
                                         placeholder="input your name"
                                         onChange={this.onChangesname}
                                         value={this.state.name}
-                                    >姓名:</InputItem>
+                                    >{i18n.t("Name")}:</InputItem>
                                     <InputItem
                                         type="phone"
                                         placeholder="input your phone"
@@ -240,7 +236,7 @@ class Register extends Component {
                                         // onErrorClick={this.onErrorClick}
                                         onChange={this.onChangesphone}
                                         value={this.state.phone}
-                                    >手机号码:</InputItem>
+                                    >{i18n.t("PhoneNumber")}:</InputItem>
                                     <InputItem
                                         type="email"
                                         placeholder="input your e-mail"
@@ -248,25 +244,21 @@ class Register extends Component {
                                         // onErrorClick={this.onEmailErrorClick}
                                         onChange={this.onChangesemail}
                                         value={this.state.email}
-                                    >电子邮箱:</InputItem>
+                                    >{i18n.t("E-mail")}:</InputItem>
                                     <WhiteSpace />
 
                                     <Flex className="IDcard" >
                                         <Flex.Item className="center">
-                                            身份证正面
+                                            {i18n.t("FrontofIDcard")}
                                         </Flex.Item>
                                         <Flex.Item className="center">
                                             <input
                                                 type="file"
                                                 ref={this.fileInputEl}
                                                 accept="image/*"
-                                                // accept=".jpg,.jpeg,.jpg"
                                                 hidden
                                                 onChange={(event) => this.handlePhoto(event, 0)}
                                             />
-                                            {/* <Button size="small">
-                                                <a onClick={() => { this.fileInputEl.current.click() }}>上传照片</a>
-                                            </Button> */}
                                         </Flex.Item>
                                     </Flex>
                                     <WhiteSpace />
@@ -277,7 +269,7 @@ class Register extends Component {
                                     <WhiteSpace />
                                     <Flex className="IDcard" >
                                         <Flex.Item className="center">
-                                            身份证反面
+                                            {i18n.t("ReversesideofIDcard")}
                                         </Flex.Item>
                                         <Flex.Item className="center">
                                             <input
@@ -299,32 +291,32 @@ class Register extends Component {
                             </div>
                             <WhiteSpace size="sm" />
                             <div className="content">
-                                <Button size='small' type='primary' onClick={() => this.submit(self.state.imgtype)}>提交</Button>
+                                <Button size='small' type='primary' onClick={() => this.submit(self.state.imgtype)}>{i18n.t("submit")}</Button>
                             </div>
                         </div> : <div>
                                 {
                                     self.state.userState == '1' ? <div>
                                         <div className="content">
-                                            <List renderHeader={() => '注册信息'}>
+                                            <List renderHeader={() => `${i18n.t("RegistrationMessage")}`}>
                                                 <InputItem
                                                     type="text"
                                                     disabled
                                                     value={this.state.name}
-                                                >姓名:</InputItem>
+                                                >{i18n.t("Name")}:</InputItem>
                                                 <InputItem
                                                     type="phone"
                                                     disabled
                                                     value={this.state.phone}
-                                                >手机号码:</InputItem>
+                                                >{i18n.t("PhoneNumber")}:</InputItem>
                                                 <InputItem
                                                     type="email"
                                                     disabled
                                                     value={this.state.email}
-                                                >电子邮箱:</InputItem>
+                                                >{i18n.t("E-mail")}:</InputItem>
                                                 <WhiteSpace />
                                                 <Flex className="IDcard" >
                                                     <Flex.Item className="center">
-                                                        身份证正面
+                                                        {i18n.t("FrontofIDcard")}
                                                     </Flex.Item>
                                                 </Flex>
                                                 <WhiteSpace />
@@ -335,7 +327,7 @@ class Register extends Component {
                                                 <WhiteSpace />
                                                 <Flex className="IDcard" >
                                                     <Flex.Item className="center">
-                                                        身份证反面
+                                                        {i18n.t("ReversesideofIDcard")}
                                                     </Flex.Item>
                                                 </Flex>
                                                 <WhiteSpace />
@@ -347,33 +339,33 @@ class Register extends Component {
                                         </div>
                                         <WhiteSpace size="sm" />
                                         <div className="content">
-                                            <Button size='small'>审核中</Button>
+                                            <Button size='small'>{i18n.t("UnderReview")}</Button>
                                         </div>
                                     </div> : <div>
                                             {
                                                 self.state.userState == '2' ? <div>
                                                     <div className="content">
-                                                        <List renderHeader={() => '注册信息'}>
+                                                        <List renderHeader={() => `${i18n.t("RegistrationMessage")}`}>
                                                             <InputItem
                                                                 type="text"
                                                                 disabled
                                                                 value={this.state.name}
-                                                            >姓名:</InputItem>
+                                                            >{i18n.t("Name")}:</InputItem>
                                                             <InputItem
                                                                 type="phone"
                                                                 disabled
                                                                 value={this.state.phone}
-                                                            >手机号码:</InputItem>
+                                                            >{i18n.t("PhoneNumber")}:</InputItem>
                                                             <InputItem
                                                                 type="email"
                                                                 disabled
                                                                 value={this.state.email}
-                                                            >电子邮箱:</InputItem>
+                                                            >{i18n.t("E-mail")}:</InputItem>
                                                             <WhiteSpace />
 
                                                             <Flex className="IDcard" >
                                                                 <Flex.Item className="center">
-                                                                    身份证正面
+                                                                    {i18n.t("FrontofIDcard")}
                                                                 </Flex.Item>
                                                             </Flex>
                                                             <WhiteSpace />
@@ -384,7 +376,7 @@ class Register extends Component {
                                                             <WhiteSpace />
                                                             <Flex className="IDcard" >
                                                                 <Flex.Item className="center">
-                                                                    身份证反面
+                                                                    {i18n.t("ReversesideofIDcard")}
                                                                 </Flex.Item>
                                                             </Flex>
                                                             <WhiteSpace />
@@ -397,24 +389,24 @@ class Register extends Component {
                                                     <WhiteSpace size="sm" />
                                                 </div> : <div>
                                                         <div className="content">
-                                                            <List renderHeader={() => '注册信息'}>
+                                                            <List renderHeader={() => `${i18n.t("RegistrationMessage")}`}>
                                                                 <InputItem
                                                                     type="text"
                                                                     value={this.state.name}
-                                                                >姓名:</InputItem>
+                                                                >{i18n.t("Name")}:</InputItem>
                                                                 <InputItem
                                                                     type="phone"
                                                                     value={this.state.phone}
-                                                                >手机号码:</InputItem>
+                                                                >{i18n.t("PhoneNumber")}:</InputItem>
                                                                 <InputItem
                                                                     type="email"
                                                                     value={this.state.email}
-                                                                >电子邮箱:</InputItem>
+                                                                >{i18n.t("E-mail")}:</InputItem>
                                                                 <WhiteSpace />
 
                                                                 <Flex className="IDcard" >
                                                                     <Flex.Item className="center">
-                                                                        身份证正面
+                                                                        {i18n.t("FrontofIDcard")}
                                                                     </Flex.Item>
                                                                 </Flex>
                                                                 <WhiteSpace />
@@ -425,7 +417,7 @@ class Register extends Component {
                                                                 <WhiteSpace />
                                                                 <Flex className="IDcard" >
                                                                     <Flex.Item className="center">
-                                                                        身份证反面
+                                                                        {i18n.t("ReversesideofIDcard")}
                                                                     </Flex.Item>
                                                                 </Flex>
                                                                 <WhiteSpace />
@@ -439,10 +431,10 @@ class Register extends Component {
                                                         <div className="content">
                                                             <Flex>
                                                                 <Flex.Item>
-                                                                    <Button size='small' type='warning'>注册信息审核失败</Button>
+                                                                    <Button size='small' type='warning'>{i18n.t("RegistrationInformation")}</Button>
                                                                 </Flex.Item>
                                                                 <Flex.Item>
-                                                                    <Button size='small' type='primary' onClick={() => this.changeState()}>编辑</Button>
+                                                                    <Button size='small' type='primary' onClick={() => this.changeState()}>{i18n.t("edit")}</Button>
                                                                 </Flex.Item>
                                                             </Flex>
                                                         </div>

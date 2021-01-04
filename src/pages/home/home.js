@@ -28,11 +28,12 @@ class Home extends Component {
             isManager: false,
             balances: [],
             changeType: {
-                value: 0, label: '本地账户'
+                value: 0,
+                label: `${i18n.t("Localaccount")}`
             },
             choosedata: [
-                { value: 0, label: '本地账户' },
-                { value: 1, label: '银行账户' },
+                { value: 0, label:  `${i18n.t("Localaccount")}` },
+                { value: 1, label:  `${i18n.t("BankAccount")}` },
             ]
         }
     }
@@ -54,6 +55,7 @@ class Home extends Component {
         self.setState({ account: obj });
         self.getIsManager(obj.mainPKr);
         self.fetchInfo(obj.mainPKr);
+        
     }
 
     componentWillUnmount() {
@@ -227,7 +229,7 @@ class Home extends Component {
                         <WhiteSpace />
                         <Flex className="changAccount tabcontent-box" style={{ textAlign: 'center' }}>
                             <Flex.Item
-                                className="changAccount-name">兑换账户:{this.state.changeType.label}</Flex.Item>
+                                className="changAccount-name">{i18n.t("Exchangeaccount")}:{this.state.changeType.label}</Flex.Item>
                             <Flex.Item>
                                 <a onClick={() => {
                                     this.changeType();
@@ -235,14 +237,16 @@ class Home extends Component {
                             </Flex.Item>
                         </Flex>
                         <WhiteSpace />
+                        <WhiteSpace />
+                        <WhiteSpace />
                         <List className="tabcontent-box">
-                            <Flex className="listheader ">
+                            {/* <Flex className="listheader ">
                                 <Flex.Item>{i18n.t("Originalassets")}</Flex.Item>
                                 <Flex.Item>&nbsp;</Flex.Item>
                                 <Flex.Item>{i18n.t("Targetasset")}</Flex.Item>
                                 <Flex.Item>{i18n.t("price")}</Flex.Item>
-                                <Flex.Item>操作</Flex.Item>
-                            </Flex>
+                                <Flex.Item>{i18n.t("operation")}</Flex.Item>
+                            </Flex> */}
                             {pairs}
                         </List>
                     </div>

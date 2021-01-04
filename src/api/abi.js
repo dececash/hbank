@@ -3,14 +3,14 @@ import serojs from "serojs";
 import BigNumber from 'bignumber.js'
 import { Toast } from "antd-mobile";
 import i18n from '../i18n';
-import { JsonRpc } from "./jsonrpc";
+import {JsonRpc } from "./jsonrpc";
 import keccak256 from "keccak256";
 const rpc = new JsonRpc();
 
 const config = {
 	name: "HBank",
-	contractAddress: "4eX5WETS38nWDbJreHSSkjhZf7ogFDjadwZWpQDdNct5kBTiKypDgvkYQLia9HSsWsAAVJSLwEAhza6YNs5UNTKa",
-	hbankAddress: "22UEfZroKAcg73nBzdpVRJtsVLC1cjFv3atkyeYBreinBcqt3MHdcSmJFiQfUcKi6EbBFrh2NJU6cUuAoL3JivGt",
+	contractAddress: "3miug1P9jwGjq85btFYZYkqNFJxQuUXnqkbYnR2ZcJjYMmrPXvzitTdfd4hDvdsAESBJ3AZBUMu8CbkaBSLNnvDn",
+	hbankAddress: "4bskgAUVgz2cuTh5YAvzaRBYmvw8DyGThKYWXQS537mVbdhAjh7SgRkykT9Eri33vh6xxWY7K7mdi7NKjhUEccFa",
 	github: "https://github.com/dececash/hbank",
 	author: "hbank",
 	url: document.location.href,
@@ -993,7 +993,6 @@ class Abi {
 	isManager(mainPKr, callback) {
 		let self = this;
 		this.callMethod(contract, 'manager', mainPKr, [], function (ret) {
-			console.log(ret);
 			self.getFullAddress([ret[0]], function (rets) {
 				if (callback) {
 					callback(rets.result[ret[0]] == mainPKr);
@@ -1073,7 +1072,6 @@ class Abi {
 	}
 
 	hbankSend(pk, mainPKr, token, value, callback) {
-		console.log(pk, mainPKr, token, value);
 		this.executeMethod(hbank, '', pk, mainPKr, [], token, value, callback);
 	}
 
@@ -1114,7 +1112,6 @@ class Abi {
 	getCheckList(mainPKr, callback) {
 		let self = this;
 		this.callMethod(hbank, 'getCheckList', mainPKr, [], function (res) {
-			console.log(res)
 			let pkrs = [];
 			res.retcheck.forEach(each => {
 				pkrs.push(each.owner);
@@ -1183,11 +1180,11 @@ class Abi {
 			to: contract.address,
 			data: packData
 		};
-		console.log(_method, "callParams", callParams)
+		// console.log(_method, "callParams", callParams)
 		seropp.getInfo(function (info) {
 			rpc.seroRpc(info.rpc, "dece_call", [callParams, "latest"], function (rets) {
 				let data = rets.result
-				console.log(_method, rets)
+				// console.log(_method, rets)
 				if (data !== "0x0") {
 					let res = contract.unPackDataEx(_method, data);
 					if (callback) {
@@ -1202,7 +1199,7 @@ class Abi {
 	}
 
 	executeMethod(contract, _method, pk, mainPKr, args, tokenName, value, callback) {
-		console.log(_method, args);
+		// console.log(_method, args);
 		let packData = "0x";
 		if ("" !== _method) {
 			packData = contract.packData(_method, args);

@@ -9,10 +9,10 @@ import { WingBlank, WhiteSpace, Flex, Modal, InputItem, Toast, Card, Button } fr
 import BigNumber from 'bignumber.js'
 import abi from '../../api/abi.js'
 import logo from '../../images/logo.png'
+import { bytes32ToToken } from "../../api/common";
+import { call } from 'sero-pp';
+import { callbackHandler } from 'sero-pp/lib/sero-pp';
 
-/**
- *
- */
 
 const alert = Modal.alert;
 class Bank extends Component {
@@ -30,35 +30,56 @@ class Bank extends Component {
         let self = this;
         let obj = JSON.parse(sessionStorage.getItem('account'));
         self.setState({ account: obj });
-        self.getBalanceOf();
+        self.getList(obj.mainPKr);
     }
 
-    getBalanceOf() {
+    getList(mainPKr) {
         let self = this;
-        abi.balanceOf(function (res) {
-            console.log(res, ">>>>>>>>>>");
+        abi.pairList(mainPKr, function (data) {
             let arr = [];
-
-            for (let i = 0; i < res.length; i++) {
-                let obj = {
-                    token: "",
-                    value: 0,
-                    url: ""
+            if (data != []) {
+                for (let i = 0; i < data.length; i++) {
+                    arr.push(bytes32ToToken(data[i].tokenA));
+                    arr.push(bytes32ToToken(data[i].tokenB));
                 }
-                obj.token = res[i].token;
-                obj.value = res[i].value;
-                /**
-                 *Upload image name with a
-                 */
-                obj.url = 'https://13.124.240.238/images/a' + res[i].token + '_0.png';
-                arr.push(obj);
             }
-            console.log(arr);
+            let arrimg = [];
+            if (Array.from(new Set(arr)) != []) {
+                for (let i = 0; i < Array.from(new Set(arr)).length; i++) {
+                    let obj = {
+                        token: "",
+                        value: '0.000',
+                        url: ""
+                    }
+                    obj.token = Array.from(new Set(arr))[i];
+                    obj.url = 'https://13.124.240.238/images/a' + Array.from(new Set(arr))[i] + '_0.png';
+                    arrimg.push(obj);
+                }
+            }
+            self.getBalanceOf(arrimg);
+
+        })
+    }
+    getBalanceOf(arr) {
+        let self = this;
+
+        abi.balanceOf(function (res) {
+            console.log(res)
+            if (res != []) {
+                for (let i = 0; i < res.length; i++) {
+                    for (let j = 0; j < arr.length; j++) {
+                        if (res[i].token == arr[j].token) {
+                            arr[j].value = res[i].value
+                        }
+                    }
+                }
+            }
             self.setState({
                 dataList: arr
             })
         })
     }
+
 
     send(token, value) {
         let self = this;
@@ -67,7 +88,7 @@ class Bank extends Component {
                 Toast.fail(err);
             } else {
                 abi.startGetTxReceipt(hash, function () {
-                    self.getBalanceOf();
+                    self.getList(self.state.account.mainPKr);
                 });
             }
         });
@@ -80,27 +101,32 @@ class Bank extends Component {
                 Toast.fail(err);
             } else {
                 abi.startGetTxReceipt(hash, function () {
-                    self.getBalanceOf();
+                    self.getList(self.state.account.mainPKr);
                 });
             }
         });
     }
     setPair(tokenA, tokenB, price) {
+        let self = this;
+
         abi.setPair(this.state.account.pk, this.state.account.mainPKr, tokenA, tokenB, price, function (hash, err) {
             if (err) {
                 Toast.fail(err);
             } else {
                 abi.startGetTxReceipt(hash, function () {
+                    self.getList(self.state.account.mainPKr);
                 });
             }
         });
     }
     setFeeRate(tokenA, tokenB, fee) {
+        let self = this;
         abi.setFeeRate(this.state.account.pk, this.state.account.mainPKr, tokenA, tokenB, fee, function (hash, err) {
             if (err) {
                 Toast.fail(err);
             } else {
                 abi.startGetTxReceipt(hash, function () {
+                    self.getList(self.state.account.mainPKr);
                 });
             }
         });
@@ -108,7 +134,6 @@ class Bank extends Component {
     render() {
         let self = this;
         return (
-
             <WingBlank>
                 <Nav selectedTab="4">
                     <div className="tabcontent">
@@ -116,12 +141,77 @@ class Bank extends Component {
                             <Flex.Item className="tabcontent-box">
                                 <img src={logo} alt="logo" />
                                 <p className='title'>
-                                    兑换管理
+                                    {i18n.t("Exchangemanagement")}
                                 </p>
                             </Flex.Item>
                         </Flex>
                         <WhiteSpace />
                         <WhiteSpace />
+                        <Flex>
+                            <Flex.Item className="tabcontent-box">
+                                <Flex style={{ textAlign: 'center' }}>
+                                    <Flex.Item>
+                                        <Button size="small" onClick={() => {
+                                            alert("", <div>
+                                                <div>
+                                                    <InputItem
+                                                        placeholder="tokenA"
+                                                        ref={el => this.tokenAInputRef = el}>TOKENA:</InputItem>
+                                                    <InputItem
+                                                        placeholder="tokenB"
+                                                        ref={el => this.tokenBInputRef = el} onChange={() => {
+
+                                                        }}>TOKENB:</InputItem>
+                                                    <InputItem
+                                                        placeholder="price"
+                                                        ref={el => this.priceInputRef = el}>Price:</InputItem>
+                                                </div>
+                                            </div>, [
+                                                { text: `${i18n.t("cancel")}`, onPress: () => console.log('cancel') },
+                                                {
+                                                    text: `${i18n.t("confirm")}`, onPress: () => {
+                                                        let tokenA = this.tokenAInputRef.state.value.trim();
+                                                        let tokenB = this.tokenBInputRef.state.value.trim();
+                                                        let price = new BigNumber(this.priceInputRef.state.value).multipliedBy(1e9).toFixed(0);
+                                                        self.setPair(tokenA, tokenB, price);
+                                                    }
+                                                },
+                                            ])
+                                        }}>{i18n.t("SetPrice")}</Button>
+                                    </Flex.Item>
+                                    <Flex.Item>
+                                        <Button size="small" onClick={() => {
+                                            alert("", <div>
+                                                <div>
+                                                    <InputItem
+                                                        placeholder="tokenA"
+                                                        ref={el => this.tokenAInputRef = el}>TOKENA:</InputItem>
+                                                    <InputItem
+                                                        placeholder="tokenB"
+                                                        ref={el => this.tokenBInputRef = el} onChange={() => {
+
+                                                        }}>TOKENB:</InputItem>
+                                                    <InputItem
+                                                        placeholder="fee"
+                                                        extra="%"
+                                                        ref={el => this.feeInputRef = el}>Fee:</InputItem>
+                                                </div>
+                                            </div>, [
+                                                { text: `${i18n.t("cancel")}`, onPress: () => console.log('cancel') },
+                                                {
+                                                    text: `${i18n.t("confirm")}`, onPress: () => {
+                                                        let tokenA = this.tokenAInputRef.state.value.trim();
+                                                        let tokenB = this.tokenBInputRef.state.value.trim();
+                                                        let fee = new BigNumber(this.feeInputRef.state.value).multipliedBy(100).toFixed(0);
+                                                        self.setFeeRate(tokenA, tokenB, fee)
+                                                    }
+                                                },
+                                            ])
+                                        }}>{i18n.t("SetRate")}</Button>
+                                    </Flex.Item>
+                                </Flex>
+                            </Flex.Item>
+                        </Flex>
                         <WhiteSpace />
                         <WhiteSpace />
                         <Flex>
@@ -130,11 +220,11 @@ class Bank extends Component {
                                     self.state.dataList.map((item, key) => {
                                         return (
                                             <div>
-                                                <Card>
+                                                <Card key={key}>
                                                     <Card.Header
                                                         title={item.token}
                                                         thumb={item.url}
-                                                        extra={<span>余额：{item.value}</span>}
+                                                        extra={<span>{item.value}</span>}
                                                     />
                                                     <Card.Body>
                                                         <Flex style={{ textAlign: 'center' }}>
@@ -160,7 +250,7 @@ class Bank extends Component {
                                                                             }
                                                                         },
                                                                     ])
-                                                                }}>充值</Button>
+                                                                }}>{i18n.t("Recharge")}</Button>
                                                             </Flex.Item>
                                                             <Flex.Item>
                                                                 <Button size="small" onClick={() => {
@@ -184,72 +274,11 @@ class Bank extends Component {
                                                                             }
                                                                         },
                                                                     ])
-                                                                }}>提现</Button>
+                                                                }}>{i18n.t("withdraw")}</Button>
                                                             </Flex.Item>
                                                         </Flex>
                                                         <WhiteSpace />
-                                                        <Flex style={{ textAlign: 'center' }}>
-                                                            <Flex.Item>
-                                                                <Button size="small" onClick={() => {
-                                                                    alert("", <div>
-                                                                        <div>
-                                                                            <InputItem
-                                                                                value={item.token}
-                                                                                disabled
-                                                                                ref={el => this.tokenAInputRef = el}>TOKENA:</InputItem>
-                                                                            <InputItem
-                                                                                placeholder="tokenB"
-                                                                                ref={el => this.tokenBInputRef = el} onChange={() => {
 
-                                                                                }}>TOKENB:</InputItem>
-                                                                            <InputItem
-                                                                                placeholder="price"
-                                                                                ref={el => this.priceInputRef = el}>Price:</InputItem>
-                                                                        </div>
-                                                                    </div>, [
-                                                                        { text: `${i18n.t("cancel")}`, onPress: () => console.log('cancel') },
-                                                                        {
-                                                                            text: `${i18n.t("confirm")}`, onPress: () => {
-                                                                                let tokenA = this.tokenAInputRef.state.value.trim();
-                                                                                let tokenB = this.tokenBInputRef.state.value.trim();
-                                                                                let price = new BigNumber(this.priceInputRef.state.value).multipliedBy(1e9).toFixed(0);
-                                                                                self.setPair(tokenA, tokenB, price);
-                                                                            }
-                                                                        },
-                                                                    ])
-                                                                }}>设置价格</Button>
-                                                            </Flex.Item>
-                                                            <Flex.Item>
-                                                                <Button size="small" onClick={() => {
-                                                                    alert("", <div>
-                                                                        <div>
-                                                                            <InputItem
-                                                                                value={item.token}
-                                                                                disabled
-                                                                                ref={el => this.tokenAInputRef = el}>TOKENA:</InputItem>
-                                                                            <InputItem
-                                                                                placeholder="tokenB"
-                                                                                ref={el => this.tokenBInputRef = el} onChange={() => {
-
-                                                                                }}>TOKENB:</InputItem>
-                                                                            <InputItem
-                                                                                placeholder="fee"
-                                                                                ref={el => this.feeInputRef = el}>Fee:</InputItem>
-                                                                        </div>
-                                                                    </div>, [
-                                                                        { text: `${i18n.t("cancel")}`, onPress: () => console.log('cancel') },
-                                                                        {
-                                                                            text: `${i18n.t("confirm")}`, onPress: () => {
-                                                                                let tokenA = this.tokenAInputRef.state.value.trim();
-                                                                                let tokenB = this.tokenBInputRef.state.value.trim();
-                                                                                let fee = new BigNumber(this.feeInputRef.state.value).toFixed(0);
-                                                                                self.setFeeRate(tokenA, tokenB, fee)
-                                                                            }
-                                                                        },
-                                                                    ])
-                                                                }}>设置费率</Button>
-                                                            </Flex.Item>
-                                                        </Flex>
                                                     </Card.Body>
                                                 </Card>
                                                 <WhiteSpace />

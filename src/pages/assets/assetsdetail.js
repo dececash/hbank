@@ -8,6 +8,8 @@ import BigNumber from 'bignumber.js'
 import Nav from '../../component/nav'
 import './assetsdetail.css'
 import abi from '../../api/abi.js'
+import i18n from '../../i18n'
+
 
 function MyBody(props) {
     return (
@@ -37,6 +39,7 @@ class Assetsdetail extends Component {
             height: document.documentElement.clientHeight * 3 / 4,
             cy: "",
             account: {},
+            iRate: "",
             datalist: [],
             len: 40000000,
             count: 10,
@@ -63,11 +66,13 @@ class Assetsdetail extends Component {
         let self = this;
         let cy = this.props.location.state.cy;
         let account = this.props.location.state.account;
+        let iRate = this.props.location.state.iRate;
         self.setState({
             cy: cy,
-            account: account
+            account: account,
+            iRate: iRate
         });
-        self.getData(account.mainPKr, cy, self.state.len, self.state.count, function (res, profitday,isLoading) {
+        self.getData(account.mainPKr, cy, self.state.len, self.state.count, function (res, profitday, isLoading) {
             self.setState({
                 profitday: profitday,
                 dataSource: self.state.dataSource.cloneWithRows(res),
@@ -80,9 +85,9 @@ class Assetsdetail extends Component {
         let arr = [];
         abi.getRecords(mainPKr, cy, len, count, function (res) {
             console.log(res)
-            if(res.len=="0"){
-                callback([], 0,false)
-            }else{
+            if (res.len == "0") {
+                callback([], 0, false)
+            } else {
                 for (let i = 0; i < res.list.length; i++) {
                     if (i >= 1) {
                         let obj = {
@@ -94,12 +99,12 @@ class Assetsdetail extends Component {
                         obj.state = res.statusList[i];
                         obj.type = res.list[i].rType;
                         obj.time = self.formatTime(res.list[i].time * 1000, 'Y.M.D h:m');
-                        obj.value = new BigNumber(res.list[i].value).dividedBy(10 ** 18).toFixed(3);
+                        obj.value = new BigNumber(res.list[i].value).dividedBy(10 ** 18).toFixed(3, 1);
                         arr.push(obj);
                     }
                 }
                 console.log(res.list[0])
-                callback(arr, new BigNumber(res.list[0].value).dividedBy(10 ** 18).toFixed(3),false)
+                callback(arr, new BigNumber(res.list[0].value).dividedBy(10 ** 18).toFixed(3, 1), false)
             }
         })
     }
@@ -145,17 +150,17 @@ class Assetsdetail extends Component {
                             <Flex className="item">
                                 <Flex.Item className="center">
                                     {
-                                        item.type == 1 ? <span>充值</span> : <span>
+                                        item.type == 1 ? <span>{i18n.t("Recharge")}</span> : <span>
                                             {
                                                 item.type == 2 ? <span>
                                                     {
-                                                        item.state == 1 ? <span>提现审核中</span> : <span> {
-                                                            item.state == 2 ? <span>提现审核失败</span> : <span>提现</span>
+                                                        item.state == 1 ? <span>{i18n.t("Withdrawalreview")}</span> : <span> {
+                                                            item.state == 2 ? <span>{i18n.t("Withdrawalreviewfailed")}</span> : <span>{i18n.t("withdraw")}</span>
                                                         }</span>
                                                     }
                                                 </span> : <span>{
-                                                    item.type == 3 ? <span>收益</span> : <span>{
-                                                        item.type == 4 ? <span>卖出</span> : <span>买入</span>
+                                                    item.type == 3 ? <span>{i18n.t("profit")}</span> : <span>{
+                                                        item.type == 4 ? <span>{i18n.t("Sell")}</span> : <span>{i18n.t("purchase")}</span>
                                                     }</span>
                                                 }</span>
                                             }
@@ -183,15 +188,22 @@ class Assetsdetail extends Component {
             <Nav selectedTab="1">
                 <div className="tabcontent">
                     <Flex className="detailheader">
-                        <Flex.Item className="headertitle">{this.state.cy}余额明细</Flex.Item>
+                        <Flex.Item className="headertitle">{this.state.cy}{i18n.t("Balancedetails")}</Flex.Item>
                     </Flex>
                     <Flex className="item" style={{ marginBottom: "10px", position: "relative", top: '50px' }} >
                         <Flex.Item className="center">
-                            <span>未提取收益</span>
+                            <span>{i18n.t("AnnualInterestRate")}</span>
+                        </Flex.Item>
+                        <Flex.Item className="center detailnum">
+                            {this.state.iRate}%
+                        </Flex.Item>
+                        <Flex.Item className="center">
+                            <span>{i18n.t("Undrawnincome")}</span>
                         </Flex.Item>
                         <Flex.Item className="center detailnum">
                             {this.state.profitday}
                         </Flex.Item>
+
                     </Flex>
                     <div className="detailcontent">
 
@@ -200,7 +212,7 @@ class Assetsdetail extends Component {
                                 ref={el => this.lv = el}
                                 dataSource={this.state.dataSource}
                                 renderFooter={() => (<div style={{ paddingBottom: 25, textAlign: 'center' }}>
-                                    {this.state.isLoading ? '加载更多...' : '没有数据了'}
+                                    {this.state.isLoading ? `${i18n.t("Nomoredata")}`+'...' : `${i18n.t("Nomoredata")}`}
                                 </div>)}
                                 renderBodyComponent={() => <MyBody />}
                                 renderRow={row}

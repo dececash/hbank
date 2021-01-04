@@ -6,12 +6,10 @@ import { Link } from 'react-router-dom';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Flex, WhiteSpace, Modal, Button, InputItem, Toast, } from 'antd-mobile';
 import Nav from '../../component/nav'
-
 import './assets.css'
 import { showPK } from "../../api/common";
 import i18n from '../../i18n'
 import abi from '../../api/abi';
-
 import logo from '../../images/logo.png';
 import BigNumber from 'bignumber.js';
 const alert = Modal.alert;
@@ -36,13 +34,10 @@ class Assets extends Component {
         abi.pairList(mainPKr, function (pairs) {
             self.setState({ pairs: pairs });
         })
-
     }
     componentDidMount() {
         let self = this;
         let obj = JSON.parse(sessionStorage.getItem('account'));
-
-
         if (obj == null) {
             abi.currentAccount(function (account) {
                 self.getBalances(account.mainPKr);
@@ -67,15 +62,28 @@ class Assets extends Component {
                 let obj = {
                     token: "",
                     value: 0,
-                    url: ""
+                    url: "",
+                    iRate: 0
                 }
                 obj.token = res[i].cy;
-                obj.value = new BigNumber(res[i].value).div(10 ** 18).toNumber().toFixed(3);
+                obj.value = new BigNumber(res[i].value).div(10 ** 18).toNumber().toFixed(3, 1);
                 obj.url = 'https://13.124.240.238/images/a' + res[i].cy + '_0.png';
                 arr.push(obj);
             }
-            self.setState({
-                datalist: arr
+
+            abi.getInterestsList(mainPKr, function (data) {
+                if (data != "") {
+                    for (let j = 0; j < data.length; j++) {
+                        for (let k = 0; k < arr.length; k++) {
+                            if (data[j].cy == arr[k].token) {
+                                arr[k].iRate = new BigNumber(data[j].iRate).div(10 ** 9).toFixed(3, 1)
+                            }
+                        }
+                    }
+                }
+                self.setState({
+                    datalist: arr
+                })
             })
         })
     }
@@ -103,7 +111,6 @@ class Assets extends Component {
                 });
             })
     }
-
     render() {
         let self = this;
         return (
@@ -113,7 +120,7 @@ class Assets extends Component {
                         <Flex.Item className="tabcontent-box">
                             <img src={logo} alt="logo" />
                             <p className='title'>
-                                数字资产银行
+                                {i18n.t("AssetBank")}
                             </p>
                         </Flex.Item>
                     </Flex>
@@ -129,11 +136,9 @@ class Assets extends Component {
                     </Flex>
                     <WhiteSpace />
                     <div className="content">
-
                         {
                             self.state.datalist.map((item, index) => {
                                 return (
-
                                     <div className="listItem" key={index}>
                                         <Flex>
                                             <Flex.Item>
@@ -143,7 +148,9 @@ class Assets extends Component {
                                                 </Flex>
                                             </Flex.Item>
                                             <Flex.Item className="assetsbox">
-                                                <Flex.Item className="amounttitle">余额</Flex.Item>
+                                                <Flex.Item className="amounttitle">
+                                                    {i18n.t("Balance")}
+                                                </Flex.Item>
                                                 <Flex.Item className="amount">{item.value}</Flex.Item>
                                             </Flex.Item>
                                         </Flex>
@@ -151,7 +158,7 @@ class Assets extends Component {
                                         <Flex>
                                             <Flex.Item>
                                                 <Button size="small" onClick={() => {
-                                                    alert('充值', <div>
+                                                    alert(`${i18n.t("Recharge")}`, <div>
                                                         <InputItem
                                                             placeholder="amount"
                                                             ref={el => self.sendInputRef = el}
@@ -175,11 +182,13 @@ class Assets extends Component {
                                                             }
                                                         },
                                                     ])
-                                                }}>充值</Button>
+                                                }}>
+                                                    {i18n.t("Recharge")}
+                                                </Button>
                                             </Flex.Item>
                                             <Flex.Item>
                                                 <Button size="small" onClick={() => {
-                                                    alert('提现', <div>
+                                                    alert(`${i18n.t("withdraw")}`, <div>
                                                         <InputItem
                                                             placeholder="amount"
                                                             ref={el => self.sendInputRef = el}
@@ -204,21 +213,26 @@ class Assets extends Component {
                                                             }
                                                         },
                                                     ])
-                                                }}>提现</Button>
+                                                }}>
+                                                    {i18n.t("withdraw")}
+                                                </Button>
                                             </Flex.Item>
                                             <Flex.Item>
-                                                <Link to={{ pathname: `/assetsdetail`, state: { cy: item.token, account: this.state.account } }} >
-                                                    <Button size="small">查看明细</Button>
+                                                <Link to={{ pathname: `/assetsdetail`, state: { cy: item.token, account: this.state.account, iRate: item.iRate } }} >
+                                                    <Button size="small">
+                                                        {i18n.t("ViewDetails")}
+                                                    </Button>
                                                 </Link>
                                             </Flex.Item>
                                         </Flex>
                                     </div>
-
                                 )
                             })
                         }
 
                     </div>
+                    <WhiteSpace />
+                    <WhiteSpace />
                 </div>
             </Nav>
         )

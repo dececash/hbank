@@ -5,12 +5,11 @@ import React, { Component } from 'react';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Flex, List, Toast, Checkbox, Button, WhiteSpace, Modal } from 'antd-mobile';
 import BigNumber from 'bignumber.js';
-
+import i18n from '../../i18n'
 import Nav from '../../component/nav';
 import logo from '../../images/logo.png';
 import './withdrawlist.css';
 import abi from '../../api/abi';
-// const alert = Modal.alert;
 const CheckboxItem = Checkbox.CheckboxItem;
 
 class Withdrawlist extends Component {
@@ -176,7 +175,7 @@ class Withdrawlist extends Component {
                         <Flex.Item className="tabcontent-box">
                             <img src={logo} alt="logo" />
                             <p className='title'>
-                                提现审核
+                                {i18n.t("WithdrawalReview")}
                             </p>
                         </Flex.Item>
                     </Flex>
@@ -187,16 +186,16 @@ class Withdrawlist extends Component {
                                     {self.state.datalist.map(item => (
                                         <CheckboxItem checked={item.checked} key={item.i} onChange={() => this.onChange(item.i)}>
                                             <Flex>
-                                                <Flex.Item>币名：{item.currency}</Flex.Item>
+                                                <Flex.Item>{i18n.t("CoinName")}：{item.currency}</Flex.Item>
                                             </Flex>
                                             <Flex>
-                                                <Flex.Item>金额：{item.value}</Flex.Item>
+                                                <Flex.Item>{i18n.t("Amount")}：{item.value}</Flex.Item>
                                             </Flex>
                                             <Flex>
-                                                <Flex.Item>时间：{item.time}</Flex.Item>
+                                                <Flex.Item>{i18n.t("time")}：{item.time}</Flex.Item>
                                             </Flex>
                                             <Flex className="textover">
-                                                <Flex.Item onClick={() => self.getUser(item.owner)}>钱包地址：{item.owner}</Flex.Item>
+                                                <Flex.Item onClick={() => self.getUser(item.owner)}>{i18n.t("WalletAddress")}：{item.owner}</Flex.Item>
                                             </Flex>
                                             <WhiteSpace size="sm" />
 
@@ -208,13 +207,13 @@ class Withdrawlist extends Component {
                                     self.state.datalist.length > 0 ? <div>
                                         <Flex>
                                             <Flex.Item>
-                                                <Button type='primary' onClick={() => this.getreview(true)}>通过</Button>
+                                                <Button type='primary' onClick={() => this.getreview(true)}>{i18n.t("Pass")}</Button>
                                             </Flex.Item>
                                             <Flex.Item>
-                                                <Button onClick={() => this.getreview(false)}>不通过</Button>
+                                                <Button onClick={() => this.getreview(false)}>{i18n.t("Fail")}</Button>
                                             </Flex.Item>
                                         </Flex>
-                                    </div> : <div className="center">没有审核记录</div>
+                                    </div> : <div className="center">{i18n.t("NoAuditRecord")}</div>
                                 }
                                 <Modal
                                     visible={this.state.showmodal}
@@ -222,7 +221,7 @@ class Withdrawlist extends Component {
                                     maskClosable={false}
                                     title="用户信息"
                                     footer={[{
-                                        text: '关闭', onPress: () => {
+                                        text: `${i18n.t("close")}`, onPress: () => {
                                             self.setState({
                                                 showmodal: false
                                             })
@@ -232,22 +231,22 @@ class Withdrawlist extends Component {
                                     <div>
                                         <List className="mytabbox-item">
                                             <Flex>
-                                                <Flex.Item>用户名：{self.state.username}</Flex.Item>
+                                                <Flex.Item>{i18n.t("username")}：{self.state.username}</Flex.Item>
                                             </Flex>
                                             <Flex>
-                                                <Flex.Item>电话：{self.state.userphone}</Flex.Item>
+                                                <Flex.Item>{i18n.t("phone")}：{self.state.userphone}</Flex.Item>
                                             </Flex>
                                             <Flex>
-                                                <Flex.Item>邮箱：{self.state.useremail}</Flex.Item>
+                                                <Flex.Item>{i18n.t("mail")}：{self.state.useremail}</Flex.Item>
                                             </Flex>
                                             <Flex>
-                                                <Flex.Item>省份证正面：</Flex.Item>
+                                                <Flex.Item>{i18n.t("FrontofIDcard")}</Flex.Item>
                                             </Flex>
                                             <div className="IDcard IDimg">
                                                 <img src={self.state.userimgurl} />
                                             </div>
                                             <Flex>
-                                                <Flex.Item>省份证反面</Flex.Item>
+                                                <Flex.Item>{i18n.t("ReversesideofIDcard")}</Flex.Item>
                                             </Flex>
                                             <div className="IDcard IDimg">
                                                 <img src={self.state.userimgurlone} />

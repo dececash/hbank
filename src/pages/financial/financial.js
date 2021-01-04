@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Flex } from 'antd-mobile';
 import Nav from '../../component/nav'
+import i18n from '../../i18n';
 import logo from '../../images/logo.png'
 
 class Financial extends Component {
@@ -22,7 +23,7 @@ class Financial extends Component {
                         <Flex.Item className="tabcontent-box">
                             <img src={logo} alt="logo" />
                             <p className='title'>
-                                DeFi数字资产理财
+                                DeFi{i18n.t("assetmanagement")}
                             </p>
                         </Flex.Item>
                     </Flex>
@@ -31,6 +32,4 @@ class Financial extends Component {
         )
     }
 }
-
-
 export default Financial;

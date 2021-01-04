@@ -2,6 +2,7 @@
 import React from 'react';
 import 'antd-mobile/dist/antd-mobile.css';
 import { TabBar } from 'antd-mobile';
+import i18n from '../i18n'
 
 
 export default class nav extends React.Component {
@@ -12,7 +13,6 @@ export default class nav extends React.Component {
         };
     }
     goPage = (uri) => {
-        console.log(this.props)
         window.location.href = uri
     }
 
@@ -33,7 +33,7 @@ export default class nav extends React.Component {
                     barTintColor="#414691"
                 >
                     <TabBar.Item
-                        title="资产"
+                        title={i18n.t("assets")}
                         key="Life"
                         icon={<div style={{
                             width: '32px',
@@ -74,7 +74,7 @@ export default class nav extends React.Component {
                             }}
                             />
                         }
-                        title="兑换"
+                        title={i18n.t("exchange")}
                         key="Koubei"
                         selected={this.props.selectedTab === '2'}
                         onPress={() => {
@@ -101,7 +101,7 @@ export default class nav extends React.Component {
                             }}
                             />
                         }
-                        title="理财"
+                        title={i18n.t("Financial")}
                         key="financial"
                         selected={this.props.selectedTab === '3'}
                         onPress={() => {
@@ -128,7 +128,7 @@ export default class nav extends React.Component {
                             }}
                             />
                         }
-                        title="我的"
+                        title={i18n.t("mine")}
                         key="my"
                         selected={this.props.selectedTab === '4'}
                         onPress={() => {
