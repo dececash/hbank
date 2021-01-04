@@ -159,7 +159,7 @@ contract Hbank is BaseInterface,Ownable {
     using CheckList for CheckList.Check;
     using SafeMath for uint256;
     
-    uint constant DAY= 300;
+    uint constant DAY= 1 days;
     enum OperateType {
         _,
         RECHARGE,
@@ -199,6 +199,7 @@ contract Hbank is BaseInterface,Ownable {
     struct User {
         mapping(bytes32 => Asset) balances;//address => Asset
         mapping(bytes32 => Record[]) records;//cy =Record[]
+        mapping(bytes32 => uint) lockedValue;
         UserInfo userInfo;
     }
     
@@ -235,7 +236,7 @@ contract Hbank is BaseInterface,Ownable {
     mapping(bytes32 => Interest[]) public interests;
     LinkList.List addressList;
     CheckList.List checkList;
-    mapping(address=>LinkList.List) ownerCheckList;
+    // mapping(address=>LinkList.List) ownerCheckList;
     HSwap swap;
    
     constructor(address _swap) public {
@@ -384,7 +385,7 @@ contract Hbank is BaseInterface,Ownable {
     
     function setInterest(string memory currency,uint iRate) public onlyManager{
         
-        // require(iRate < 10**10);
+        require(iRate < 1e11);
         
         bytes32 token = strings._stringToBytes32(currency);
         
@@ -500,7 +501,7 @@ contract Hbank is BaseInterface,Ownable {
         
         bytes32 key = genKey(sender, currency, index);
         
-        ownerCheckList[sender].push(key);
+        users[sender].lockedValue[token] = users[sender].lockedValue[token].add(value);
         
         checkList.push(key, CheckList.Check({owner:sender, currency:strings._stringToBytes32(currency), index:index}));
     }
@@ -523,7 +524,7 @@ contract Hbank is BaseInterface,Ownable {
         require(value <= users[check.owner].balances[check.currency].value,"value > balance");
         
         require(checkList.check(key, flag), "check failed");
-        ownerCheckList[check.owner].remove(key);
+        users[check.owner].lockedValue[check.currency] = users[check.owner].lockedValue[check.currency].sub(value);
         
         if(flag) {
         
@@ -549,8 +550,7 @@ contract Hbank is BaseInterface,Ownable {
         if(types == OperateType.RECHARGE|| types == OperateType.BUY || types == OperateType.PROFIT) {
             users[sender].balances[token].value = value.add(_value);
         } else{
-            uint lockedValue = lockedValue(sender, token);
-            require(lockedValue + _value <=  value, "not enough");
+            require(users[sender].lockedValue[token] + _value <=  value, "not enough");
             if(types==OperateType.SELL ||types == OperateType.FINANCE) {
                 users[sender].balances[token].value = value.sub(_value);
             } else if(types==OperateType.WITHDRAW) {
@@ -561,20 +561,6 @@ contract Hbank is BaseInterface,Ownable {
         users[sender].records[token].push(Record({value:_value, time:now, rType:types}));
     }
     
-    function lockedValue(address sender,bytes32 token) private view returns(uint value) {
-        bytes32[] memory keys = ownerCheckList[sender].list();
-        if(keys.length == 0) {
-            return 0;
-        } else {
-            for(uint i=0;i<keys.length;i++) {
-                CheckList.Check memory check = checkList.getCheck(keys[i]);
-                if(token == check.currency) {
-                    value += users[sender].records[token][check.index].value;
-                }
-            }
-        }
-    }
-     
     function genKey(address owner, string memory currency, uint index) private view returns(bytes32) {
         
         return keccak256(abi.encode(owner,currency,index));
