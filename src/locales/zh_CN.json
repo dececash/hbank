@@ -23,8 +23,8 @@
   "Personalcenter":"个人中心",
   "CustomerService":"联系客服",
   "register":"注册",
-  "Withdrawalreviewlist":"提现审核列表",
-  "Registrationauditlist":"注册审核列表",
+  "Withdrawalreviewlist":"取款审核表",
+  "Registrationauditlist":"登记审计表",
   "Bankmanagement":"银行管理",
   "about":"关于",
   "CurrentRate":"当前年利率",
@@ -70,5 +70,13 @@
   "Nomoredata":"没有数据了",
   "Withdrawalreviewfailed":"提现审核失败",
   "Undrawnincome":"未提取收益",
-  "modify":"修改"
+  "modify":"修改",
+  "UserInfo":"用户信息",
+  "KYCisnotregistered":"当前账户没有注册KYC",
+  "Auditlist":"审核列表",
+  "userlist":"用户列表",
+  "Inquire":"查询",
+  "Prev":"上一页",
+  "Next":"下一页",
+  "NoUserInformation":"没有用户信息"
 }

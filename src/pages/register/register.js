@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable array-callback-return */
 /* eslint-disable jsx-a11y/anchor-is-valid */
+// import { randomBytes } from "crypto";
 import React, { Component } from 'react';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Flex, List, Toast, InputItem, Button, WhiteSpace } from 'antd-mobile';
@@ -10,7 +11,6 @@ import logo from '../../images/logo.png';
 import './register.css';
 import abi from '../../api/abi';
 import axios from 'axios'
-import { randomBytes } from "crypto";
 
 
 class Register extends Component {
@@ -49,95 +49,109 @@ class Register extends Component {
         let self = this;
         abi.getUserInfo(mainPKr, function (res) {
             let codestr = "";
-            let imgtype = "";
             if (res[0].state == '0') {
                 codestr = "idcard";
-                imgtype = ".png"
             } else {
-                codestr = res[0].code.substring(2, 42);
-                let j = self.hexCharCodeToStr(res[0].code).length - 1;
-                while (self.hexCharCodeToStr(res[0].code)[j] !== '.') {
-                    j--;
-                }
-                imgtype = self.hexCharCodeToStr(res[0].code).substring(j, self.hexCharCodeToStr(res[0].code).length);
+                codestr = res[0].code.substring(2, res[0].code.length);
             }
             self.setState({
                 name: res[0].name,
                 phone: res[0].phone,
                 email: res[0].email,
-                imgurl: 'https://13.124.240.238/images/' + codestr + '_0' + imgtype,
-                imgurlone: 'https://13.124.240.238/images/' + codestr + '_1' + imgtype,
+                imgurl: 'https://13.124.240.238/images/' + codestr + '_0.png',
+                imgurlone: 'https://13.124.240.238/images/' + codestr + '_1.png',
                 userState: res[0].state
             })
         })
     }
-    hexCharCodeToStr = (hexCharCodeStr) => {
-        var trimedStr = hexCharCodeStr.trim();
-        var rawStr =
-            trimedStr.substr(0, 2).toLowerCase() === "0x"
-                ?
-                trimedStr.substr(2)
-                :
-                trimedStr;
-        var len = rawStr.length;
-        if (len % 2 !== 0) {
-            return "";
-        }
-        var curCharCode;
-        var resultStr = [];
-        for (var i = 0; i < len; i = i + 2) {
-            curCharCode = parseInt(rawStr.substr(i, 2), 16);
-            resultStr.push(String.fromCharCode(curCharCode));
-        }
-        return resultStr.join("");
-    }
+  
     handlePhoto = async (event, type) => {
         let self = this;
         const files = [...event.target.files];
-        let i = files[0].name.length - 1;
-
-        while (files[0].name[i] !== '.') {
-            i--;
-        }
-        let imgtype = files[0].name.substring(i, files[0].name.length);
-        let codestr = "";
-        var formData = new FormData();
-        formData.append("image", files[0]);
-        abi.hash(self.state.account.pk, function (res) {
-            codestr = res.substring(0, 40);
-            self.setState({
-                imgtype,
-            })
-            let urls = 'https://13.124.240.238/upload/?nomark=0&accessToken=000&id=' + type + '&code=' + codestr;
-            axios({
-                method: 'post',
-                url: urls,
-                data: formData
-            }).then((res) => {
-                Toast.success(`${i18n.t("UploadSuccessfully")}`, 2);
-                let str = 'https://13.124.240.238/images/' + codestr + '_' + type + imgtype + "?v=" + new Date().getTime();
-                if (type === 0) {
-                    self.setState({
-                        imgurl: str
-                    })
-                } else {
-                    self.setState({
-                        imgurlone: str
-                    })
-                }
-                self.forceUpdate();
-            }).catch((err) => {
-                Toast.fail(`${i18n.t("ReselectPicture")}`, 2);
-                console.log(err);
-            })
-        });
+        console.log(files[0])
+        self.compressImage(files[0], 0.1, function (img) {
+            var formData = new FormData();
+            formData.append("image", img);
+            abi.hash(self.state.account.pk, function (code) {
+                console.log(code)
+                let urls = 'https://13.124.240.238/upload/?nomark=0&accessToken=000&id=' + type + '&code=' + code;
+                axios({
+                    method: 'post',
+                    url: urls,
+                    data: formData
+                }).then((res) => {
+                    Toast.success(`${i18n.t("UploadSuccessfully")}`, 2);
+                    let str = 'https://13.124.240.238/images/' + code + '_' + type + '.png'+"?v=" + new Date().getTime();
+                    if (type === 0) {
+                        self.setState({
+                            imgurl: str
+                        })
+                    } else {
+                        self.setState({
+                            imgurlone: str
+                        })
+                    }
+                    self.forceUpdate();
+                }).catch((err) => {
+                    Toast.fail(`${i18n.t("ReselectPicture")}`, 2);
+                    console.log(err);
+                })
+            });
+        })
     }
+
+    compressImage = (file, quality, callback) => {
+
+        quality = quality || 0.5;
+        var name = file.name;
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function (e) {
+            var src = e.target.result;
+            var img = new Image();
+            img.src = src;
+            img.onload = function (e) {
+                var w = img.width;
+                var h = img.height;
+                var canvas = document.createElement('canvas');
+                var ctx = canvas.getContext('2d');
+                var anw = document.createAttribute("width");
+                anw.nodeValue = w;
+                var anh = document.createAttribute("height");
+                anh.nodeValue = h;
+                canvas.setAttributeNode(anw);
+                canvas.setAttributeNode(anh);
+                ctx.fillStyle = "#fff";
+                ctx.fillRect(0, 0, w, h);
+                ctx.drawImage(img, 0, 0, w, h);
+                var base64 = canvas.toDataURL('image/png', quality);
+                var bytes = window.atob(base64.split(',')[1]);
+                var ab = new ArrayBuffer(bytes.length);
+                var ia = new Uint8Array(ab);
+                for (var i = 0; i < bytes.length; i++) {
+                    ia[i] = bytes.charCodeAt(i);
+                }
+                file = new Blob([ab], { type: 'image/png' });
+                file.name = name;
+                callback(file);
+            };
+
+            img.onerror = function (e) {
+                console.error(e)
+            };
+        };
+
+        reader.onerror = function (e) {
+            console.error(e)
+        };
+    };
 
     onErrorClick = () => {
         if (this.state.hasError) {
             Toast.info('Please enter 11 digits');
         }
     }
+
     onEmailErrorClick = () => {
         if (this.state.emailError) {
             Toast.info('Please enter e-mail');
@@ -185,15 +199,12 @@ class Register extends Component {
         });
     }
 
-    submit = (imgtype) => {
+    submit = () => {
         let self = this;
         if (self.state.name.length > 0 && self.state.phone.length > 0 && self.state.email.length > 0) {
-            abi.hash(self.state.account.pk, function (code1) {
-                let buf = randomBytes(12);
-                buf.write(imgtype, 12 - imgtype.length);
-                let code = "0x" + code1.substring(0, 40) + buf.toString('hex');
-                console.log("code1", code);
-                abi.register(self.state.account.pk, self.state.account.pk, self.state.name, self.state.phone, self.state.email, code, function (hash, err) {
+            abi.hash(self.state.account.pk, function (code) {
+
+                abi.register(self.state.account.pk, self.state.account.pk, self.state.name, self.state.phone, self.state.email, "0x" + code, function (hash, err) {
                     if (err) {
                         Toast.fail(err);
                     } else {
@@ -291,7 +302,7 @@ class Register extends Component {
                             </div>
                             <WhiteSpace size="sm" />
                             <div className="content">
-                                <Button size='small' type='primary' onClick={() => this.submit(self.state.imgtype)}>{i18n.t("submit")}</Button>
+                                <Button size='small' type='primary' onClick={() => this.submit()}>{i18n.t("submit")}</Button>
                             </div>
                         </div> : <div>
                                 {

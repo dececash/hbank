@@ -3,14 +3,14 @@ import serojs from "serojs";
 import BigNumber from 'bignumber.js'
 import { Toast } from "antd-mobile";
 import i18n from '../i18n';
-import {JsonRpc } from "./jsonrpc";
+import { JsonRpc } from "./jsonrpc";
 import keccak256 from "keccak256";
 const rpc = new JsonRpc();
 
 const config = {
 	name: "HBank",
-	contractAddress: "3miug1P9jwGjq85btFYZYkqNFJxQuUXnqkbYnR2ZcJjYMmrPXvzitTdfd4hDvdsAESBJ3AZBUMu8CbkaBSLNnvDn",
-	hbankAddress: "4bskgAUVgz2cuTh5YAvzaRBYmvw8DyGThKYWXQS537mVbdhAjh7SgRkykT9Eri33vh6xxWY7K7mdi7NKjhUEccFa",
+	contractAddress: "3vyRevcNrinP9ciw8LeJKPwQ61QvYZNxnDk325qHUzxtRd49guPzoL643KvFeSLW8Q4QGkgm2rit9YTfr83e3bXU",
+	hbankAddress: "2vPa2BeMt5jiJiEnnU2fq7P8Yckvvf18NryH6rQnyQiK4gkPfPMiUaJybtp9rDvYhXNd1AKXTHSvVxRgqBcnnV9D",
 	github: "https://github.com/dececash/hbank",
 	author: "hbank",
 	url: document.location.href,
@@ -58,6 +58,35 @@ const abiJson = [
 			}
 		],
 		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "tokenA",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "tokenB",
+				"type": "string"
+			}
+		],
+		"name": "getPrice",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -671,6 +700,74 @@ const hbankjson = [
 	{
 		"inputs": [
 			{
+				"internalType": "uint256",
+				"name": "pageindex",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "pagecount",
+				"type": "uint256"
+			}
+		],
+		"name": "getUserInfoList",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "len",
+				"type": "uint256"
+			},
+			{
+				"components": [
+					{
+						"components": [
+							{
+								"internalType": "string",
+								"name": "name",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "phone",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "email",
+								"type": "string"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "code",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "enum Hbank.KycState",
+								"name": "state",
+								"type": "uint8"
+							}
+						],
+						"internalType": "struct Hbank.UserInfo",
+						"name": "info",
+						"type": "tuple"
+					},
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					}
+				],
+				"internalType": "struct Hbank.RetuserInfo[]",
+				"name": "retuserInfo",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "string",
 				"name": "token",
 				"type": "string"
@@ -813,6 +910,19 @@ const hbankjson = [
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "_swap",
+				"type": "address"
+			}
+		],
+		"name": "setHswap",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "string",
 				"name": "currency",
 				"type": "string"
@@ -910,6 +1020,14 @@ class Abi {
 		});
 	}
 
+	getShortAddress(mianPKr, callback) {
+		seropp.getInfo(function (info) {
+			rpc.seroRpc(info.rpc, "dece_getShortAddress", [mianPKr], function (rets) {
+				callback(rets);
+			});
+		});
+	}
+
 	initLanguage(callback) {
 		seropp.getInfo(function (info) {
 			callback(info.language);
@@ -976,7 +1094,6 @@ class Abi {
 
 	accountList(callback) {
 		seropp.getAccountList(function (data) {
-
 			let accounts = [];
 			data.forEach(function (item, index) {
 				accounts.push({
@@ -993,6 +1110,17 @@ class Abi {
 	isManager(mainPKr, callback) {
 		let self = this;
 		this.callMethod(contract, 'manager', mainPKr, [], function (ret) {
+			self.getFullAddress([ret[0]], function (rets) {
+				if (callback) {
+					callback(rets.result[ret[0]] == mainPKr);
+				}
+			})
+		});
+	}
+
+	isOwner(mainPKr, callback) {
+		let self = this;
+		this.callMethod(contract, 'owner', mainPKr, [], function (ret) {
 			self.getFullAddress([ret[0]], function (rets) {
 				if (callback) {
 					callback(rets.result[ret[0]] == mainPKr);
@@ -1056,7 +1184,6 @@ class Abi {
 	}
 	exchange(pk, mainPKr, tokenA, value, tokenB, callback) {
 		this.executeMethod(contract, 'exchange', pk, mainPKr, [tokenA], tokenB, value, callback);
-
 	}
 
 	withdraw(pk, mainPKr, token, value, callback) {
@@ -1070,6 +1197,9 @@ class Abi {
 	WithdrawIsManager(pk, mainPKr, token, value, callback) {
 		this.executeMethod(hbank, 'hbankWithdraw', pk, mainPKr, [token, value], "DECE", 0, callback);
 	}
+	hbankFinancing(pk, mainPKr, financeAddr, tokenStr, value, params, callback) {
+		this.executeMethod(hbank, 'financing', pk, mainPKr, [financeAddr, tokenStr, value, params], "DECE", 0, callback)
+	}
 
 	hbankSend(pk, mainPKr, token, value, callback) {
 		this.executeMethod(hbank, '', pk, mainPKr, [], token, value, callback);
@@ -1079,13 +1209,14 @@ class Abi {
 		this.executeMethod(hbank, 'exchange', pk, mainPKr, [tokenB, value, tokenA], "DECE", 0, callback);
 	}
 
-	hbankRecharge(pk, mainPKr, value, currency, callback) {
-		let data = "";
+	hbankRecharge(pk, mainPKr, value, data, currency, callback) {
 		this.executeMethod(hbank, 'recharge', pk, mainPKr, [data], currency, value, callback);
 	}
 	hbankWithDraw(pk, mainPKr, value, currency, callback) {
 		this.executeMethod(hbank, 'withDraw', pk, mainPKr, [currency, value], "DECE", 0, callback);
 	}
+
+
 	hbankisManager(mainPKr, callback) {
 		let self = this;
 		this.callMethod(hbank, 'manager', mainPKr, [], function (ret) {
@@ -1097,18 +1228,47 @@ class Abi {
 		});
 	}
 
+	hbankisOwner(mainPKr, callback) {
+		let self = this;
+		this.callMethod(hbank, 'owner', mainPKr, [], function (ret) {
+			self.getFullAddress([ret[0]], function (rets) {
+				if (callback) {
+					callback(rets.result[ret[0]] == mainPKr);
+				}
+			})
+		});
+	}
 
 	getBalances(mainPKr, callback) {
-		let value = ["DECE", "D_BTC", "POFID", "GAO"];
+		let value = ["DECE", "DKRW"];
 		this.callMethod(hbank, 'getBalances', mainPKr, [value], function (res) {
 			callback(res.item);
 		})
 	}
+
 	getRecords(mainPKr, cy, index, count, callback) {
 		this.callMethod(hbank, 'getRecords', mainPKr, [cy, index, count], function (res) {
 			callback(res);
 		})
 	}
+
+	getUserInfoList(mainPKr,pageindex,pagecount, callback) {
+		let self = this;
+
+		self.callMethod(hbank, 'getUserInfoList', mainPKr, [pageindex,pagecount], function (res) {
+			let pkrs = [];
+			res.retuserInfo.forEach(each => {
+				pkrs.push(each.owner);
+			})
+			self.getFullAddress(pkrs, function (rets) {
+				res.retuserInfo.forEach(each => {
+					each.owner = rets.result[each.owner];
+				})
+				callback(res.retuserInfo,res.len);
+			})
+		})
+	}
+
 	getCheckList(mainPKr, callback) {
 		let self = this;
 		this.callMethod(hbank, 'getCheckList', mainPKr, [], function (res) {
@@ -1116,7 +1276,6 @@ class Abi {
 			res.retcheck.forEach(each => {
 				pkrs.push(each.owner);
 			})
-
 			self.getFullAddress(pkrs, function (rets) {
 				res.retcheck.forEach(each => {
 					each.owner = rets.result[each.owner];
@@ -1143,7 +1302,7 @@ class Abi {
 		})
 	}
 	getInterestsList(mainPKr, callback) {
-		let value = ["DECE", "D_BTC", "POFID", "GAO"];
+		let value = ["DECE", "DKRW"];
 		this.callMethod(hbank, 'getInterestsList', mainPKr, [value], function (res) {
 			callback(res.item);
 		})
@@ -1163,8 +1322,6 @@ class Abi {
 		})
 	}
 
-
-
 	reviewUser(pk, mainPKr, keys, whether, callback) {
 		this.executeMethod(hbank, 'checkUsers', pk, mainPKr, [keys, whether], "DECE", 0, callback);
 	}
@@ -1180,11 +1337,10 @@ class Abi {
 			to: contract.address,
 			data: packData
 		};
-		// console.log(_method, "callParams", callParams)
+		console.log(_method, "callParams", callParams)
 		seropp.getInfo(function (info) {
 			rpc.seroRpc(info.rpc, "dece_call", [callParams, "latest"], function (rets) {
 				let data = rets.result
-				// console.log(_method, rets)
 				if (data !== "0x0") {
 					let res = contract.unPackDataEx(_method, data);
 					if (callback) {
@@ -1195,15 +1351,16 @@ class Abi {
 				}
 			});
 		});
-
 	}
 
 	executeMethod(contract, _method, pk, mainPKr, args, tokenName, value, callback) {
-		// console.log(_method, args);
+		console.log(_method, args);
 		let packData = "0x";
+
 		if ("" !== _method) {
 			packData = contract.packData(_method, args);
 		}
+
 		let executeData = {
 			from: pk,
 			to: contract.address,
@@ -1212,6 +1369,7 @@ class Abi {
 			gasPrice: "0x" + new BigNumber("1000000000").toString(16),
 			cy: tokenName
 		};
+
 		let estimateParam = {
 			from: mainPKr,
 			to: contract.address,
@@ -1220,6 +1378,8 @@ class Abi {
 			gasPrice: "0x" + new BigNumber("1000000000").toString(16),
 			cy: tokenName
 		};
+
+		console.log(estimateParam, "estimateParam")
 		seropp.getInfo(function (info) {
 			rpc.seroRpc(info.rpc, "dece_estimateGas", [estimateParam], function (ret) {
 				if (ret.error) {
@@ -1236,7 +1396,6 @@ class Abi {
 		});
 	}
 }
-
 
 const abi = new Abi();
 export default abi;

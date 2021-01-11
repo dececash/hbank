@@ -57,7 +57,6 @@ class Bank extends Component {
                 }
             }
             self.getBalanceOf(arrimg);
-
         })
     }
     getBalanceOf(arr) {

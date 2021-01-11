@@ -30,8 +30,10 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 var rpc = new _jsonrpc.JsonRpc();
 var config = {
   name: "HBank",
-  contractAddress: "4eX5WETS38nWDbJreHSSkjhZf7ogFDjadwZWpQDdNct5kBTiKypDgvkYQLia9HSsWsAAVJSLwEAhza6YNs5UNTKa",
-  hbankAddress: "22UEfZroKAcg73nBzdpVRJtsVLC1cjFv3atkyeYBreinBcqt3MHdcSmJFiQfUcKi6EbBFrh2NJU6cUuAoL3JivGt",
+  // contractAddress: "2aQmcC9c2G9rhFK74eZTByvmZhrsn1gUcDJ8wB2hT7guEfxeT5r6uhfAm38EjtecmVRxfgoDkzuhGgu7nVAwmCQu",
+  // hbankAddress: "5fAgQxwsF7f7mvxK7QW8peeHGFJsx4bNfHV3Wi1shaLhL1f32r1FPPKWKc9LTv1xfRRbr6m7yYvCq2syVkCZyDWg",
+  contractAddress: "3Lxpn43f8XxhkStRSkwXamXqaZan52hx3FBRYAMtsa2Q1MiHTR27P2qwvpzTBMzm232WenR5H9g1buRz177XKNh1",
+  hbankAddress: "2uS3ePcHLwT47n9DMp8Aa6V7EbqWqzPAyVAtxQwSttmcFeJMypPo8dVtfyfZx2jRE4SAcRbJvNA515F3Kqfs6rk2",
   github: "https://github.com/dececash/hbank",
   author: "hbank",
   url: document.location.href,
@@ -837,8 +839,21 @@ function () {
     value: function isManager(mainPKr, callback) {
       var self = this;
       this.callMethod(contract, 'manager', mainPKr, [], function (ret) {
-        console.log(ret);
         self.getFullAddress([ret[0]], function (rets) {
+          if (callback) {
+            callback(rets.result[ret[0]] == mainPKr);
+          }
+        });
+      });
+    }
+  }, {
+    key: "isOwner",
+    value: function isOwner(mainPKr, callback) {
+      var self = this;
+      this.callMethod(contract, 'owner', mainPKr, [], function (ret) {
+        // console.log(ret)
+        self.getFullAddress([ret[0]], function (rets) {
+          // console.log(rets)
           if (callback) {
             callback(rets.result[ret[0]] == mainPKr);
           }
@@ -938,7 +953,6 @@ function () {
   }, {
     key: "hbankSend",
     value: function hbankSend(pk, mainPKr, token, value, callback) {
-      console.log(pk, mainPKr, token, value);
       this.executeMethod(hbank, '', pk, mainPKr, [], token, value, callback);
     }
   }, {
@@ -962,7 +976,23 @@ function () {
     value: function hbankisManager(mainPKr, callback) {
       var self = this;
       this.callMethod(hbank, 'manager', mainPKr, [], function (ret) {
+        // console.log(ret, '>>>>>>>>>>>')
         self.getFullAddress([ret[0]], function (rets) {
+          // console.log(rets, '>>>>>>>>>>>')
+          if (callback) {
+            callback(rets.result[ret[0]] == mainPKr);
+          }
+        });
+      });
+    }
+  }, {
+    key: "hbankisOwner",
+    value: function hbankisOwner(mainPKr, callback) {
+      var self = this;
+      this.callMethod(hbank, 'owner', mainPKr, [], function (ret) {
+        // console.log(ret, '>>>>>>>>>>>')
+        self.getFullAddress([ret[0]], function (rets) {
+          // console.log(rets)
           if (callback) {
             callback(rets.result[ret[0]] == mainPKr);
           }
@@ -972,7 +1002,7 @@ function () {
   }, {
     key: "getBalances",
     value: function getBalances(mainPKr, callback) {
-      var value = ["DECE", "D_BTC", "POFID", "GAO"];
+      var value = ["DECE", "DKRW"];
       this.callMethod(hbank, 'getBalances', mainPKr, [value], function (res) {
         callback(res.item);
       });
@@ -989,7 +1019,6 @@ function () {
     value: function getCheckList(mainPKr, callback) {
       var self = this;
       this.callMethod(hbank, 'getCheckList', mainPKr, [], function (res) {
-        console.log(res);
         var pkrs = [];
         res.retcheck.forEach(function (each) {
           pkrs.push(each.owner);
@@ -1022,7 +1051,7 @@ function () {
   }, {
     key: "getInterestsList",
     value: function getInterestsList(mainPKr, callback) {
-      var value = ["DECE", "D_BTC", "POFID", "GAO"];
+      var value = ["DECE", "DKRW"];
       this.callMethod(hbank, 'getInterestsList', mainPKr, [value], function (res) {
         callback(res.item);
       });
@@ -1062,8 +1091,7 @@ function () {
         from: from,
         to: contract.address,
         data: packData
-      };
-      console.log(_method, "callParams", callParams);
+      }; // console.log(_method, "callParams", callParams)
 
       _seroPp["default"].getInfo(function (info) {
         rpc.seroRpc(info.rpc, "dece_call", [callParams, "latest"], function (rets) {

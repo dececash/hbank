@@ -4,7 +4,6 @@ import 'antd-mobile/dist/antd-mobile.css';
 import { TabBar } from 'antd-mobile';
 import i18n from '../i18n'
 
-
 export default class nav extends React.Component {
     constructor(props) {
         super(props);

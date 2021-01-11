@@ -48,7 +48,6 @@ class Withdrawlist extends Component {
         }
         if (keys.length > 0) {
             abi.review(self.state.account.pk, self.state.account.mainPKr, keys, whether, function (hash, err) {
-                console.log(hash, ">>>>>>>>", err);
                 if (err) {
                     Toast.fail(err);
                 } else {
@@ -127,49 +126,23 @@ class Withdrawlist extends Component {
     getUser(mainPKr) {
         let self = this;
         abi.getUserInfo(mainPKr, function (res) {
-            let codestr = res[0].code.substring(2, 42);
-            let j = self.hexCharCodeToStr(res[0].code).length - 1;
-            while (self.hexCharCodeToStr(res[0].code)[j] !== '.') {
-                j--;
-            }
-            let imgtype = self.hexCharCodeToStr(res[0].code).substring(j, self.hexCharCodeToStr(res[0].code).length);
+            let codestr = res[0].code.substring(2, res[0].code.length);
             self.setState({
                 username: res[0].name,
                 useremail: res[0].email,
                 userphone: res[0].phone,
-                userimgurl: 'https://13.124.240.238/images/' + codestr + '_0' + imgtype,
-                userimgurlone: 'https://13.124.240.238/images/' + codestr + '_1' + imgtype,
+                userimgurl: 'https://13.124.240.238/images/' + codestr + '_0.png',
+                userimgurlone: 'https://13.124.240.238/images/' + codestr + '_1.png',
                 userstate: "",
                 showmodal: true
             })
         })
     }
 
-    hexCharCodeToStr = (hexCharCodeStr) => {
-        var trimedStr = hexCharCodeStr.trim();
-        var rawStr =
-            trimedStr.substr(0, 2).toLowerCase() === "0x"
-                ?
-                trimedStr.substr(2)
-                :
-                trimedStr;
-        var len = rawStr.length;
-        if (len % 2 !== 0) {
-            return "";
-        }
-        var curCharCode;
-        var resultStr = [];
-        for (var i = 0; i < len; i = i + 2) {
-            curCharCode = parseInt(rawStr.substr(i, 2), 16); // ASCII Code Value
-            resultStr.push(String.fromCharCode(curCharCode));
-        }
-        return resultStr.join("");
-    }
     render() {
         let self = this;
         return (
             <Nav selectedTab="4">
-
                 <div className="tabcontent">
                     <Flex className="header">
                         <Flex.Item className="tabcontent-box">
@@ -219,7 +192,7 @@ class Withdrawlist extends Component {
                                     visible={this.state.showmodal}
                                     transparent
                                     maskClosable={false}
-                                    title="用户信息"
+                                    title={i18n.t("UserInfo")}
                                     footer={[{
                                         text: `${i18n.t("close")}`, onPress: () => {
                                             self.setState({

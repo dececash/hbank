@@ -169,13 +169,16 @@ contract Swap is BaseInterface, Ownable {
 
         require(send_token(msg.sender, token, value));
     }
+    
+    function getPrice(string memory tokenA,string memory tokenB ) public returns (uint256) {
+        bytes32 tokenSend = strings._stringToBytes32(tokenA);
+        bytes32 tokenRece = strings._stringToBytes32(tokenB);
+        bytes32 key = hashKey(tokenSend, tokenRece);
+    }
 
     function hashKey(bytes32 tokenA, bytes32 tokenB) private pure returns (bytes32) {
         require(tokenA != tokenB, 'same token');
         (bytes32 token0, bytes32 token1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
         return keccak256(abi.encode(token0, token1));
     }
-
 }
-
-

@@ -23,8 +23,8 @@
   "Personalcenter":"Personalcenter",
   "CustomerService":"Customer Service",
   "register":"Register",
-  "Withdrawalreviewlist":"Withdraw Audit List",
-  "Registrationauditlist":"Regist Audit List",
+  "Withdrawalreviewlist":"Withdrawal Review Form",
+  "Registrationauditlist":"Registration Audit Form",
   "Bankmanagement":"Bank Management",
   "about":"About",
   "CurrentRate":"CurrentRates",
@@ -70,5 +70,13 @@
   "Nomoredata":"No More Data",
   "Withdrawalreviewfailed":"Withdrawal Review Failed",
   "Undrawnincome":"Undrawn Income",
-  "modify":"Modify"
+  "modify":"Modify",
+  "UserInfo":"User Info",
+  "KYCisnotregistered":"KYC Is Not Registered In The Current Account",
+  "Auditlist":"Audit List",
+  "userlist":"User List",
+  "Inquire":"Inquire",
+  "Prev":"Prev",
+  "Next":"Next",
+  "NoUserInformation":"No User Information"
 }

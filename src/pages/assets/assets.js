@@ -15,8 +15,6 @@ import BigNumber from 'bignumber.js';
 const alert = Modal.alert;
 const operation = Modal.operation;
 
-// const Web3EthAbi = require('web3-eth-abi');
-// console.log(Web3EthAbi.encodeParameters(['address', 'uint256'], ["0x27e700b45719dbf69f4a7f762a5e6c31e5c7fcb0",6] ))
 
 class Assets extends Component {
     constructor(props) {
@@ -38,6 +36,7 @@ class Assets extends Component {
     componentDidMount() {
         let self = this;
         let obj = JSON.parse(sessionStorage.getItem('account'));
+        
         if (obj == null) {
             abi.currentAccount(function (account) {
                 self.getBalances(account.mainPKr);
@@ -57,6 +56,7 @@ class Assets extends Component {
     getBalances(mainPKr) {
         let self = this;
         abi.getBalances(mainPKr, function (res) {
+            console.log(res);
             let arr = [];
             for (let i = 0; i < res.length; i++) {
                 let obj = {
@@ -170,7 +170,7 @@ class Assets extends Component {
                                                         {
                                                             text: `${i18n.t("confirm")}`, onPress: () => {
                                                                 let value = new BigNumber(self.sendInputRef.state.value).multipliedBy(1e18);
-                                                                abi.hbankRecharge(self.state.account.pk, self.state.account.mainPKr, value, item.token, function (hash, err) {
+                                                                abi.hbankRecharge(self.state.account.pk, self.state.account.mainPKr, value,"", item.token, function (hash, err) {
                                                                     if (err) {
                                                                         Toast.fail(err);
                                                                     } else {

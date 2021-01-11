@@ -160,7 +160,9 @@ class Assetsdetail extends Component {
                                                     }
                                                 </span> : <span>{
                                                     item.type == 3 ? <span>{i18n.t("profit")}</span> : <span>{
-                                                        item.type == 4 ? <span>{i18n.t("Sell")}</span> : <span>{i18n.t("purchase")}</span>
+                                                        item.type == 4 ? <span>{i18n.t("Sell")}</span> : <span>{
+                                                            item.type == 5 ? <span>{i18n.t("purchase")}</span> : <span>理财</span>
+                                                        }</span>
                                                     }</span>
                                                 }</span>
                                             }
@@ -212,7 +214,7 @@ class Assetsdetail extends Component {
                                 ref={el => this.lv = el}
                                 dataSource={this.state.dataSource}
                                 renderFooter={() => (<div style={{ paddingBottom: 25, textAlign: 'center' }}>
-                                    {this.state.isLoading ? `${i18n.t("Nomoredata")}`+'...' : `${i18n.t("Nomoredata")}`}
+                                    {this.state.isLoading ? `${i18n.t("Nomoredata")}` + '...' : `${i18n.t("Nomoredata")}`}
                                 </div>)}
                                 renderBodyComponent={() => <MyBody />}
                                 renderRow={row}

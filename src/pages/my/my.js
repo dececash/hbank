@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Flex } from 'antd-mobile';
+import { Flex, WhiteSpace } from 'antd-mobile';
 import { Link } from 'react-router-dom';
 import i18n from '../../i18n'
 import abi from '../../api/abi';
@@ -31,6 +31,7 @@ class My extends Component {
             account: obj
         })
     }
+
     getUser(mainPKr) {
         let self = this;
         abi.getUserInfo(mainPKr, function (res) {
@@ -44,22 +45,29 @@ class My extends Component {
 
     getIsManager(mainPKr) {
         let self = this;
-        abi.isManager(mainPKr, function (res) {
-            self.setState({
-                isManager: res
+        abi.isOwner(mainPKr, function (res) {
+            abi.isManager(mainPKr, function (data) {
+                if (res || data) {
+                    self.setState({
+                        isManager: true
+                    })
+                }
             })
         })
     }
 
     getHbankIsManager(mainPKr) {
         let self = this;
-        abi.hbankisManager(mainPKr, function (res) {
-            self.setState({
-                HbankisManager: res
+        abi.hbankisOwner(mainPKr, function (res) {
+            abi.hbankisManager(mainPKr, function (data) {
+                if (res || data) {
+                    self.setState({
+                        HbankisManager: true
+                    })
+                }
             })
         })
     }
-
     render() {
         let self = this;
         return (
@@ -83,8 +91,6 @@ class My extends Component {
                                 </Flex.Item>
                             </Flex>
                         </div>
-
-
                         {
                             self.state.Kycstate ? <Link to={{ pathname: `/register` }} >
                                 <div className="listItem">
@@ -104,7 +110,6 @@ class My extends Component {
                                     </div>
                                 </Link>
                         }
-
                         {
                             self.state.HbankisManager ? <div><Link to={{ pathname: `/withdrawlist` }} >
                                 <div className="listItem">
@@ -115,7 +120,6 @@ class My extends Component {
                                     </Flex>
                                 </div>
                             </Link>
-
                                 <Link to={{ pathname: `/userlist` }} >
                                     <div className="listItem">
                                         <Flex>
@@ -136,9 +140,7 @@ class My extends Component {
                                     </div>
                                 </Link>
                             </div> : <div></div>
-
                         }
-
                         {
                             self.state.isManager ? <div> <Link to={{ pathname: `/bank` }} >
                                 <div className="listItem">
@@ -150,15 +152,16 @@ class My extends Component {
                                 </div>
                             </Link></div> : <div></div>
                         }
-
                         <div className="listItem">
                             <Flex>
                                 <Flex.Item>
-                                    <span className="assetstitle">{i18n.t("about")}HANPYBANK</span>
+                                    <span className="assetstitle" onClick={() => {
+                                        window.open("http://www.newsharekorea.com")
+                                    }}>{i18n.t("about")}HAPYBANKEX</span>
                                 </Flex.Item>
                             </Flex>
                         </div>
-
+                        <WhiteSpace />
                     </div>
                 </div>
             </Nav>
