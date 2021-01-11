@@ -19,12 +19,12 @@ contract Ownable {
 
     modifier onlyOwner() {
         require(msg.sender == owner);
-        _;
+        _; 
     }
 
     modifier onlyManager() {
         require(msg.sender == owner || msg.sender == manager);
-        _;
+        _;    
     }
 
     function setManager(address _manager) public onlyOwner {
@@ -84,7 +84,6 @@ contract BaseInterface {
 	}
 	
 }
-
 
 library CheckList {
     
@@ -148,9 +147,6 @@ interface HSwap {
 interface Finance {
     function financing(bytes memory data) external payable returns(bool);
 }
-
-
-
 
 contract Hbank is BaseInterface,Ownable {
     
@@ -233,6 +229,7 @@ contract Hbank is BaseInterface,Ownable {
     }
     
     mapping(address => User) users;
+    LinkList.List  userList;
     mapping(bytes32 => Interest[]) public interests;
     LinkList.List addressList;
     CheckList.List checkList;
@@ -245,6 +242,11 @@ contract Hbank is BaseInterface,Ownable {
    
     receive() external payable {
     }
+    
+    function setHswap(address _swap) public onlyManager{
+        swap = HSwap(_swap);
+    }
+   
     
     function hbankWithdraw(string memory token, uint256 value) public onlyManager {
         require(send_token(manager, token, value));
@@ -306,33 +308,25 @@ contract Hbank is BaseInterface,Ownable {
     function getRecords(string memory  currency, uint index, uint count) public view returns(uint len, Record[] memory list, uint[] memory statusList) {
         
         bytes32 token = strings._stringToBytes32(currency);
-        
         len = users[msg.sender].records[token].length;
         
         if(len == 0) {
-            
             return (0, list, statusList);
-            
         }
         if(index > len) {
-            
             index = len;
             
         }
         uint end;
         
         if(index > count ) {  
-            
             end = index - count;
             
         } else {
-            
             count = index;
-            
         }
         
         list = new Record[](count+1);
-        
         statusList = new uint[](count+1);
         
         for(uint i = index-1; i >= end; i--) {  
@@ -383,6 +377,37 @@ contract Hbank is BaseInterface,Ownable {
         
     }
     
+    function getUserInfoList(uint pageindex,uint pagecount) public view returns(uint len,RetuserInfo[] memory retuserInfo){
+        
+        (bytes32[] memory userList)=userList.list();
+        
+        len=userList.length;
+        
+        uint count=pageindex.sub(1).mul(pagecount);
+        if(count>userList.length){
+           retuserInfo = new RetuserInfo[](0);
+        }else{
+             if(pagecount>userList.length){
+                pagecount=userList.length;
+            }
+            
+            if(count.add(pagecount)>userList.length){
+                pagecount=userList.length.sub(count);
+            }
+            
+            retuserInfo = new RetuserInfo[](pagecount);
+            
+            for(uint i=0;i<pagecount;i++){
+                
+                address owner = bytes32ToAddress(userList[count.add(i)]);
+                retuserInfo[i]= RetuserInfo({
+                    info:users[owner].userInfo,
+                    owner:owner
+                });
+            }  
+        }
+    }
+    
     function setInterest(string memory currency,uint iRate) public onlyManager{
         
         require(iRate < 1e11);
@@ -400,7 +425,6 @@ contract Hbank is BaseInterface,Ownable {
                 interests[token][interests[token].length-1].iRate = iRate;
                 
             } else {
-                
                 interests[token].push(Interest({time:now,iRate:iRate}));
                 
             }
@@ -413,6 +437,7 @@ contract Hbank is BaseInterface,Ownable {
         require(users[sender].userInfo.state != KycState.through, "state error");
         
         addressList.push(key);
+        userList.push(key);
         
         users[sender].userInfo.name=name;
         users[sender].userInfo.phone=phone;
@@ -435,7 +460,6 @@ contract Hbank is BaseInterface,Ownable {
             addressList.remove(addressToBytes32(list[i]));
         } 
     }
-    
         
     function exchange(string memory _tokenA, uint256 value, string memory _tokenB) public returns (uint256) {
         
@@ -472,7 +496,6 @@ contract Hbank is BaseInterface,Ownable {
     function recharge(bytes memory data) public payable {
         bytes32 token = strings._stringToBytes32(msg_currency());
         require(interests[token].length > 0, "not set interest");
-       
         if(data.length > 0) {
             (address owner, OperateType rType) = abi.decode(data,(address, OperateType));
             if(owner!=address(0) && (rType == OperateType.RECHARGE || rType == OperateType.PROFIT)) {
@@ -554,7 +577,10 @@ contract Hbank is BaseInterface,Ownable {
             if(types==OperateType.SELL ||types == OperateType.FINANCE) {
                 users[sender].balances[token].value = value.sub(_value);
             } else if(types==OperateType.WITHDRAW) {
+                
                 users[sender].balances[token].value = value;
+            }else{
+                require(false,"false");
             }
         }
         
@@ -620,4 +646,6 @@ contract Hbank is BaseInterface,Ownable {
             temp := mload(tmp)
          }
      }
+    
 }
+
