@@ -9,8 +9,8 @@ const rpc = new JsonRpc();
 
 const config = {
 	name: "HBank",
-	contractAddress: "3vyRevcNrinP9ciw8LeJKPwQ61QvYZNxnDk325qHUzxtRd49guPzoL643KvFeSLW8Q4QGkgm2rit9YTfr83e3bXU",
-	hbankAddress: "2vPa2BeMt5jiJiEnnU2fq7P8Yckvvf18NryH6rQnyQiK4gkPfPMiUaJybtp9rDvYhXNd1AKXTHSvVxRgqBcnnV9D",
+	contractAddress: "T3kGAQ8nA4PZi6qUYVRBSeySHCFzEUo93pWYee4QiF55YiFaiZiDjMvea82Zm9wPzQrAdKbz6Hauvh1yEa1fKwV",
+	hbankAddress: "2LaPfgdkTzWPxy6o2e81PFpU5oBAZdy58eE1ScdHGeeov9oxaAmBybJ8C2DBH8o7fKSjPgR25gTC7zDnGehymj4V",
 	github: "https://github.com/dececash/hbank",
 	author: "hbank",
 	url: document.location.href,
@@ -21,7 +21,7 @@ const config = {
 	navMode: "light"
 };
 
-const abiJson = [
+const abiJson =[
 	{
 		"anonymous": false,
 		"inputs": [
@@ -86,7 +86,7 @@ const abiJson = [
 				"type": "uint256"
 			}
 		],
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -312,7 +312,7 @@ const abiJson = [
 
 const contract = serojs.callContract(abiJson, config.contractAddress);
 
-const hbankjson = [
+const hbankjson =[
 	{
 		"inputs": [
 			{
@@ -502,6 +502,11 @@ const hbankjson = [
 						"internalType": "string",
 						"name": "currency",
 						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "status",
+						"type": "uint256"
 					}
 				],
 				"internalType": "struct Hbank.RetCheck[]",
@@ -701,12 +706,12 @@ const hbankjson = [
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "pageindex",
+				"name": "pageIndex",
 				"type": "uint256"
 			},
 			{
 				"internalType": "uint256",
-				"name": "pagecount",
+				"name": "pageCount",
 				"type": "uint256"
 			}
 		],
@@ -759,6 +764,67 @@ const hbankjson = [
 				],
 				"internalType": "struct Hbank.RetuserInfo[]",
 				"name": "retuserInfo",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "pageIndex",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "pageCount",
+				"type": "uint256"
+			}
+		],
+		"name": "getWithdrawList",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "len",
+				"type": "uint256"
+			},
+			{
+				"components": [
+					{
+						"internalType": "bytes32",
+						"name": "key",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "time",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "currency",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "status",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct Hbank.RetCheck[]",
+				"name": "retcheck",
 				"type": "tuple[]"
 			}
 		],
@@ -915,7 +981,7 @@ const hbankjson = [
 				"type": "address"
 			}
 		],
-		"name": "setHswap",
+		"name": "setHSwap",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -1268,7 +1334,6 @@ class Abi {
 			})
 		})
 	}
-
 	getCheckList(mainPKr, callback) {
 		let self = this;
 		this.callMethod(hbank, 'getCheckList', mainPKr, [], function (res) {
@@ -1281,6 +1346,23 @@ class Abi {
 					each.owner = rets.result[each.owner];
 				})
 				callback(res.retcheck);
+			})
+		})
+	}
+
+	getWithdrawList(mainPKr,pageindex,pagecount, callback) {
+		let self = this;
+		this.callMethod(hbank, 'getWithdrawList', mainPKr, [pageindex,pagecount], function (res) {
+			console.log(res,res.len,"--------------------------getWithdrawList")
+			let pkrs = [];
+			res.retcheck.forEach(each => {
+				pkrs.push(each.owner);
+			})
+			self.getFullAddress(pkrs, function (rets) {
+				res.retcheck.forEach(each => {
+					each.owner = rets.result[each.owner];
+				})
+				callback(res.retcheck,res.len);
 			})
 		})
 	}

@@ -78,5 +78,9 @@
   "Inquire":"查询",
   "Prev":"上一页",
   "Next":"下一页",
-  "NoUserInformation":"没有用户信息"
+  "NoUserInformation":"没有用户信息",
+  "WithdrawalList":"提现列表",
+  "status":"状态",
+  "passed":"已通过",
+  "notpass":"未通过"
 }

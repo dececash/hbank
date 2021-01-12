@@ -9,8 +9,11 @@ import Nav from '../../component/nav';
 import i18n from '../../i18n'
 import logo from '../../images/logo.png';
 import './register.css';
+import BigNumber from 'bignumber.js';
+
 import abi from '../../api/abi';
 import axios from 'axios'
+import { bigNumberify } from 'serojs/js-sero-utils/utils';
 
 
 class Register extends Component {
@@ -64,12 +67,13 @@ class Register extends Component {
             })
         })
     }
-  
+
     handlePhoto = async (event, type) => {
         let self = this;
         const files = [...event.target.files];
         console.log(files[0])
-        self.compressImage(files[0], 0.1, function (img) {
+        self.compressImage(files[0], function (img) {
+            console.log(img)
             var formData = new FormData();
             formData.append("image", img);
             abi.hash(self.state.account.pk, function (code) {
@@ -81,7 +85,7 @@ class Register extends Component {
                     data: formData
                 }).then((res) => {
                     Toast.success(`${i18n.t("UploadSuccessfully")}`, 2);
-                    let str = 'https://13.124.240.238/images/' + code + '_' + type + '.png'+"?v=" + new Date().getTime();
+                    let str = 'https://13.124.240.238/images/' + code + '_' + type + '.png' + "?v=" + new Date().getTime();
                     if (type === 0) {
                         self.setState({
                             imgurl: str
@@ -100,9 +104,15 @@ class Register extends Component {
         })
     }
 
-    compressImage = (file, quality, callback) => {
-
-        quality = quality || 0.5;
+    compressImage = (file, callback) => {
+        let maxsize = Math.pow(1024, 2);
+        let quality = 0;
+        if (file.size < maxsize) {
+            quality = 1;
+        } else {
+            quality = new BigNumber(maxsize).div(file.size).toFixed(1);
+        }
+        console.log(quality)
         var name = file.name;
         var reader = new FileReader();
         reader.readAsDataURL(file);
@@ -124,7 +134,7 @@ class Register extends Component {
                 ctx.fillStyle = "#fff";
                 ctx.fillRect(0, 0, w, h);
                 ctx.drawImage(img, 0, 0, w, h);
-                var base64 = canvas.toDataURL('image/png', quality);
+                var base64 = canvas.toDataURL('image/webp', quality); 
                 var bytes = window.atob(base64.split(',')[1]);
                 var ab = new ArrayBuffer(bytes.length);
                 var ia = new Uint8Array(ab);
@@ -140,7 +150,6 @@ class Register extends Component {
                 console.error(e)
             };
         };
-
         reader.onerror = function (e) {
             console.error(e)
         };
@@ -257,7 +266,6 @@ class Register extends Component {
                                         value={this.state.email}
                                     >{i18n.t("E-mail")}:</InputItem>
                                     <WhiteSpace />
-
                                     <Flex className="IDcard" >
                                         <Flex.Item className="center">
                                             {i18n.t("FrontofIDcard")}

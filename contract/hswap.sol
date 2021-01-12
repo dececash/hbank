@@ -187,5 +187,4 @@ contract Swap is BaseInterface, Ownable {
         (bytes32 token0, bytes32 token1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
         return keccak256(abi.encode(token0, token1));
     }
-
 }

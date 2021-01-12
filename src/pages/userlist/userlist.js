@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Flex, WhiteSpace, List, Checkbox, Button, Toast, Modal, Tabs, Pagination, InputItem,Icon } from 'antd-mobile';
+import { Flex, WhiteSpace, List, Checkbox, Button, Toast, Modal, Tabs, Pagination, InputItem, Icon } from 'antd-mobile';
 import Nav from '../../component/nav';
 import i18n from '../../i18n'
 import logo from '../../images/logo.png';
@@ -40,7 +40,7 @@ class Userlist extends Component {
         let self = this;
         let obj = JSON.parse(sessionStorage.getItem('account'));
         self.getUsers(obj.mainPKr);
-        self.getUserList(obj.mainPKr, 1, self.state.pageCount)
+        self.getUserList(obj.mainPKr, 0, self.state.pageCount)
         self.setState({
             account: obj
         })
@@ -53,14 +53,7 @@ class Userlist extends Component {
             for (let i = 0; i < res.length; i++) {
                 let codestr = res[i].info.code.substring(2, res[i].info.code.length);
                 let obj = {
-                    i: 0,
-                    code: "",
-                    email: "",
-                    name: "",
-                    phone: "",
-                    imgurl: "",
-                    imgurlone: "",
-                    checked: ""
+
                 }
                 obj.i = i;
                 obj.code = res[i].info.code;
@@ -140,18 +133,12 @@ class Userlist extends Component {
                     userlistitemState: false
                 })
             }
-            let pageNum = Math.ceil(len / self.state.pageCount);
+            let pageNum = Math.ceil(len / self.state.pageCount) - 1;
             let arr = [];
             for (let i = 0; i < res.length; i++) {
                 let codestr = res[i].info.code.substring(2, res[i].info.code.length);
                 let obj = {
-                    i: 0,
-                    code: "",
-                    email: "",
-                    name: "",
-                    phone: "",
-                    imgurl: "",
-                    imgurlone: "",
+
                 }
                 obj.i = i;
                 obj.code = res[i].info.code;
@@ -159,24 +146,27 @@ class Userlist extends Component {
                 obj.name = res[i].info.name;
                 obj.phone = res[i].info.phone;
                 obj.owner = res[i].owner;
+
                 obj.imgurl = 'https://13.124.240.238/images/' + codestr + '_0.png';
                 obj.imgurlone = 'https://13.124.240.238/images/' + codestr + '_1.png';
                 obj.key = res[i].owner;
                 arr.push(obj);
             }
+
             self.setState({
                 userlistitem: arr,
                 len: pageNum,
                 pageIndex: pageIndex,
             })
+            Toast.hide();
         })
     }
 
     goToPage = (index) => {
         let self = this;
         let pageIndex = self.state.pageIndex + index;
-        if (pageIndex > 0 && pageIndex <= self.state.len) {
-            Toast.loading("loading", true)
+        if (pageIndex >= 0 && pageIndex <= self.state.len) {
+            Toast.loading("Loading...", 60);
             self.getUserList(self.state.account.mainPKr, pageIndex, self.state.pageCount);
         }
     }
@@ -203,7 +193,7 @@ class Userlist extends Component {
                                     ref={el => this.MainPkrFocusInst = el}
                                     clear
                                     extra={<div><Icon type="search" size='xs' /></div>}
-                                    onExtraClick={()=>self.getUser()}
+                                    onExtraClick={() => self.getUser()}
                                 ></InputItem>
                                 <Modal
                                     visible={this.state.showmodal}
@@ -256,7 +246,6 @@ class Userlist extends Component {
                                     useOnPan={false}
                                     renderTab={tab => <span>{tab.title}</span>
                                     }
-                                    onTabClick={console.log("111")}
                                 >
                                     <div style={{ alignItems: 'center', justifyContent: 'center', minHeight: '150px', backgroundColor: '#fff' }}>
                                         <List className="mytabbox-item">
@@ -272,7 +261,7 @@ class Userlist extends Component {
                                                         <Flex.Item>{i18n.t("mail")}：{item.email}</Flex.Item>
                                                     </Flex>
                                                     <Flex className="textover">
-                                                        <Flex.Item>{i18n.t("WalletAddress")}：{item.owner}</Flex.Item>
+                                                        <Flex.Item>{i18n.t("WalletAddress")}：{item.owner.substring(0, 6)}···{item.owner.substring(item.owner.length - 6, item.owner.length)}</Flex.Item>
                                                     </Flex>
                                                     <Flex>
                                                         <Flex.Item>{i18n.t("FrontofIDcard")}
@@ -309,11 +298,14 @@ class Userlist extends Component {
                                         <WhiteSpace size="sm" />
                                     </div>
                                     <div style={{ alignItems: 'center', justifyContent: 'center', minHeight: '150px', backgroundColor: '#fff' }}>
+
+
                                         {
                                             self.state.userlistitemState ? <div>
-                                                <List className="mytabbox-item">
-                                                    {self.state.userlistitem.map(item => (
-                                                        <div checked={item.checked} key={item.i} onChange={() => this.onChange(item.i)}>
+                                                {self.state.userlistitem.map(item => (
+                                                    <List className="mytabbox-item">
+
+                                                        <div key={item.i}>
                                                             <WhiteSpace size="sm" />
                                                             <WhiteSpace size="sm" />
                                                             <Flex>
@@ -329,7 +321,7 @@ class Userlist extends Component {
                                                             </Flex>
                                                             <WhiteSpace size="sm" />
                                                             <Flex className="textover">
-                                                                <Flex.Item>{i18n.t("WalletAddress")}：{item.owner}</Flex.Item>
+                                                                <Flex.Item>{i18n.t("WalletAddress")}：{item.owner.substring(0, 10)}···{item.owner.substring(item.owner.length - 8, item.owner.length)}</Flex.Item>
                                                             </Flex>
                                                             <WhiteSpace size="sm" />
                                                             <Flex>
@@ -352,21 +344,23 @@ class Userlist extends Component {
                                                             <WhiteSpace size="sm" />
                                                             <WhiteSpace size="sm" />
                                                         </div>
-                                                    ))}
-                                                </List>
+                                                    </List>
+                                                ))}
+
                                                 <WhiteSpace size="sm" />
                                                 <WhiteSpace size="sm" />
                                                 <Flex>
-                                                    <Pagination
-
-                                                        total={self.state.len}
-                                                        className="custom-pagination-with-icon"
-                                                        current={self.state.pageIndex}
-                                                        locale={{
-                                                            prevText: (<Button type="primary" size='small' onClick={() => this.goToPage(-1)}>{i18n.t("Prev")}</Button>),
-                                                            nextText: (<Button size='small' onClick={() => this.goToPage(1)}>{i18n.t("Next")}</Button>),
-                                                        }}
-                                                    />
+                                                    <Flex.Item>
+                                                        <Pagination
+                                                            total={self.state.len + 1}
+                                                            className="custom-pagination-with-icon"
+                                                            current={self.state.pageIndex + 1}
+                                                            locale={{
+                                                                prevText: (<Button type="primary" size='small' onClick={() => this.goToPage(-1)}>{i18n.t("Prev")}</Button>),
+                                                                nextText: (<Button size='small' onClick={() => this.goToPage(1)}>{i18n.t("Next")}</Button>),
+                                                            }}
+                                                        />
+                                                    </Flex.Item>
                                                 </Flex>
                                             </div> : <div>{i18n.t("NoUserInformation")}</div>
                                         }

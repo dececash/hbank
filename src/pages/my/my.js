@@ -47,6 +47,7 @@ class My extends Component {
         let self = this;
         abi.isOwner(mainPKr, function (res) {
             abi.isManager(mainPKr, function (data) {
+
                 if (res || data) {
                     self.setState({
                         isManager: true
@@ -58,6 +59,7 @@ class My extends Component {
 
     getHbankIsManager(mainPKr) {
         let self = this;
+
         abi.hbankisOwner(mainPKr, function (res) {
             abi.hbankisManager(mainPKr, function (data) {
                 if (res || data) {

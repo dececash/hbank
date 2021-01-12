@@ -78,5 +78,9 @@
   "Inquire":"문의",
   "Prev":"이전",
   "Next":"다음",
-  "NoUserInformation":"사용자 정보 없음"
+  "NoUserInformation":"사용자 정보 없음",
+  "WithdrawalList":"출금 목록",
+  "status":"상태",
+  "passed":"통과",
+  "notpass":"통과하지 못함"
 }

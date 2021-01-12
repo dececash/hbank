@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Flex, WhiteSpace, Modal, Button, InputItem, Toast, } from 'antd-mobile';
+import { Flex, WhiteSpace, Modal, Button, InputItem, Toast } from 'antd-mobile';
 import Nav from '../../component/nav'
 import './assets.css'
 import { showPK } from "../../api/common";

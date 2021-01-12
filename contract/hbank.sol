@@ -139,7 +139,6 @@ library CheckList {
     }
 }
 
-
 interface HSwap {
     function exchange(string memory token) external payable returns (uint256 value);
 }
@@ -205,6 +204,7 @@ contract Hbank is BaseInterface,Ownable {
         uint value;
         uint time;
         string  currency;
+        uint status;
     }
 
     struct RetAsset {
@@ -232,7 +232,10 @@ contract Hbank is BaseInterface,Ownable {
     LinkList.List  userList;
     mapping(bytes32 => Interest[]) public interests;
     LinkList.List addressList;
-    CheckList.List checkList;
+    CheckList.List checkList;    
+    
+    CheckList.Check[] withList;  
+
     // mapping(address=>LinkList.List) ownerCheckList;
     HSwap swap;
    
@@ -243,7 +246,7 @@ contract Hbank is BaseInterface,Ownable {
     receive() external payable {
     }
     
-    function setHswap(address _swap) public onlyManager{
+    function setHSwap(address _swap) public onlyManager{
         swap = HSwap(_swap);
     }
    
@@ -264,8 +267,29 @@ contract Hbank is BaseInterface,Ownable {
             
             Record storage record = users[each.owner].records[each.currency][each.index];
             
-            retcheck[i] = RetCheck({owner:each.owner,currency:strings._bytes32ToStr(each.currency),value:record.value,time:record.time,key:keys[i]});
+            retcheck[i] = RetCheck({owner:each.owner,currency:strings._bytes32ToStr(each.currency),value:record.value,time:record.time,key:keys[i], status:1});
             
+        }
+    }
+    
+    function getWithdrawList(uint pageIndex,uint pageCount) public view returns(uint len,RetCheck[] memory retcheck) {
+        len=withList.length;
+        uint count=pageIndex.mul(pageCount);
+        if(count>withList.length){
+           retcheck = new RetCheck[](0);
+        }else{
+            
+            if(count.add(pageCount)>len){
+                pageCount=len.sub(count);
+            }
+            retcheck = new RetCheck[](pageCount);
+            for(uint i=0;i<pageCount;i++){
+                
+                CheckList.Check memory each = withList[count.add(i)];
+                Record storage record = users[each.owner].records[each.currency][each.index];
+                bytes32 key = genKey(each.owner,strings._bytes32ToStr(each.currency), each.index);
+                retcheck[i] = RetCheck({owner:each.owner,currency:strings._bytes32ToStr(each.currency),value:record.value,time:record.time,key:key, status:checkList.getStatus(key)});
+            }  
         }
     }
     
@@ -298,10 +322,8 @@ contract Hbank is BaseInterface,Ownable {
             
             item[i]=RetInterest({
                 
-               cy : strings._bytes32ToStr(currencys[i]),
-               
-               iRate : list[list.length-1].iRate});
-               
+                cy : strings._bytes32ToStr(currencys[i]),
+                iRate : list[list.length-1].iRate});
         }
     } 
     
@@ -332,13 +354,11 @@ contract Hbank is BaseInterface,Ownable {
         for(uint i = index-1; i >= end; i--) {  
             
             list[index-i] = users[msg.sender].records[token][i];
-            
             statusList[index-i]=checkList.getStatus(genKey(msg.sender, currency, i));
             
             if(i == 0) {
                 
                 break;
-                
             }
         }
         
@@ -372,33 +392,26 @@ contract Hbank is BaseInterface,Ownable {
     }
     
     function getUserInfo(address UserAddress) public view returns(UserInfo memory){
-        
         return users[UserAddress].userInfo;
-        
     }
     
-    function getUserInfoList(uint pageindex,uint pagecount) public view returns(uint len,RetuserInfo[] memory retuserInfo){
+    function getUserInfoList(uint pageIndex,uint pageCount) public view returns(uint len,RetuserInfo[] memory retuserInfo){
         
         (bytes32[] memory userList)=userList.list();
         
         len=userList.length;
         
-        uint count=pageindex.sub(1).mul(pagecount);
+        uint count=pageIndex.mul(pageCount);
         if(count>userList.length){
            retuserInfo = new RetuserInfo[](0);
         }else{
-             if(pagecount>userList.length){
-                pagecount=userList.length;
+           
+            if(count.add(pageCount)>userList.length){
+                pageCount=userList.length.sub(count);
             }
+            retuserInfo = new RetuserInfo[](pageCount);
             
-            if(count.add(pagecount)>userList.length){
-                pagecount=userList.length.sub(count);
-            }
-            
-            retuserInfo = new RetuserInfo[](pagecount);
-            
-            for(uint i=0;i<pagecount;i++){
-                
+            for(uint i=0;i<pageCount;i++){
                 address owner = bytes32ToAddress(userList[count.add(i)]);
                 retuserInfo[i]= RetuserInfo({
                     info:users[owner].userInfo,
@@ -407,7 +420,7 @@ contract Hbank is BaseInterface,Ownable {
             }  
         }
     }
-    
+ 
     function setInterest(string memory currency,uint iRate) public onlyManager{
         
         require(iRate < 1e11);
@@ -466,9 +479,7 @@ contract Hbank is BaseInterface,Ownable {
         require(address(swap) != address(0), "no swap");
         
         address sender = msg.sender;
-        
         bytes32 tokeA =strings._stringToBytes32(_tokenA);
-        
         bytes32 tokenB =strings._stringToBytes32(_tokenB);
         
         _update(sender, tokeA, value, OperateType.SELL);
@@ -527,6 +538,8 @@ contract Hbank is BaseInterface,Ownable {
         users[sender].lockedValue[token] = users[sender].lockedValue[token].add(value);
         
         checkList.push(key, CheckList.Check({owner:sender, currency:strings._stringToBytes32(currency), index:index}));
+        
+        withList.push(CheckList.Check({owner:sender, currency:strings._stringToBytes32(currency), index:index}));
     }
     
     function check(bytes32[] memory keys, bool flag) public onlyManager {
@@ -534,7 +547,6 @@ contract Hbank is BaseInterface,Ownable {
         for(uint i = 0; i < keys.length; i++) {
             
             _check(keys[i],flag);
-            
         } 
     }
     

@@ -78,5 +78,9 @@
   "Inquire":"Inquire",
   "Prev":"Prev",
   "Next":"Next",
-  "NoUserInformation":"No User Information"
+  "NoUserInformation":"No User Information",
+  "WithdrawalList":"Withdrawal List",
+  "status":"Status",
+  "passed":"Passed",
+  "notpass":"Not Pass"
 }
