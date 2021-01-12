@@ -234,7 +234,7 @@ contract Hbank is BaseInterface,Ownable {
     LinkList.List addressList;
     CheckList.List checkList;    
     
-    CheckList.Check[] withList;  
+    CheckList.Check[] withdrawList;  
 
     // mapping(address=>LinkList.List) ownerCheckList;
     HSwap swap;
@@ -273,9 +273,9 @@ contract Hbank is BaseInterface,Ownable {
     }
     
     function getWithdrawList(uint pageIndex,uint pageCount) public view returns(uint len,RetCheck[] memory retcheck) {
-        len=withList.length;
+        len=withdrawList.length;
         uint count=pageIndex.mul(pageCount);
-        if(count>withList.length){
+        if(count>withdrawList.length){
            retcheck = new RetCheck[](0);
         }else{
             
@@ -285,7 +285,7 @@ contract Hbank is BaseInterface,Ownable {
             retcheck = new RetCheck[](pageCount);
             for(uint i=0;i<pageCount;i++){
                 
-                CheckList.Check memory each = withList[count.add(i)];
+                CheckList.Check memory each = withdrawList[count.add(i)];
                 Record storage record = users[each.owner].records[each.currency][each.index];
                 bytes32 key = genKey(each.owner,strings._bytes32ToStr(each.currency), each.index);
                 retcheck[i] = RetCheck({owner:each.owner,currency:strings._bytes32ToStr(each.currency),value:record.value,time:record.time,key:key, status:checkList.getStatus(key)});
@@ -539,7 +539,7 @@ contract Hbank is BaseInterface,Ownable {
         
         checkList.push(key, CheckList.Check({owner:sender, currency:strings._stringToBytes32(currency), index:index}));
         
-        withList.push(CheckList.Check({owner:sender, currency:strings._stringToBytes32(currency), index:index}));
+        withdrawList.push(CheckList.Check({owner:sender, currency:strings._stringToBytes32(currency), index:index}));
     }
     
     function check(bytes32[] memory keys, bool flag) public onlyManager {
@@ -564,7 +564,6 @@ contract Hbank is BaseInterface,Ownable {
         if(flag) {
         
             users[check.owner].balances[check.currency].value = users[check.owner].balances[check.currency].value.sub(value);
-        
             require(send_token(check.owner, strings._bytes32ToStr(check.currency), value), strings._bytes32ToStr(check.currency));
         }
     }
@@ -616,9 +615,7 @@ contract Hbank is BaseInterface,Ownable {
         }
         
         require(lasttime >= interests[token][0].time, "lasttime must >= interests[token][0].time");
-        
         uint nowTime=now;
-        
         Interest[] storage list =  interests[token];
         
         uint index =list.length-1;
@@ -626,9 +623,7 @@ contract Hbank is BaseInterface,Ownable {
         while(index != 0 && lasttime < list[index].time) {
         
              profit += _caleProfit(amount, nowTime/DAY- list[index].time/DAY, list[index].iRate);
-        
              nowTime = list[index].time;
-        
              index--;
         }
         
@@ -640,9 +635,7 @@ contract Hbank is BaseInterface,Ownable {
           bytes memory tmp = new bytes(32);
         
           assembly {
-        
             mstore(tmp, datas)
-        
             addr := mload(tmp)
          }
      }
@@ -650,11 +643,8 @@ contract Hbank is BaseInterface,Ownable {
     function addressToBytes32(address addr) internal view returns (bytes32 temp) {
          
           bytes memory tmp = new bytes(32);
-        
           assembly {
-        
             mstore(tmp, addr)
-        
             temp := mload(tmp)
          }
      }
