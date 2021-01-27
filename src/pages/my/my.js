@@ -77,7 +77,7 @@ class My extends Component {
                 <div className="tabcontent">
                     <Flex className="header">
                         <Flex.Item className="tabcontent-box">
-                            <img src={logo} alt="logo" />
+                            <img className="logo" src={logo} alt="logo" />
                             <p className='title'>
                                 {i18n.t("Personalcenter")}
                             </p>
@@ -141,6 +141,16 @@ class My extends Component {
                                         </Flex>
                                     </div>
                                 </Link>
+
+                                <Link to={{ pathname: `/rechange` }} >
+                                    <div className="listItem">
+                                        <Flex>
+                                            <Flex.Item>
+                                                <span className="assetstitle">{i18n.t("Rechargemanagement")}</span>
+                                            </Flex.Item>
+                                        </Flex>
+                                    </div>
+                                </Link>
                             </div> : <div></div>
                         }
                         {
@@ -159,7 +169,7 @@ class My extends Component {
                                 <Flex.Item>
                                     <span className="assetstitle" onClick={() => {
                                         window.open("http://www.newsharekorea.com")
-                                    }}>{i18n.t("about")}HAPYBANKEX</span>
+                                    }}>NEWSHARE</span>
                                 </Flex.Item>
                             </Flex>
                         </div>

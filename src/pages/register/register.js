@@ -8,13 +8,13 @@ import { Flex, List, Toast, InputItem, Button, WhiteSpace } from 'antd-mobile';
 import Nav from '../../component/nav';
 import i18n from '../../i18n'
 import logo from '../../images/logo.png';
+import idcard_0 from '../../images/idcard_0.png';
+import idcard_1 from '../../images/idcard_1.png';
 import './register.css';
 import BigNumber from 'bignumber.js';
 
 import abi from '../../api/abi';
 import axios from 'axios'
-import { bigNumberify } from 'serojs/js-sero-utils/utils';
-
 
 class Register extends Component {
     constructor(props) {
@@ -42,7 +42,6 @@ class Register extends Component {
         let self = this;
         let obj = JSON.parse(sessionStorage.getItem('account'));
         self.getUser(obj.mainPKr);
-        console.log(obj);
         self.setState({
             account: obj
         })
@@ -52,19 +51,26 @@ class Register extends Component {
         let self = this;
         abi.getUserInfo(mainPKr, function (res) {
             let codestr = "";
-            if (res[0].state == '0') {
-                codestr = "idcard";
+            if (res[0].state == '0') {//eslint-disable-line
+                self.setState({
+                    name: res[0].name,
+                    phone: res[0].phone,
+                    email: res[0].email,
+                    imgurl: idcard_0,
+                    imgurlone: idcard_1,
+                    userState: res[0].state
+                })
             } else {
                 codestr = res[0].code.substring(2, res[0].code.length);
+                self.setState({
+                    name: res[0].name,
+                    phone: res[0].phone,
+                    email: res[0].email,
+                    imgurl: 'https://ginkgobank.dece.cash/images/' + codestr + '_0.png',
+                    imgurlone: 'https://ginkgobank.dece.cash/images/' + codestr + '_1.png',
+                    userState: res[0].state
+                })
             }
-            self.setState({
-                name: res[0].name,
-                phone: res[0].phone,
-                email: res[0].email,
-                imgurl: 'https://13.124.240.238/images/' + codestr + '_0.png',
-                imgurlone: 'https://13.124.240.238/images/' + codestr + '_1.png',
-                userState: res[0].state
-            })
         })
     }
 
@@ -73,19 +79,17 @@ class Register extends Component {
         const files = [...event.target.files];
         console.log(files[0])
         self.compressImage(files[0], function (img) {
-            console.log(img)
             var formData = new FormData();
             formData.append("image", img);
             abi.hash(self.state.account.pk, function (code) {
-                console.log(code)
-                let urls = 'https://13.124.240.238/upload/?nomark=0&accessToken=000&id=' + type + '&code=' + code;
+                let urls = 'https://ginkgobank.dece.cash/upload/?nomark=0&accessToken=000&id=' + type + '&code=' + code;
                 axios({
                     method: 'post',
                     url: urls,
                     data: formData
                 }).then((res) => {
                     Toast.success(`${i18n.t("UploadSuccessfully")}`, 2);
-                    let str = 'https://13.124.240.238/images/' + code + '_' + type + '.png' + "?v=" + new Date().getTime();
+                    let str = 'https://ginkgobank.dece.cash/images/' + code + '_' + type + '.png' + "?v=" + new Date().getTime();
                     if (type === 0) {
                         self.setState({
                             imgurl: str
@@ -98,7 +102,6 @@ class Register extends Component {
                     self.forceUpdate();
                 }).catch((err) => {
                     Toast.fail(`${i18n.t("ReselectPicture")}`, 2);
-                    console.log(err);
                 })
             });
         })
@@ -134,7 +137,7 @@ class Register extends Component {
                 ctx.fillStyle = "#fff";
                 ctx.fillRect(0, 0, w, h);
                 ctx.drawImage(img, 0, 0, w, h);
-                var base64 = canvas.toDataURL('image/webp', quality); 
+                var base64 = canvas.toDataURL('image/webp', quality);
                 var bytes = window.atob(base64.split(',')[1]);
                 var ab = new ArrayBuffer(bytes.length);
                 var ia = new Uint8Array(ab);
@@ -167,15 +170,6 @@ class Register extends Component {
         }
     }
     onChangesphone = (value) => {
-        // if (value.replace(/^(00)?82\-?0[71](?:\d{8,9})$/, '').length < 11) {
-        //     this.setState({
-        //         hasError: true,
-        //     });
-        // } else {
-        //     this.setState({
-        //         hasError: false,
-        //     });
-        // }
         this.setState({
             phone: value
         });
@@ -194,15 +188,6 @@ class Register extends Component {
         console.log(this.state.userState)
     }
     onChangesemail = (value) => {
-        // if (value.replace(/^(00)?82\-?0[71](?:\d{8,9})$/, '').length < 11) {
-        //     this.setState({
-        //         emailError: true,
-        //     });
-        // } else {
-        //     this.setState({
-        //         emailError: false,
-        //     });
-        // }
         this.setState({
             email: value
         });
@@ -232,7 +217,7 @@ class Register extends Component {
                 <div className="tabcontent">
                     <Flex className="header">
                         <Flex.Item className="tabcontent-box">
-                            <img src={logo} alt="logo" />
+                            <img className="logo" src={logo} alt="logo" />
                             <p className='title'>
                                 {i18n.t("RegistrationMessage")}
                             </p>
@@ -252,16 +237,13 @@ class Register extends Component {
                                     <InputItem
                                         type="phone"
                                         placeholder="input your phone"
-                                        // error={this.state.hasError}
-                                        // onErrorClick={this.onErrorClick}
                                         onChange={this.onChangesphone}
                                         value={this.state.phone}
                                     >{i18n.t("PhoneNumber")}:</InputItem>
                                     <InputItem
                                         type="email"
                                         placeholder="input your e-mail"
-                                        // error={this.state.emailError}
-                                        // onErrorClick={this.onEmailErrorClick}
+
                                         onChange={this.onChangesemail}
                                         value={this.state.email}
                                     >{i18n.t("E-mail")}:</InputItem>
@@ -295,7 +277,6 @@ class Register extends Component {
                                                 type="file"
                                                 ref={this.fileInputEls}
                                                 accept="image/*"
-                                                // accept=".jpg,.jpeg,.jpg"
                                                 hidden
                                                 onChange={(event) => this.handlePhoto(event, 1)}
                                             />

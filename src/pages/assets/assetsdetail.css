@@ -1,7 +1,7 @@
 .detailheader {
   width: 100%;
   position: absolute;
-  background: #171b52;
+  background: #a62201;
   height: 40px;
   text-align: center;
   font-size: 20px;
@@ -29,7 +29,7 @@
   text-align: center;
 }
 .item .detailnum {
-  color: #49a398;
+  color: #cf4b04;
   font-weight: bold;
   text-align: left;
 }

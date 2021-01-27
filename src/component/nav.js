@@ -28,8 +28,8 @@ export default class nav extends React.Component {
             <div style={{ minHeight: document.documentElement.clientHeight, maxHeight: document.documentElement.clientHeight }}>
                 <TabBar
                     unselectedTintColor="#ffffff"
-                    tintColor="#33A3F4"
-                    barTintColor="#414691"
+                    tintColor="#ffffff"
+                    barTintColor="#cf4b04"
                 >
                     <TabBar.Item
                         title={i18n.t("assets")}
@@ -37,14 +37,14 @@ export default class nav extends React.Component {
                         icon={<div style={{
                             width: '32px',
                             height: '32px',
-                            background: 'url(https://13.124.240.238/images/test/assets.png) center center /  31px 31px no-repeat'
+                            background: 'url(https://ginkgobank.dece.cash/images/test/assets.png) center center /  31px 31px no-repeat'
                         }}
                         />
                         }
                         selectedIcon={<div style={{
                             width: '32px',
                             height: '32px',
-                            background: 'url(https://13.124.240.238/images/test/assetsed.png)center center /  31px 31px no-repeat'
+                            background: 'url(https://ginkgobank.dece.cash/images/test/assetsed.png)center center /  31px 31px no-repeat'
                         }}
                         />
                         }
@@ -61,7 +61,7 @@ export default class nav extends React.Component {
                             <div style={{
                                 width: '32px',
                                 height: '32px',
-                                background: 'url(https://13.124.240.238/images/test/exchange.png) center center /  31px 31px no-repeat'
+                                background: 'url(https://ginkgobank.dece.cash/images/test/exchange.png) center center /  31px 31px no-repeat'
                             }}
                             />
                         }
@@ -69,7 +69,7 @@ export default class nav extends React.Component {
                             <div style={{
                                 width: '32px',
                                 height: '32px',
-                                background: 'url(https://13.124.240.238/images/test/exchangeed.png) center center /  31px 31px no-repeat'
+                                background: 'url(https://ginkgobank.dece.cash/images/test/exchangeed.png) center center /  31px 31px no-repeat'
                             }}
                             />
                         }
@@ -88,7 +88,7 @@ export default class nav extends React.Component {
                             <div style={{
                                 width: '32px',
                                 height: '32px',
-                                background: 'url(https://13.124.240.238/images/test/financial.png) center center /  31px 31px no-repeat'
+                                background: 'url(https://ginkgobank.dece.cash/images/test/financial.png) center center /  31px 31px no-repeat'
                             }}
                             />
                         }
@@ -96,7 +96,7 @@ export default class nav extends React.Component {
                             <div style={{
                                 width: '32px',
                                 height: '32px',
-                                background: 'url(https://13.124.240.238/images/test/financialed.png) center center /  31px 31px no-repeat'
+                                background: 'url(https://ginkgobank.dece.cash/images/test/financialed.png) center center /  31px 31px no-repeat'
                             }}
                             />
                         }
@@ -115,7 +115,7 @@ export default class nav extends React.Component {
                             <div style={{
                                 width: '32px',
                                 height: '32px',
-                                background: 'url(https://13.124.240.238/images/test/my.png) center center /  31px 31px no-repeat'
+                                background: 'url(https://ginkgobank.dece.cash/images/test/my.png) center center /  31px 31px no-repeat'
                             }}
                             />
                         }
@@ -123,7 +123,7 @@ export default class nav extends React.Component {
                             <div style={{
                                 width: '32px',
                                 height: '32px',
-                                background: 'url(https://13.124.240.238/images/test/myed.png) center center /  31px 31px no-repeat'
+                                background: 'url(https://ginkgobank.dece.cash/images/test/myed.png) center center /  31px 31px no-repeat'
                             }}
                             />
                         }

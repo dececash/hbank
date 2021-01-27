@@ -98,24 +98,37 @@ contract Swap is BaseInterface, Ownable {
     }
 
     mapping(bytes32 => Pair) public pairs;
-    bytes32[] public keys;
+    LinkList.List public keys;
    
     receive() external payable {
     }
 
     function pairList(uint256 _start, uint256 _end) public view returns (Pair[] memory rets) {
-        if (_start >= keys.length || _start >= _end) {
+        bytes32[] memory _keys = keys.list();
+        if (_start >= _keys.length || _start >= _end) {
             return rets;
         }
 
-        if (_end > keys.length) {
-            _end = keys.length;
+        if (_end > _keys.length) {
+            _end = _keys.length;
         }
 
         rets = new Pair[](_end - _start);
         for (uint256 i = _start; i < _end; i++) {
-            rets[i - _start] = pairs[keys[i]];
+            rets[i - _start] = pairs[_keys[i]];
         }
+        
+    }
+    
+    
+    function delPair(string memory tokenA, string memory tokenB) public onlyManager {
+        bytes32 tokenABytes = strings._stringToBytes32(tokenA);
+        bytes32 toeknBBytes = strings._stringToBytes32(tokenB);
+        require(tokenABytes != toeknBBytes, "same token");
+        bytes32 key = hashKey(tokenABytes, toeknBBytes);
+
+        keys.remove(key);
+        delete pairs[key];
     }
 
     function withdraw(string memory token, uint256 value) public onlyManager {
@@ -187,4 +200,5 @@ contract Swap is BaseInterface, Ownable {
         (bytes32 token0, bytes32 token1) = tokenA < tokenB ? (tokenA, tokenB) : (tokenB, tokenA);
         return keccak256(abi.encode(token0, token1));
     }
+
 }

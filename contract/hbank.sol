@@ -308,7 +308,6 @@ contract Hbank is BaseInterface,Ownable {
                 value : users[msg.sender].balances[currencys[i]].value+profit,
                 
                 lasttime : users[msg.sender].balances[currencys[i]].lasttime});
-                
         }
     }
     

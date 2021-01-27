@@ -1,0 +1,29 @@
+.worldshare .am-card-header-extra {
+  color: black ;
+}
+.worldshare .am-card-body {
+  padding: 0px 15px 6px;
+}
+.worldshare .am-card-body p {
+  margin: 10px 0;
+}
+.worldshare .am-card-body p .profitnum {
+  margin-left: 20px;
+}
+.worldshare .am-card-body .am-card-header-content img {
+  width: 30px !important;
+  height: 30px !important;
+}
+.worldshare .am-card-body .copyimg {
+  width: 16px;
+  margin-top: 2px;
+  margin-left: 20px;
+}
+.worldshare .item .InvestmentList {
+  display: flex;
+  margin: 0px 10px;
+}
+.worldshare .item .InvestmentList div {
+  flex: 1;
+  text-align: center;
+}

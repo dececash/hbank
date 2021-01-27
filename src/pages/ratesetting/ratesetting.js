@@ -8,6 +8,9 @@ import Nav from '../../component/nav';
 import i18n from '../../i18n';
 import BigNumber from 'bignumber.js'
 import logo from '../../images/logo.png';
+import DECE from '../../images/DECE.png';
+import DKRW from '../../images/DKRW.png';
+import DHAPY from '../../images/DHAPY.png';
 import './ratesetting.css';
 import abi from '../../api/abi';
 const alert = Modal.alert;
@@ -40,12 +43,18 @@ class Ratesetting extends Component {
                 let obj = {
                     token: "",
                     value: 0,
-                    url: "",
+                    url: DECE,
                     iRate: 0
                 }
                 obj.iRate =new BigNumber(res[i].iRate ).div(10**9).toFixed(3,1);
                 obj.token = res[i].cy;
-                obj.url = 'https://13.124.240.238/images/a' + res[i].cy + '_0.png';
+                if (res[i].cy == "DECE") {
+                    obj.url = DECE;
+                } else if (res[i].cy == "DKRW") {
+                    obj.url = DKRW;
+                }else if (res[i].cy == "DHAPY") {
+                    obj.url = DHAPY;
+                }
                 arr.push(obj);
             }
             abi.hbankBalanceOf(function (data) {
@@ -120,7 +129,7 @@ class Ratesetting extends Component {
                 <div className="tabcontent">
                     <Flex className="header">
                         <Flex.Item className="tabcontent-box">
-                            <img src={logo} alt="logo" />
+                            <img className="logo" src={logo} alt="logo" />
                             <p className='title'>
                                 {i18n.t("Bankmanagement")}
                             </p>

@@ -5,3 +5,6 @@
 .am-flexbox .am-flexbox-item:first-child {
     margin-left: 15px !important; 
 }
+.listaddress .am-textarea-control textarea:disabled{
+    color: #000 !important;
+}

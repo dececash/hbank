@@ -11,6 +11,9 @@ import { showPK } from "../../api/common";
 import i18n from '../../i18n'
 import abi from '../../api/abi';
 import logo from '../../images/logo.png';
+import DECE from '../../images/DECE.png';
+import DKRW from '../../images/DKRW.png';
+import DHAPY from '../../images/DHAPY.png';
 import BigNumber from 'bignumber.js';
 const alert = Modal.alert;
 const operation = Modal.operation;
@@ -33,10 +36,10 @@ class Assets extends Component {
             self.setState({ pairs: pairs });
         })
     }
+
     componentDidMount() {
         let self = this;
         let obj = JSON.parse(sessionStorage.getItem('account'));
-        
         if (obj == null) {
             abi.currentAccount(function (account) {
                 self.getBalances(account.mainPKr);
@@ -56,18 +59,23 @@ class Assets extends Component {
     getBalances(mainPKr) {
         let self = this;
         abi.getBalances(mainPKr, function (res) {
-            console.log(res);
             let arr = [];
             for (let i = 0; i < res.length; i++) {
                 let obj = {
                     token: "",
                     value: 0,
-                    url: "",
+                    url: DECE,
                     iRate: 0
                 }
                 obj.token = res[i].cy;
                 obj.value = new BigNumber(res[i].value).div(10 ** 18).toNumber().toFixed(3, 1);
-                obj.url = 'https://13.124.240.238/images/a' + res[i].cy + '_0.png';
+                if (res[i].cy == "DECE") {
+                    obj.url = DECE;
+                } else if (res[i].cy == "DKRW") {
+                    obj.url = DKRW;
+                }else if (res[i].cy == "DHAPY") {
+                    obj.url = DHAPY;
+                }
                 arr.push(obj);
             }
 
@@ -111,6 +119,7 @@ class Assets extends Component {
                 });
             })
     }
+
     render() {
         let self = this;
         return (
@@ -118,7 +127,7 @@ class Assets extends Component {
                 <div className="tabcontent">
                     <Flex className="header">
                         <Flex.Item className="tabcontent-box">
-                            <img src={logo} alt="logo" />
+                            <img className="logo" src={logo} alt="logo" />
                             <p className='title'>
                                 {i18n.t("AssetBank")}
                             </p>
@@ -170,7 +179,8 @@ class Assets extends Component {
                                                         {
                                                             text: `${i18n.t("confirm")}`, onPress: () => {
                                                                 let value = new BigNumber(self.sendInputRef.state.value).multipliedBy(1e18);
-                                                                abi.hbankRecharge(self.state.account.pk, self.state.account.mainPKr, value,"", item.token, function (hash, err) {
+
+                                                                abi.hbankRecharge(self.state.account.pk, self.state.account.mainPKr, value, "", item.token, function (hash, err) {
                                                                     if (err) {
                                                                         Toast.fail(err);
                                                                     } else {

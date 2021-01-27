@@ -8,10 +8,11 @@ import i18n from '../../i18n'
 import { WingBlank, WhiteSpace, Flex, Modal, InputItem, Toast, Card, Button } from 'antd-mobile';
 import BigNumber from 'bignumber.js'
 import abi from '../../api/abi.js'
-import logo from '../../images/logo.png'
+import logo from '../../images/logo.png';
+import DECE from '../../images/DECE.png';
+import DKRW from '../../images/DKRW.png';
+import DHAPY from '../../images/DHAPY.png';
 import { bytes32ToToken } from "../../api/common";
-import { call } from 'sero-pp';
-import { callbackHandler } from 'sero-pp/lib/sero-pp';
 
 
 const alert = Modal.alert;
@@ -44,24 +45,31 @@ class Bank extends Component {
                 }
             }
             let arrimg = [];
+
             if (Array.from(new Set(arr)) != []) {
                 for (let i = 0; i < Array.from(new Set(arr)).length; i++) {
                     let obj = {
                         token: "",
                         value: '0.000',
-                        url: ""
+                        url: DECE
                     }
                     obj.token = Array.from(new Set(arr))[i];
-                    obj.url = 'https://13.124.240.238/images/a' + Array.from(new Set(arr))[i] + '_0.png';
+                    if (Array.from(new Set(arr))[i] == "DECE") {
+                        obj.url = DECE;
+                    } else if (Array.from(new Set(arr))[i] == "DKRW") {
+                        obj.url = DKRW;
+                    } else if (Array.from(new Set(arr))[i] == "DHAPY") {
+                        obj.url = DHAPY;
+                    }
                     arrimg.push(obj);
                 }
             }
+
             self.getBalanceOf(arrimg);
         })
     }
     getBalanceOf(arr) {
         let self = this;
-
         abi.balanceOf(function (res) {
             console.log(res)
             if (res != []) {
@@ -78,7 +86,6 @@ class Bank extends Component {
             })
         })
     }
-
 
     send(token, value) {
         let self = this;
@@ -105,6 +112,7 @@ class Bank extends Component {
             }
         });
     }
+
     setPair(tokenA, tokenB, price) {
         let self = this;
 
@@ -138,7 +146,7 @@ class Bank extends Component {
                     <div className="tabcontent">
                         <Flex className="header">
                             <Flex.Item className="tabcontent-box">
-                                <img src={logo} alt="logo" />
+                                <img className="logo" src={logo} alt="logo" />
                                 <p className='title'>
                                     {i18n.t("Exchangemanagement")}
                                 </p>

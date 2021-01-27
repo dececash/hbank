@@ -12,7 +12,9 @@ import { bytes32ToToken, showPK, trimNumber } from "../../api/common";
 import logo from '../../images/logo.png'
 import './home.css'
 
-import swap_icon from '../../icons/swap.png'
+import swap_icon from '../../icons/swap.png';
+import swaped_icon from '../../icons/swaped.png';
+
 
 const operation = Modal.operation;
 const alert = Modal.alert;
@@ -26,14 +28,15 @@ class Home extends Component {
             pairs: [],
             retValue: 0,
             isManager: false,
+            isOwner: false,
             balances: [],
             changeType: {
                 value: 0,
                 label: `${i18n.t("Localaccount")}`
             },
             choosedata: [
-                { value: 0, label:  `${i18n.t("Localaccount")}` },
-                { value: 1, label:  `${i18n.t("BankAccount")}` },
+                { value: 0, label: `${i18n.t("Localaccount")}` },
+                { value: 1, label: `${i18n.t("BankAccount")}` },
             ]
         }
     }
@@ -54,14 +57,23 @@ class Home extends Component {
         let obj = JSON.parse(sessionStorage.getItem('account'));
         self.setState({ account: obj });
         self.getIsManager(obj.mainPKr);
+        self.getIsOwner(obj.mainPKr)
         self.fetchInfo(obj.mainPKr);
-        
     }
 
     componentWillUnmount() {
         if (this.timer) {
             clearInterval(this.timer);
         }
+    }
+
+    getIsOwner(mainPKr) {
+        let self = this;
+        abi.isOwner(mainPKr, function (res) {
+            self.setState({
+                isOwner: res
+            })
+        })
     }
 
     getIsManager(mainPKr) {
@@ -72,7 +84,6 @@ class Home extends Component {
                     self.setState({ balances: balances });
                 })
             }
-
             self.setState({
                 isManager: res
             })
@@ -138,16 +149,13 @@ class Home extends Component {
             price = trimNumber(price, 9);
             return (
                 <List.Item key={index}>
-
                     <Flex style={{ textAlign: 'center' }}>
                         <Flex.Item>
                             {tokenA}
                         </Flex.Item>
-                        <Flex.Item><a onClick={() => {
-                            let pairs = this.state.pairs;
-                            pairs[index].flag = !pairs[index].flag;
-                            this.setState({ pairs: pairs });
-                        }}><img src={swap_icon} /></a></Flex.Item>
+                        <Flex.Item>
+                            <img src={swap_icon} />
+                        </Flex.Item>
                         <Flex.Item>{tokenB}</Flex.Item>
                         <Flex.Item>
                             {price}
@@ -179,31 +187,16 @@ class Home extends Component {
                                     {
                                         text: `${i18n.t("confirm")}`, onPress: () => {
                                             let value = new BigNumber(this.sendInputRef.state.value).multipliedBy(1e18);
-                                            console.log(value, ">>>>>>>>>>>>>")
-                                            if (this.state.changeType.value == 0) {
-                                                abi.exchange(this.state.account.pk, this.state.account.mainPKr, tokenB, value, tokenA, function (hash, err) {
-                                                    if (err) {
-                                                        Toast.fail(err);
-                                                    } else {
-                                                        abi.startGetTxReceipt(hash, function (data) {
-                                                            self.getIsManager(self.state.account.mainPKr);
-                                                            self.fetchInfo(self.state.account.mainPKr);
-                                                        });
-                                                    }
-                                                });
-                                            } else {
-                                                abi.hbankexchange(this.state.account.pk, this.state.account.mainPKr, tokenB, value.toFixed(0), tokenA, function (hash, err) {
-                                                    if (err) {
-                                                        Toast.fail(err);
-                                                    } else {
-
-                                                        abi.startGetTxReceipt(hash, function (data) {
-                                                            self.getIsManager(self.state.account.mainPKr);
-                                                            self.fetchInfo(self.state.account.mainPKr);
-                                                        });
-                                                    }
-                                                });
-                                            }
+                                            abi.hbankexchange(this.state.account.pk, this.state.account.mainPKr, tokenB, value.toFixed(0), tokenA, function (hash, err) {
+                                                if (err) {
+                                                    Toast.fail(err);
+                                                } else {
+                                                    abi.startGetTxReceipt(hash, function (data) {
+                                                        self.getIsManager(self.state.account.mainPKr);
+                                                        self.fetchInfo(self.state.account.mainPKr);
+                                                    });
+                                                }
+                                            });
                                         }
                                     },
                                 ])
@@ -219,7 +212,7 @@ class Home extends Component {
                     <div className="tabcontent">
                         <Flex className="header">
                             <Flex.Item className="tabcontent-box">
-                                <img src={logo} alt="logo" />
+                                <img className="logo" src={logo} alt="logo" />
                                 <p className='title'>
                                     {i18n.t("assetexchange")}
                                 </p>
@@ -227,26 +220,8 @@ class Home extends Component {
                         </Flex>
                         <WhiteSpace />
                         <WhiteSpace />
-                        <Flex className="changAccount tabcontent-box" style={{ textAlign: 'center' }}>
-                            <Flex.Item
-                                className="changAccount-name">{i18n.t("Exchangeaccount")}:{this.state.changeType.label}</Flex.Item>
-                            <Flex.Item>
-                                <a onClick={() => {
-                                    this.changeType();
-                                }}>{i18n.t("Switchaccount")}</a>
-                            </Flex.Item>
-                        </Flex>
-                        <WhiteSpace />
-                        <WhiteSpace />
                         <WhiteSpace />
                         <List className="tabcontent-box">
-                            {/* <Flex className="listheader ">
-                                <Flex.Item>{i18n.t("Originalassets")}</Flex.Item>
-                                <Flex.Item>&nbsp;</Flex.Item>
-                                <Flex.Item>{i18n.t("Targetasset")}</Flex.Item>
-                                <Flex.Item>{i18n.t("price")}</Flex.Item>
-                                <Flex.Item>{i18n.t("operation")}</Flex.Item>
-                            </Flex> */}
                             {pairs}
                         </List>
                     </div>

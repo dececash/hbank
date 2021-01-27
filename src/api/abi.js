@@ -8,20 +8,32 @@ import keccak256 from "keccak256";
 const rpc = new JsonRpc();
 
 const config = {
-	name: "HBank",
-	contractAddress: "T3kGAQ8nA4PZi6qUYVRBSeySHCFzEUo93pWYee4QiF55YiFaiZiDjMvea82Zm9wPzQrAdKbz6Hauvh1yEa1fKwV",
+	name: "GINKGO BANK",
+
+	contractAddress: "5sDcSj6m1NL1ho5jczaFf1zYHG1yymW6WW1SsxxDnud92mrgjNDRZFGdNKDK15rJ3PC9Ca2HyWBgdi5YuLCX8yYc",
 	hbankAddress: "2LaPfgdkTzWPxy6o2e81PFpU5oBAZdy58eE1ScdHGeeov9oxaAmBybJ8C2DBH8o7fKSjPgR25gTC7zDnGehymj4V",
+	dkrwdelegateAddress: "5sWtPb2ap1ABpHYM1uBEEMVLJgaYmRVLaxik9u83JUoiUubzmSKB5HwRhm2SKAuGzL7eE2gcTYMENuTJ5sqgy34k",
+	dkrwAddress: "48jaTaWHnoGivTRMdZHEUuDktA4hkL68qaJF5P1za52HQymezdtaJdmZTWJs1fuZmzbpW7sU3sUYGjW9hBwDcrEo",
+
+	// dece
+	// contractAddress: "5YX3dccXGu55ZUxUqXkzqEzCxQySHhSRe9wVKS8HNTbibYCgk62xgKRmQyeQM7jiFkuvFBDaXZ7MWv1kpNJJFQja",
+	// hbankAddress: "3rwbnbmvb5j4P5Rv4NXcoqGq3N4vKuZELE5Sua2M9Y9erqw7A1erpYvy3UDtQC8xowndvAue92inucUeJYJpsg9M",
+	// dkrwdelegateAddress: "5R9Dar4hT7u1U63DU8H9aU1uj1dYpA1786kN5Jec46zFXzkPi1KMqpChiNFM8YsREfzWzgLSYj9YM8mJYyVoaRdU",
+	// dkrwAddress: "5zxVuiiXFinR4FuqiEWFFnSxBzC4fPSfX8ZuYft7ZC2HApgY4CpcsQYdLXchUjF23Nd5yPq6hxtVtbhnuZEtcCdS",
+	// http://13.124.240.238:8545
+
 	github: "https://github.com/dececash/hbank",
-	author: "hbank",
+	author: "GINKGO BANK",
 	url: document.location.href,
 	logo: document.location.protocol + '//' + document.location.host + '/logo.png',
-	barColor: "#414691",
-	navColor: "#414691",
+	barColor: "#cf4b04",
+	navColor: "#cf4b04",
 	barMode: "dark",
 	navMode: "light"
 };
 
-const abiJson =[
+
+const abiJson = [
 	{
 		"anonymous": false,
 		"inputs": [
@@ -40,6 +52,24 @@ const abiJson =[
 		],
 		"name": "OwnershipTransferred",
 		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "tokenA",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "tokenB",
+				"type": "string"
+			}
+		],
+		"name": "delPair",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"inputs": [
@@ -90,19 +120,23 @@ const abiJson =[
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
+		"inputs": [],
 		"name": "keys",
 		"outputs": [
 			{
 				"internalType": "bytes32",
-				"name": "",
+				"name": "head",
 				"type": "bytes32"
+			},
+			{
+				"internalType": "bytes32",
+				"name": "tail",
+				"type": "bytes32"
+			},
+			{
+				"internalType": "uint256",
+				"name": "len",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -312,7 +346,7 @@ const abiJson =[
 
 const contract = serojs.callContract(abiJson, config.contractAddress);
 
-const hbankjson =[
+const hbankJson = [
 	{
 		"inputs": [
 			{
@@ -1054,7 +1088,1268 @@ const hbankjson =[
 	}
 ]
 
-const hbank = serojs.callContract(hbankjson, config.hbankAddress);
+const hbank = serojs.callContract(hbankJson, config.hbankAddress);
+
+const dkrwdelegateJson = [
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_dkrw",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_baseInfo",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_hbank",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_hSwap",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "RewardLog",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "contractOwner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "dailyTapIn",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "userAddress",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "estimateTapInTime",
+				"type": "uint256"
+			}
+		],
+		"name": "delegateQueryTotalRevenue",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "refferCode",
+				"type": "string"
+			},
+			{
+				"internalType": "bool",
+				"name": "flag",
+				"type": "bool"
+			}
+		],
+		"name": "doInvest",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes",
+				"name": "opData",
+				"type": "bytes"
+			}
+		],
+		"name": "financing",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "refferCode",
+				"type": "string"
+			},
+			{
+				"internalType": "address",
+				"name": "investorAddr",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "investmentAmount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "happenedTime",
+				"type": "uint256"
+			}
+		],
+		"name": "investAction",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "manager",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "queryTapInRevenueCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "queryTapInRevenueDetail",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "queryTotalRevenue",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "start",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "perPage",
+				"type": "uint256"
+			}
+		],
+		"name": "queryUserInvestment",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "investmentTime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "investmentAmount",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct DkrwDelegate.Investment[]",
+				"name": "",
+				"type": "tuple[]"
+			},
+			{
+				"internalType": "uint256",
+				"name": "totalRecords",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "start",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "perPage",
+				"type": "uint256"
+			}
+		],
+		"name": "queryUserInvestmentTapInRevenue",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "tapInDatetime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tapInRewardAmount",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct DkrwDelegate.UserTapInDailyReward[]",
+				"name": "",
+				"type": "tuple[]"
+			},
+			{
+				"internalType": "uint256",
+				"name": "totalRecords",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "startIdx",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "perPage",
+				"type": "uint256"
+			}
+		],
+		"name": "queryUserRecommendRevenue",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "rewardTime",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "rewardAmount",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "uname",
+						"type": "string"
+					}
+				],
+				"internalType": "struct DkrwDelegate.RecommendReward[]",
+				"name": "",
+				"type": "tuple[]"
+			},
+			{
+				"internalType": "uint256",
+				"name": "totalRecords",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "queryUserRecommendRevenueCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "queryUserRecommendRevenueDetail",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "baseInfoAddress",
+				"type": "address"
+			}
+		],
+		"name": "setBaseInfo",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "dkrwAddress",
+				"type": "address"
+			}
+		],
+		"name": "setDkrw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "bankAddress",
+				"type": "address"
+			}
+		],
+		"name": "setHBank",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "swapAddress",
+				"type": "address"
+			}
+		],
+		"name": "setHSwap",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_manager",
+				"type": "address"
+			}
+		],
+		"name": "setManager",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "tapInRecordsMapping",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "lastTapInTime",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "userInvestmentsMapping",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "investmentTime",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "investmentAmount",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "userRecommendRewardListMapping",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "rewardTime",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "rewardAmount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "uname",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "userTotalRevenueMapping",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "totalTapInRevenue",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "totalRecommendRevenue",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tapInRewardEstimate",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "token",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			}
+		],
+		"name": "withdraw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"stateMutability": "payable",
+		"type": "receive"
+	}
+]
+
+const dkrwdelegate = serojs.callContract(dkrwdelegateJson, config.dkrwdelegateAddress);
+
+const dkrwJson = [
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_marketAddr",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "level",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "reffer",
+				"type": "string"
+			}
+		],
+		"name": "avatarLog",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "refferId",
+				"type": "uint256"
+			}
+		],
+		"name": "generationLog",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "pType",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "profit",
+				"type": "uint256"
+			}
+		],
+		"name": "profitLog",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "refferCode",
+				"type": "string"
+			},
+			{
+				"internalType": "address",
+				"name": "addr",
+				"type": "address"
+			}
+		],
+		"name": "agent",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "code",
+				"type": "string"
+			}
+		],
+		"name": "decode",
+		"outputs": [
+			{
+				"internalType": "uint64",
+				"name": "",
+				"type": "uint64"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "details",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "ID",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "idLeft",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "idRight",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "leftAchievement",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "rightAchievement",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "boosterLevel",
+						"type": "uint256"
+					},
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "refferId",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "value",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "returnValue",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "canDrawupValue",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "level",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "recommendProfit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "boosterProfit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "roolupProfit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "suportProfit",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "achievement",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "otherAchievement",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "avatarValue",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "overflowValue",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct NewDKRW.Player",
+						"name": "player",
+						"type": "tuple"
+					},
+					{
+						"internalType": "string",
+						"name": "reffer",
+						"type": "string"
+					}
+				],
+				"internalType": "struct NewDKRW.Detail",
+				"name": "detail",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint64",
+				"name": "number",
+				"type": "uint64"
+			}
+		],
+		"name": "encode",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "referId",
+				"type": "uint256"
+			}
+		],
+		"name": "findLocation",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "flags",
+		"outputs": [
+			{
+				"internalType": "uint8",
+				"name": "",
+				"type": "uint8"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "id",
+				"type": "uint256"
+			}
+		],
+		"name": "getBotherId",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "childId",
+				"type": "uint256"
+			}
+		],
+		"name": "getParentId",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "idsMap",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "x",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "y",
+				"type": "uint256"
+			}
+		],
+		"name": "locationToId",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"name": "locationToIdMap",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "locations",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "x",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "y",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "players",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "refferId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "value",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "returnValue",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "canDrawupValue",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "level",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "recommendProfit",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "boosterProfit",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "roolupProfit",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "suportProfit",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "achievement",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "otherAchievement",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "avatarValue",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "overflowValue",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "refferCode",
+				"type": "string"
+			}
+		],
+		"name": "register",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_marketAddr",
+				"type": "address"
+			}
+		],
+		"name": "setMarketAddr",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "start",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "withdraw",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+];
+const dkrw = serojs.callContract(dkrwJson, config.dkrwAddress)
+
 
 class Abi {
 
@@ -1142,6 +2437,7 @@ class Abi {
 						pk: datas[i].PK,
 						mainPKr: datas[i].MainPKr,
 						name: datas[i].Name,
+						index: i
 					});
 					break;
 				}
@@ -1166,7 +2462,8 @@ class Abi {
 					pk: item.PK,
 					mainPKr: item.MainPKr,
 					name: item.Name,
-					IsCurrent: item.IsCurrent
+					IsCurrent: item.IsCurrent,
+					index: index
 				})
 			});
 			callback(accounts)
@@ -1260,9 +2557,18 @@ class Abi {
 		this.executeMethod(contract, '', pk, mainPKr, [], token, value, callback);
 	}
 
+
+
+
+
+
+
+
+
 	WithdrawIsManager(pk, mainPKr, token, value, callback) {
 		this.executeMethod(hbank, 'hbankWithdraw', pk, mainPKr, [token, value], "DECE", 0, callback);
 	}
+
 	hbankFinancing(pk, mainPKr, financeAddr, tokenStr, value, params, callback) {
 		this.executeMethod(hbank, 'financing', pk, mainPKr, [financeAddr, tokenStr, value, params], "DECE", 0, callback)
 	}
@@ -1276,12 +2582,13 @@ class Abi {
 	}
 
 	hbankRecharge(pk, mainPKr, value, data, currency, callback) {
+
 		this.executeMethod(hbank, 'recharge', pk, mainPKr, [data], currency, value, callback);
 	}
+
 	hbankWithDraw(pk, mainPKr, value, currency, callback) {
 		this.executeMethod(hbank, 'withDraw', pk, mainPKr, [currency, value], "DECE", 0, callback);
 	}
-
 
 	hbankisManager(mainPKr, callback) {
 		let self = this;
@@ -1306,7 +2613,7 @@ class Abi {
 	}
 
 	getBalances(mainPKr, callback) {
-		let value = ["DECE", "DKRW"];
+		let value = ["DECE", "DKRW", "DHAPY"];
 		this.callMethod(hbank, 'getBalances', mainPKr, [value], function (res) {
 			callback(res.item);
 		})
@@ -1318,10 +2625,10 @@ class Abi {
 		})
 	}
 
-	getUserInfoList(mainPKr,pageindex,pagecount, callback) {
+	getUserInfoList(mainPKr, pageindex, pagecount, callback) {
 		let self = this;
 
-		self.callMethod(hbank, 'getUserInfoList', mainPKr, [pageindex,pagecount], function (res) {
+		self.callMethod(hbank, 'getUserInfoList', mainPKr, [pageindex, pagecount], function (res) {
 			let pkrs = [];
 			res.retuserInfo.forEach(each => {
 				pkrs.push(each.owner);
@@ -1330,10 +2637,11 @@ class Abi {
 				res.retuserInfo.forEach(each => {
 					each.owner = rets.result[each.owner];
 				})
-				callback(res.retuserInfo,res.len);
+				callback(res.retuserInfo, res.len);
 			})
 		})
 	}
+
 	getCheckList(mainPKr, callback) {
 		let self = this;
 		this.callMethod(hbank, 'getCheckList', mainPKr, [], function (res) {
@@ -1350,10 +2658,9 @@ class Abi {
 		})
 	}
 
-	getWithdrawList(mainPKr,pageindex,pagecount, callback) {
+	getWithdrawList(mainPKr, pageindex, pagecount, callback) {
 		let self = this;
-		this.callMethod(hbank, 'getWithdrawList', mainPKr, [pageindex,pagecount], function (res) {
-			console.log(res,res.len,"--------------------------getWithdrawList")
+		this.callMethod(hbank, 'getWithdrawList', mainPKr, [pageindex, pagecount], function (res) {
 			let pkrs = [];
 			res.retcheck.forEach(each => {
 				pkrs.push(each.owner);
@@ -1362,7 +2669,7 @@ class Abi {
 				res.retcheck.forEach(each => {
 					each.owner = rets.result[each.owner];
 				})
-				callback(res.retcheck,res.len);
+				callback(res.retcheck, res.len);
 			})
 		})
 	}
@@ -1370,6 +2677,7 @@ class Abi {
 	getRegisterList(mainPKr, callback) {
 		let self = this;
 		this.callMethod(hbank, 'getRegisterList', mainPKr, [], function (res) {
+
 			let pkrs = [];
 			res.retuserInfo.forEach(each => {
 				pkrs.push(each.owner);
@@ -1383,8 +2691,9 @@ class Abi {
 
 		})
 	}
+
 	getInterestsList(mainPKr, callback) {
-		let value = ["DECE", "DKRW"];
+		let value = ["DECE", "DKRW", "DHAPY"];
 		this.callMethod(hbank, 'getInterestsList', mainPKr, [value], function (res) {
 			callback(res.item);
 		})
@@ -1412,6 +2721,73 @@ class Abi {
 		this.executeMethod(hbank, 'check', pk, mainPKr, [keys, whether], "DECE", 0, callback);
 	}
 
+	dailyTapIn(pk, mainPKr, callback) {
+		this.executeMethod(dkrwdelegate, 'dailyTapIn', pk, mainPKr, [], "DECE", 0, function (data) {
+			callback(data);
+		})
+	}
+
+	doInvest(pk, mainPKr, refferCode, cy, vulue, callback) {
+		this.executeMethod(dkrwdelegate, 'doInvest', pk, mainPKr, [refferCode], cy, vulue, function (res) {
+			callback(res)
+		});
+	}
+
+	queryTotalRevenue(mainPKr, callback) {
+		this.callMethod(dkrwdelegate, 'queryTotalRevenue', mainPKr, [], function (data) {
+			callback(data);
+		})
+	}
+
+	queryUserRecommendRevenue(mainPKr, pageindex, pagecount, callback) {
+		this.callMethod(dkrwdelegate, 'queryUserRecommendRevenue', mainPKr, [pageindex, pagecount], function (data) {
+			callback(data);
+		})
+	}
+
+	queryUserInvestment(mainPKr, pageindex, pagecount, callback) {
+		this.callMethod(dkrwdelegate, 'queryUserInvestment', mainPKr, [pageindex, pagecount], function (data) {
+			callback(data);
+		})
+	}
+
+	dkrwFinancing(pk, mainPKr, data, value, callback) {
+		this.executeMethod(dkrwdelegate, 'financing', pk, mainPKr, [data], "DKRW", value, callback)
+	}
+
+	dkrwDetail(mainPKr, callback) {
+		this.callMethod(dkrw, 'details', mainPKr, [], function (res) {
+			callback(res);
+		})
+	}
+
+	dkrwwithdraw(pk, mainPKr, token, value, callback) {
+		this.executeMethod(dkrwdelegate, 'withdraw', pk, mainPKr, [token, value], "DECE", 0, callback);
+	}
+
+	dkrwsend(pk, mainPKr, token, value, callback) {
+		this.executeMethod(dkrwdelegate, '', pk, mainPKr, [], token, value, callback);
+	}
+
+	dkrwbalanceOf(callback) {
+		seropp.getInfo(function (info) {
+			rpc.seroRpc(info.rpc, "dece_getBalance", [dkrwdelegate.address, "latest"], function (rets) {
+				let balances = [];
+				if (rets.result.tkn) {
+					let map = new Map(Object.entries(rets.result.tkn));
+					map.forEach((val, key) => {
+						balances.push({ token: key, value: new BigNumber(val).dividedBy(1e18).toFixed(3) });
+					})
+				} else {
+					balances.push({ token: "DHAPY", value: "0.00" });
+				}
+				if (callback) {
+					callback(balances);
+				}
+			});
+		});
+	}
+
 	callMethod(contract, _method, from, _args, callback) {
 		let packData = contract.packData(_method, _args);
 		let callParams = {
@@ -1419,7 +2795,7 @@ class Abi {
 			to: contract.address,
 			data: packData
 		};
-		console.log(_method, "callParams", callParams)
+
 		seropp.getInfo(function (info) {
 			rpc.seroRpc(info.rpc, "dece_call", [callParams, "latest"], function (rets) {
 				let data = rets.result
@@ -1436,7 +2812,6 @@ class Abi {
 	}
 
 	executeMethod(contract, _method, pk, mainPKr, args, tokenName, value, callback) {
-		console.log(_method, args);
 		let packData = "0x";
 
 		if ("" !== _method) {
@@ -1461,13 +2836,12 @@ class Abi {
 			cy: tokenName
 		};
 
-		console.log(estimateParam, "estimateParam")
 		seropp.getInfo(function (info) {
 			rpc.seroRpc(info.rpc, "dece_estimateGas", [estimateParam], function (ret) {
 				if (ret.error) {
 					Toast.fail("Failed to execute smart contract")
 				} else {
-					executeData["gas"] = ret.result;
+					executeData["gas"] = "0x" + new BigNumber(ret.result).multipliedBy(2).toString(16);
 					seropp.executeContract(executeData, function (res, error) {
 						if (callback) {
 							callback(res, error)

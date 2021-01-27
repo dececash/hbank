@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Flex, List, Toast, Checkbox, Button, WhiteSpace, Modal, Pagination, Tabs } from 'antd-mobile';
+import { Flex, List, Toast, Checkbox, Button, WhiteSpace, TextareaItem, Modal, Pagination, Tabs } from 'antd-mobile';
 import BigNumber from 'bignumber.js';
 import i18n from '../../i18n'
 import Nav from '../../component/nav';
@@ -113,7 +113,7 @@ class Withdrawlist extends Component {
     getWithdrawList(mainPKr, pageIndex, pageCount) {
         let self = this;
         abi.getWithdrawList(mainPKr, pageIndex, pageCount, function (res, len) {
-            if (len == 0) {
+            if (len == 0) {//eslint-disable-line
                 self.setState({
                     WithdrawlistState: false
                 })
@@ -129,7 +129,9 @@ class Withdrawlist extends Component {
                 obj.status = res[i].status;
                 obj.value = new BigNumber(res[i].value).dividedBy(10 ** 18).toString();
                 obj.key = res[i].key;
-                arr.push(obj);
+                if (obj.status == "0") {//eslint-disable-line
+                    arr.push(obj);
+                }
             }
 
             self.setState({
@@ -158,12 +160,13 @@ class Withdrawlist extends Component {
         Toast.loading("Loading...", 5)
         abi.getUserInfo(mainPKr, function (res) {
             let codestr = res[0].code.substring(2, res[0].code.length);
+            console.log(res, ">>>>>>")
             self.setState({
                 username: res[0].name,
                 useremail: res[0].email,
                 userphone: res[0].phone,
-                userimgurl: 'https://13.124.240.238/images/' + codestr + '_0.png',
-                userimgurlone: 'https://13.124.240.238/images/' + codestr + '_1.png',
+                userimgurl: 'https://ginkgobank.dece.cash/images/' + codestr + '_0.png',
+                userimgurlone: 'https://ginkgobank.dece.cash/images/' + codestr + '_1.png',
                 userstate: "",
                 showmodal: true
             })
@@ -185,7 +188,7 @@ class Withdrawlist extends Component {
                 <div className="tabcontent">
                     <Flex className="header">
                         <Flex.Item className="tabcontent-box">
-                            <img src={logo} alt="logo" />
+                            <img className="logo" src={logo} alt="logo" />
                             <p className='title'>
                                 {i18n.t("WithdrawalReview")}
                             </p>
@@ -207,7 +210,7 @@ class Withdrawlist extends Component {
                                     onTabClick={console.log("111")}
                                 >
                                     <div style={{ alignItems: 'center', justifyContent: 'center', minHeight: '150px', backgroundColor: '#fff' }}>
-                                        <List className="mytabbox-item">
+                                        <List className="mytabbox-item  listaddress">
                                             {self.state.datalist.map(item => (
                                                 <CheckboxItem checked={item.checked} key={item.i} onChange={() => this.onChange(item.i)}>
                                                     <Flex>
@@ -219,8 +222,25 @@ class Withdrawlist extends Component {
                                                     <Flex>
                                                         <Flex.Item>{i18n.t("time")}：{item.time}</Flex.Item>
                                                     </Flex>
-                                                    <Flex className="textover">
-                                                        <Flex.Item onClick={() => self.getUser(item.owner)}>{i18n.t("WalletAddress")}：{item.owner.substring(0, 6)}···{item.owner.substring(item.owner.length - 6, item.owner.length)}</Flex.Item>
+                                                    <Flex>
+                                                        <Flex.Item>
+                                                            {i18n.t("WalletAddress")}：
+                                                        </Flex.Item>
+
+                                                    </Flex>
+
+
+                                                    <Flex>
+                                                        <Flex.Item onClick={() => self.getUser(item.owner)}>
+                                                            <TextareaItem
+                                                                value={item.owner}
+                                                                data-seed="logId"
+                                                                editable={true}
+                                                                disabled={true}
+                                                                autoHeight
+                                                            />
+                                                        </Flex.Item>
+
                                                     </Flex>
                                                     <WhiteSpace size="sm" />
 
@@ -246,14 +266,12 @@ class Withdrawlist extends Component {
                                     </div>
 
 
-
                                     <div style={{ alignItems: 'center', justifyContent: 'center', minHeight: '150px', backgroundColor: '#fff' }}>
                                         {self.state.Withdrawlist.map(item => (
                                             <List className="mytabbox-item">
 
                                                 <div key={item.i} >
                                                     <WhiteSpace size="sm" />
-
                                                     <Flex>
                                                         <Flex.Item>{i18n.t("CoinName")}：{item.currency}</Flex.Item>
                                                     </Flex>
@@ -275,7 +293,7 @@ class Withdrawlist extends Component {
                                                     <WhiteSpace size="sm" />
 
                                                     <Flex className="textover">
-                                                        <Flex.Item onClick={() => self.getUser(item.owner)}>{i18n.t("WalletAddress")}：{item.owner.substring(0, 10)}···{item.owner.substring(item.owner.length - 8, item.owner.length)}</Flex.Item>
+                                                        <Flex.Item onClick={() => self.getUser(item.owner)}>{i18n.t("WalletAddress")}：{item.owner}</Flex.Item>
                                                     </Flex>
                                                     <WhiteSpace size="sm" />
                                                 </div>
@@ -306,7 +324,6 @@ class Withdrawlist extends Component {
                     <WhiteSpace size="sm" />
                 </div>
 
-
                 <Modal
                     visible={this.state.showmodal}
                     transparent
@@ -334,13 +351,13 @@ class Withdrawlist extends Component {
                             <Flex>
                                 <Flex.Item>{i18n.t("FrontofIDcard")}</Flex.Item>
                             </Flex>
-                            <div className="IDcard IDimg">
+                            <div className="IDcard IDimgs">
                                 <img src={self.state.userimgurl} />
                             </div>
                             <Flex>
                                 <Flex.Item>{i18n.t("ReversesideofIDcard")}</Flex.Item>
                             </Flex>
-                            <div className="IDcard IDimg">
+                            <div className="IDcard IDimgs">
                                 <img src={self.state.userimgurlone} />
                             </div>
                             <WhiteSpace size="sm" />

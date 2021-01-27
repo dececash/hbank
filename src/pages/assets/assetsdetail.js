@@ -54,10 +54,12 @@ class Assetsdetail extends Component {
         }
         self.setState({ isLoading: true });
         self.getData(self.state.account.mainPKr, self.state.cy, self.state.len, self.state.count + 10, function (res, profitday) {
+            console.log(res)
             self.setState({
                 profitday: profitday,
                 dataSource: self.state.dataSource.cloneWithRows(res),
-                isLoading: false
+                isLoading: false,
+                count:self.state.count+10
             });
         });
     }
@@ -80,11 +82,12 @@ class Assetsdetail extends Component {
             });
         });
     }
+
     getData(mainPKr, cy, len, count, callback) {
         let self = this;
         let arr = [];
         abi.getRecords(mainPKr, cy, len, count, function (res) {
-            console.log(res)
+            console.log(res);
             if (res.len == "0") {
                 callback([], 0, false)
             } else {
@@ -103,7 +106,6 @@ class Assetsdetail extends Component {
                         arr.push(obj);
                     }
                 }
-                console.log(res.list[0])
                 callback(arr, new BigNumber(res.list[0].value).dividedBy(10 ** 18).toFixed(3, 1), false)
             }
         })
@@ -161,7 +163,7 @@ class Assetsdetail extends Component {
                                                 </span> : <span>{
                                                     item.type == 3 ? <span>{i18n.t("profit")}</span> : <span>{
                                                         item.type == 4 ? <span>{i18n.t("Sell")}</span> : <span>{
-                                                            item.type == 5 ? <span>{i18n.t("purchase")}</span> : <span>理财</span>
+                                                            item.type == 5 ? <span>{i18n.t("purchase")}</span> : <span>{i18n.t("Financial")}</span>
                                                         }</span>
                                                     }</span>
                                                 }</span>
@@ -205,10 +207,8 @@ class Assetsdetail extends Component {
                         <Flex.Item className="center detailnum">
                             {this.state.profitday}
                         </Flex.Item>
-
                     </Flex>
                     <div className="detailcontent">
-
                         <div className="detailcontent-box">
                             <ListView
                                 ref={el => this.lv = el}

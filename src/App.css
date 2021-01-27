@@ -11,7 +11,7 @@
 
 .am-tab-bar-bar {
     height: 70px !important;
-    background-color: #414691;
+    background-color: #cf4b04;
 }
 
 .tabcontent-box {
@@ -21,11 +21,16 @@
 .tabcontent-box img {
     margin: 0 15px;
 }
+.tabcontent-box .logo {
+    margin: 0 45px;
+    height: 50px;
+}
 
 .header {
     text-align: center;
-    background-color: #414691;
+    background-color: #cf4b04;
     padding: 10px 0 0 0;
+    height: 100px;
 }
 
 .title {
@@ -33,9 +38,9 @@
     text-align: right;
     margin: 0;
     margin-right: 30px;
-    top: -20px;
+    top: -60px;
     color: white;
-    font-size: 16px;
+    font-size: 14px;
 }
 .content .listItem {
     background: #ffffff;

@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Component } from 'react';
 import 'antd-mobile/dist/antd-mobile.css';
-import { Flex, WhiteSpace, List, Checkbox, Button, Toast, Modal, Tabs, Pagination, InputItem, Icon } from 'antd-mobile';
+import { Flex, WhiteSpace, List, Checkbox, Button, Toast, Modal, TextareaItem, Tabs, Pagination, InputItem, Icon } from 'antd-mobile';
 import Nav from '../../component/nav';
 import i18n from '../../i18n'
 import logo from '../../images/logo.png';
@@ -49,20 +49,19 @@ class Userlist extends Component {
     getUsers(mainPKr) {
         let self = this;
         abi.getRegisterList(mainPKr, function (res) {
+            console.log(res, "<<<<<<<<<<")
             let arr = [];
             for (let i = 0; i < res.length; i++) {
                 let codestr = res[i].info.code.substring(2, res[i].info.code.length);
-                let obj = {
-
-                }
+                let obj = {}
                 obj.i = i;
                 obj.code = res[i].info.code;
                 obj.email = res[i].info.email;
                 obj.name = res[i].info.name;
                 obj.phone = res[i].info.phone;
                 obj.owner = res[i].owner;
-                obj.imgurl = 'https://13.124.240.238/images/' + codestr + '_0.png';
-                obj.imgurlone = 'https://13.124.240.238/images/' + codestr + '_1.png';
+                obj.imgurl = 'https://ginkgobank.dece.cash/images/' + codestr + '_0.png';
+                obj.imgurlone = 'https://ginkgobank.dece.cash/images/' + codestr + '_1.png';
                 obj.key = res[i].owner;
                 obj.checked = false;
                 arr.push(obj);
@@ -116,8 +115,8 @@ class Userlist extends Component {
                 username: res[0].name,
                 useremail: res[0].email,
                 userphone: res[0].phone,
-                userimgurl: 'https://13.124.240.238/images/' + codestr + '_0.png',
-                userimgurlone: 'https://13.124.240.238/images/' + codestr + '_1.png',
+                userimgurl: 'https://ginkgobank.dece.cash/images/' + codestr + '_0.png',
+                userimgurlone: 'https://ginkgobank.dece.cash/images/' + codestr + '_1.png',
                 userstate: res[0].state,
                 showmodal: true
             })
@@ -127,8 +126,7 @@ class Userlist extends Component {
     getUserList = (mainPKr, pageIndex, pageCount) => {
         let self = this;
         abi.getUserInfoList(mainPKr, pageIndex, pageCount, function (res, len) {
-            console.log(len)
-            if (len == 0) {
+            if (len == 0) {//eslint-disable-line
                 self.setState({
                     userlistitemState: false
                 })
@@ -137,20 +135,19 @@ class Userlist extends Component {
             let arr = [];
             for (let i = 0; i < res.length; i++) {
                 let codestr = res[i].info.code.substring(2, res[i].info.code.length);
-                let obj = {
-
-                }
+                let obj = {}
                 obj.i = i;
                 obj.code = res[i].info.code;
                 obj.email = res[i].info.email;
                 obj.name = res[i].info.name;
                 obj.phone = res[i].info.phone;
                 obj.owner = res[i].owner;
-
-                obj.imgurl = 'https://13.124.240.238/images/' + codestr + '_0.png';
-                obj.imgurlone = 'https://13.124.240.238/images/' + codestr + '_1.png';
+                obj.imgurl = 'https://ginkgobank.dece.cash/images/' + codestr + '_0.png';
+                obj.imgurlone = 'https://ginkgobank.dece.cash/images/' + codestr + '_1.png';
                 obj.key = res[i].owner;
-                arr.push(obj);
+                if (res[i].info.state == "2") {//eslint-disable-line
+                    arr.push(obj);
+                }
             }
 
             self.setState({
@@ -177,7 +174,7 @@ class Userlist extends Component {
                 <div className="tabcontent">
                     <Flex className="header">
                         <Flex.Item className="tabcontent-box">
-                            <img src={logo} alt="logo" />
+                            <img className="logo" src={logo} alt="logo" />
                             <p className='title'>
                                 {i18n.t("RegistrationReview")}
                             </p>
@@ -248,7 +245,7 @@ class Userlist extends Component {
                                     }
                                 >
                                     <div style={{ alignItems: 'center', justifyContent: 'center', minHeight: '150px', backgroundColor: '#fff' }}>
-                                        <List className="mytabbox-item">
+                                        <List className="mytabbox-item listaddress">
                                             {self.state.userlist.map(item => (
                                                 <CheckboxItem checked={item.checked} key={item.i} onChange={() => this.onChange(item.i)}>
                                                     <Flex>
@@ -260,13 +257,26 @@ class Userlist extends Component {
                                                     <Flex>
                                                         <Flex.Item>{i18n.t("mail")}：{item.email}</Flex.Item>
                                                     </Flex>
-                                                    <Flex className="textover">
-                                                        <Flex.Item>{i18n.t("WalletAddress")}：{item.owner.substring(0, 6)}···{item.owner.substring(item.owner.length - 6, item.owner.length)}</Flex.Item>
-                                                    </Flex>
+
                                                     <Flex>
+                                                        <Flex.Item>
+                                                            {i18n.t("WalletAddress")}：
+                                                        </Flex.Item>
+                                                    </Flex>
+                                                    <TextareaItem
+                                                        value={item.owner}
+                                                        data-seed="logId"
+                                                        editable={true}
+                                                        disabled={true}
+                                                        autoHeight
+                                                    />
+
+                                                    <Flex>
+
                                                         <Flex.Item>{i18n.t("FrontofIDcard")}
                                                         </Flex.Item>
                                                     </Flex>
+
                                                     <div className="IDcard IDimg">
                                                         <img src={item.imgurl} />
                                                     </div>
@@ -298,13 +308,10 @@ class Userlist extends Component {
                                         <WhiteSpace size="sm" />
                                     </div>
                                     <div style={{ alignItems: 'center', justifyContent: 'center', minHeight: '150px', backgroundColor: '#fff' }}>
-
-
                                         {
                                             self.state.userlistitemState ? <div>
                                                 {self.state.userlistitem.map(item => (
                                                     <List className="mytabbox-item">
-
                                                         <div key={item.i}>
                                                             <WhiteSpace size="sm" />
                                                             <WhiteSpace size="sm" />
@@ -321,7 +328,7 @@ class Userlist extends Component {
                                                             </Flex>
                                                             <WhiteSpace size="sm" />
                                                             <Flex className="textover">
-                                                                <Flex.Item>{i18n.t("WalletAddress")}：{item.owner.substring(0, 10)}···{item.owner.substring(item.owner.length - 8, item.owner.length)}</Flex.Item>
+                                                                <Flex.Item>{i18n.t("WalletAddress")}：{item.owner}</Flex.Item>
                                                             </Flex>
                                                             <WhiteSpace size="sm" />
                                                             <Flex>
@@ -346,7 +353,6 @@ class Userlist extends Component {
                                                         </div>
                                                     </List>
                                                 ))}
-
                                                 <WhiteSpace size="sm" />
                                                 <WhiteSpace size="sm" />
                                                 <Flex>
@@ -361,6 +367,8 @@ class Userlist extends Component {
                                                             }}
                                                         />
                                                     </Flex.Item>
+                                                    <WhiteSpace size="sm" />
+                                                    <WhiteSpace size="sm" />
                                                 </Flex>
                                             </div> : <div>{i18n.t("NoUserInformation")}</div>
                                         }
