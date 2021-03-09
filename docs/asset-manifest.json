@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "./static/css/main.37fab06c.chunk.css",
-    "main.js": "./static/js/main.90fc8e53.chunk.js",
-    "main.js.map": "./static/js/main.90fc8e53.chunk.js.map",
+    "main.js": "./static/js/main.86e16948.chunk.js",
+    "main.js.map": "./static/js/main.86e16948.chunk.js.map",
     "runtime-main.js": "./static/js/runtime-main.9c82e1d4.js",
     "runtime-main.js.map": "./static/js/runtime-main.9c82e1d4.js.map",
     "static/css/2.c7372e46.chunk.css": "./static/css/2.c7372e46.chunk.css",
@@ -13,6 +13,7 @@
     "static/css/main.37fab06c.chunk.css.map": "./static/css/main.37fab06c.chunk.css.map",
     "static/js/2.590cd036.chunk.js.LICENSE.txt": "./static/js/2.590cd036.chunk.js.LICENSE.txt",
     "static/media/DECE.a13a904b.png": "./static/media/DECE.a13a904b.png",
+    "static/media/DHAPY.0547c219.png": "./static/media/DHAPY.0547c219.png",
     "static/media/index.less": "./static/media/index.f7a4e92c.less",
     "static/media/worldshareblack.43ce78fc.png": "./static/media/worldshareblack.43ce78fc.png"
   },
@@ -21,6 +22,6 @@
     "static/css/2.c7372e46.chunk.css",
     "static/js/2.590cd036.chunk.js",
     "static/css/main.37fab06c.chunk.css",
-    "static/js/main.90fc8e53.chunk.js"
+    "static/js/main.86e16948.chunk.js"
   ]
 }

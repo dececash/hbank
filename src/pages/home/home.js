@@ -13,7 +13,7 @@ import logo from '../../images/logo.png'
 import './home.css'
 
 import swap_icon from '../../icons/swap.png';
-import swaped_icon from '../../icons/swaped.png';
+// import swaped_icon from '../../icons/swaped.png';
 
 
 const operation = Modal.operation;
