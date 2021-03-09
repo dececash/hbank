@@ -35,3 +35,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.am-modal-transparent {
+  top: 50px;
+}
