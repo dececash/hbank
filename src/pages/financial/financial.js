@@ -11,6 +11,7 @@ import Nav from '../../component/nav'
 import i18n from '../../i18n';
 import logo from '../../images/logo.png'
 import worldshareblack from '../../images/worldshareblack.png'
+import commodity from '../../images/commodity.png'
 import abi from '../../api/abi';
 const alert = Modal.alert;
 
@@ -68,7 +69,7 @@ class Financial extends Component {
                         </Flex.Item>
                     </Flex>
                 </div>
-                <div className="content">
+                <div className="content commodity">
 
                     <div className="financial" onClick={() => {
                         alert(`${i18n.t("Terms")}`, <div className="Terms">
@@ -167,6 +168,74 @@ class Financial extends Component {
                         </div>
 
                     </div>
+
+                    <div className="financial" onClick={() => {
+                        alert(``, <div className="Terms-center">
+                            <p>상품이 소진되어 조기 마감되었습니다.</p>
+                            <p>감사합니다.</p>
+                        </div>, [
+                            { text: `${i18n.t("confirm")}`, onPress: () => console.log('cancel'), style: { color: "#ffffff", background: "#fc752b" } },
+                        ])
+                    }
+                    }>
+                        <div className="financial-box">
+                            <div className="financial-header">
+                                <p>SUMONEY_IDV연금상품(210308_IDV 1호) </p>
+                            </div>
+                            <div className="financial-contet">
+                                <img src={commodity} />
+                            </div>
+
+                            <div className="financial-bottom">
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p>가입 대상 </p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p>GINKGOBANK KYC 완료 회원</p>
+                                    </div>
+                                </div>
+
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p>가입 기간</p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p>2021.03.09(화) ~ 2021.03.10(수)</p>
+                                        <p>*상품 소진 시 조기 마감 가능</p>
+                                    </div>
+                                </div>
+
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p>개인 구매 한도</p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p></p>
+                                    </div>
+                                </div>
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p className="text">SOFT CAP</p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p>110,000DKRW(10,000IDV)</p>
+                                    </div>
+                                </div>
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p className="text">HARD CAP</p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p>1,100,000DKRW(100,000IDV)</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
             </Nav>
         )

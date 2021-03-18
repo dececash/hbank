@@ -226,10 +226,7 @@ class Withdrawlist extends Component {
                                                         <Flex.Item>
                                                             {i18n.t("WalletAddress")}：
                                                         </Flex.Item>
-
                                                     </Flex>
-
-
                                                     <Flex>
                                                         <Flex.Item onClick={() => self.getUser(item.owner)}>
                                                             <TextareaItem
@@ -240,7 +237,6 @@ class Withdrawlist extends Component {
                                                                 autoHeight
                                                             />
                                                         </Flex.Item>
-
                                                     </Flex>
                                                     <WhiteSpace size="sm" />
 

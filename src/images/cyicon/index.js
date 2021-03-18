@@ -1,0 +1,10 @@
+import DECE from './DECE.png'
+import HAPY from './HAPY.png'
+import DHAPY from './DHAPY.png'
+import FPT from './FPT.png'
+import DKRW  from './DKRW.png'
+
+
+export {
+    DECE,DHAPY,HAPY,DKRW,FPT
+}

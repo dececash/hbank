@@ -9,9 +9,8 @@ import { WingBlank, WhiteSpace, Flex, Modal, InputItem, Toast, Card, Button } fr
 import BigNumber from 'bignumber.js'
 import abi from '../../api/abi.js'
 import logo from '../../images/logo.png';
-import DECE from '../../images/DECE.png';
-import DKRW from '../../images/DKRW.png';
-import DHAPY from '../../images/DHAPY.png';
+
+import {DECE,DKRW,DHAPY,FPT,HAPY} from '../../images/cyicon/index'
 import { bytes32ToToken } from "../../api/common";
 
 
@@ -60,6 +59,10 @@ class Bank extends Component {
                         obj.url = DKRW;
                     } else if (Array.from(new Set(arr))[i] == "DHAPY") {
                         obj.url = DHAPY;
+                    } else if (Array.from(new Set(arr))[i] == "FPT") {
+                        obj.url = FPT;
+                    }else if (Array.from(new Set(arr))[i] == "HAPY") {
+                        obj.url = HAPY;
                     }
                     arrimg.push(obj);
                 }

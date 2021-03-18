@@ -9,7 +9,8 @@ import BigNumber from 'bignumber.js'
 import abi from '../../api/abi';
 import Nav from '../../component/nav'
 import logo from '../../images/logo.png';
-import DHAPY from '../../images/DHAPY.png';
+import {DHAPY} from "../../images/cyicon/index"
+
 
 
 const alert = Modal.alert;

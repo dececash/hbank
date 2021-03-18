@@ -36,5 +36,6 @@
   text-overflow: ellipsis;
 }
 .am-modal-transparent {
-  top: 50px;
+  max-height: 550px;
+  overflow: scroll;
 }

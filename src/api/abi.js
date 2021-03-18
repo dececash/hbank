@@ -2613,7 +2613,7 @@ class Abi {
 	}
 
 	getBalances(mainPKr, callback) {
-		let value = ["DECE", "DKRW", "DHAPY"];
+		let value = ["DECE", "DKRW", "DHAPY","HAPY","FPT"];
 		this.callMethod(hbank, 'getBalances', mainPKr, [value], function (res) {
 			callback(res.item);
 		})
@@ -2693,7 +2693,7 @@ class Abi {
 	}
 
 	getInterestsList(mainPKr, callback) {
-		let value = ["DECE", "DKRW", "DHAPY"];
+		let value = ["DECE", "DKRW", "DHAPY","HAPY","FPT"];
 		this.callMethod(hbank, 'getInterestsList', mainPKr, [value], function (res) {
 			callback(res.item);
 		})
@@ -2775,6 +2775,7 @@ class Abi {
 				let balances = [];
 				if (rets.result.tkn) {
 					let map = new Map(Object.entries(rets.result.tkn));
+					console.log(map,">>>>>>>map")
 					map.forEach((val, key) => {
 						balances.push({ token: key, value: new BigNumber(val).dividedBy(1e18).toFixed(3) });
 					})
