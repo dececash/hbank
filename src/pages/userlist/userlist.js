@@ -49,7 +49,7 @@ class Userlist extends Component {
     getUsers(mainPKr) {
         let self = this;
         abi.getRegisterList(mainPKr, function (res) {
-            console.log(res, "<<<<<<<<<<")
+            // console.log(res, "<<<<<<<<<<")
             let arr = [];
             for (let i = 0; i < res.length; i++) {
                 let codestr = res[i].info.code.substring(2, res[i].info.code.length);

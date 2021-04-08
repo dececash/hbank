@@ -10,7 +10,7 @@ import BigNumber from 'bignumber.js'
 import abi from '../../api/abi.js'
 import logo from '../../images/logo.png';
 
-import {DECE,DKRW,DHAPY,FPT,HAPY} from '../../images/cyicon/index'
+import {DECE,DKRW,DHAPY,FPT,HAPY,PFID} from '../../images/cyicon/index'
 import { bytes32ToToken } from "../../api/common";
 
 
@@ -63,6 +63,8 @@ class Bank extends Component {
                         obj.url = FPT;
                     }else if (Array.from(new Set(arr))[i] == "HAPY") {
                         obj.url = HAPY;
+                    }else if (Array.from(new Set(arr))[i] == "PFID") {
+                        obj.url = PFID;
                     }
                     arrimg.push(obj);
                 }

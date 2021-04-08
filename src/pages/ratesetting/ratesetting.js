@@ -9,7 +9,7 @@ import i18n from '../../i18n';
 import BigNumber from 'bignumber.js'
 import logo from '../../images/logo.png';
 
-import {DECE,DKRW,DHAPY,FPT,HAPY} from '../../images/cyicon/index'
+import {DECE,DKRW,DHAPY,FPT,HAPY,PFID} from '../../images/cyicon/index'
 import './ratesetting.css';
 import abi from '../../api/abi';
 const alert = Modal.alert;
@@ -57,6 +57,8 @@ class Ratesetting extends Component {
                     obj.url = FPT;
                 }else if (res[i].cy == "HAPY") {
                     obj.url = HAPY;
+                }else if (res[i].cy == "PFID") {
+                    obj.url = PFID;
                 }
                 arr.push(obj);
             }

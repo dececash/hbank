@@ -12,7 +12,7 @@ import i18n from '../../i18n'
 import abi from '../../api/abi';
 import logo from '../../images/logo.png';
 
-import {DECE,DKRW,DHAPY,FPT,HAPY} from '../../images/cyicon/index'
+import {DECE,DKRW,DHAPY,FPT,HAPY,PFID} from '../../images/cyicon/index'
 
 import BigNumber from 'bignumber.js';
 const alert = Modal.alert;
@@ -79,6 +79,8 @@ class Assets extends Component {
                     obj.url = FPT;
                 }else if (res[i].cy == "HAPY") {
                     obj.url = HAPY;
+                }else if (res[i].cy == "PFID") {
+                    obj.url = PFID;
                 }
                 arr.push(obj);
             }

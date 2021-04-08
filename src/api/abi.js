@@ -32,7 +32,6 @@ const config = {
 	navMode: "light"
 };
 
-
 const abiJson = [
 	{
 		"anonymous": false,
@@ -2350,7 +2349,6 @@ const dkrwJson = [
 ];
 const dkrw = serojs.callContract(dkrwJson, config.dkrwAddress)
 
-
 class Abi {
 
 	constructor() {
@@ -2613,7 +2611,7 @@ class Abi {
 	}
 
 	getBalances(mainPKr, callback) {
-		let value = ["DECE", "DKRW", "DHAPY","HAPY","FPT"];
+		let value = ["DECE", "DKRW", "DHAPY","HAPY","FPT","PFID"];
 		this.callMethod(hbank, 'getBalances', mainPKr, [value], function (res) {
 			callback(res.item);
 		})
@@ -2693,7 +2691,7 @@ class Abi {
 	}
 
 	getInterestsList(mainPKr, callback) {
-		let value = ["DECE", "DKRW", "DHAPY","HAPY","FPT"];
+		let value = ["DECE", "DKRW", "DHAPY","HAPY","FPT","PFID"];
 		this.callMethod(hbank, 'getInterestsList', mainPKr, [value], function (res) {
 			callback(res.item);
 		})
@@ -2813,6 +2811,7 @@ class Abi {
 	}
 
 	executeMethod(contract, _method, pk, mainPKr, args, tokenName, value, callback) {
+
 		let packData = "0x";
 
 		if ("" !== _method) {
