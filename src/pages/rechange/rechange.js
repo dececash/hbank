@@ -43,7 +43,6 @@ class Rechange extends Component {
         })
     }
 
-
     send(token, value) {
         let self = this;
         abi.dkrwsend(this.state.account.pk, this.state.account.mainPKr, token, value, function (hash, err) {

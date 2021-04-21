@@ -13,7 +13,10 @@ import logo from '../../images/logo.png'
 import worldshareblack from '../../images/worldshareblack.png'
 import commodity from '../../images/commodity.png'
 import pfid from '../../images/pfid.png'
+import map from "../../images/map.png"
+import bchain from "../../images/bchain.png"
 import abi from '../../api/abi';
+
 const alert = Modal.alert;
 
 class Financial extends Component {
@@ -331,28 +334,167 @@ class Financial extends Component {
 
                             </div>
                             <div className="financial-bottom" style={{ background: "#F7D6C7" }}>
-                                <div className="financial-bottom-box">
+                                <div className="financial-bottom-box1">
                                     <span style={{ color: "#EA572B", paddingTop: "10px", }}>*유의사항</span>
                                 </div>
-                                <div className="financial-bottom-box">
-                                    <span>1)본 상품은 DECE기반 PFID로 참여가능하며, SERO 및 ETH기반 PFID는 월렛 입금 및 상품에 참여할 수 없습니다.</span>
-                                </div>
-                                <div className="financial-bottom-box">
-                                    <span>2)상시 참여가능 상품으로 상품 서비스 제공기간은 최장 2년 입니다.</span>
-                                </div>
-                                <div className="financial-bottom-box">
-                                    <span>3)연이율은 최대 기준으로,최초3개월, 6개월로 참여시이자율이공시와 다를 수 있습니다.</span>
-                                </div>
-                                <div className="financial-bottom-box">
-                                    <span>4)중도해지 가능상품이며 중도해지시 이자는 발생하지않습니다.</span>
+                            </div>
+                            <div style={{ background: "#F7D6C7", fontSize: "12px" }}>
+                                <div className="financial-bottom-box1" style={{ transform: "scale(0.8)" }}>
+                                    <p style={{margin:"0px"}}>1)본 상품은 DECE기반 PFID로 참여가능하며, SERO 및 ETH기반 PFID는 월렛 입금 및 상품에 참여할 수 없습니다.</p>
+                                    <p style={{margin:"0px"}}>2)상시 참여가능 상품으로 상품 서비스 제공기간은 최장 2년 입니다.</p>
+                                    <p style={{margin:"0px"}}>3)연이율은 최대 기준으로,최초3개월, 6개월로 참여시이자율이공시와 다를 수 있습니다.</p>
+                                    <p style={{margin:"0px"}}>4)중도해지 가능상품이며 중도해지시 이자는 발생하지않습니다.</p>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
+                    <div className="financial" onClick={() => {
+                        alert(``, <div className="Terms-center">
+                            <p>상품이 소진되어 조기 마감되었습니다.</p>
+                            <p>감사합니다.</p>
+                        </div>, [
+                            { text: `${i18n.t("confirm")}`, onPress: () => console.log('cancel'), style: { color: "#ffffff", background: "#fc752b" } },
+                        ])
+                    }
+                    }>
+                        <div className="financial-box">
+                            <div className="financial-header">
+                                <p>SUMONEY_MAP연금상품(210407_MAP 1호) </p>
+                            </div>
+                            <div className="financial-contet">
+                                <img src={map} />
+                            </div>
+
+                            <div className="financial-bottom">
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p>가입 대상 </p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p>GINKGOBANK KYC 완료 회원</p>
+                                    </div>
+                                </div>
+
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p>가입 기간</p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p>2021.04.11(일) ~ 2021.04.16 (금)</p>
+                                        <p>*상품 소진 시 조기 마감 가능</p>
+                                    </div>
+                                </div>
+
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p>개인 구매 한도</p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p></p>
+                                    </div>
+                                </div>
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p className="text">SOFT CAP</p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p>160,000DKRW  (1,000MAP)</p>
+                                    </div>
+                                </div>
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p className="text">HARD CAP</p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p>1,600,000DKRW (10,000MAP)</p>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div className="financial-bottom" style={{ background: "#EEEDF0" }}>
+                                <div className="financial-bottom-box1">
+                                    <span style={{ color: "#EA572B", paddingTop: "10px", }}>*유의사항</span>
+                                </div>
+                                {/* <div className="financial-bottom-box">
+                                    <span>1) 본 상품은 DKRW로 참여 가능한 기간 한정 연금상품 입니다.</span>
+                                </div>*/}
+                            </div>
+                            <div style={{ background: "#EEEDF0", fontSize: "12px" }}>
+                                <div className="financial-bottom-box1" style={{ transform: "scale(0.8)" }}>
+                                    <p style={{margin:"0px"}}>1) 본 상품은 DKRW로 참여 가능한 기간 한정 연금상품 입니다.</p>
+                                    <p style={{margin:"0px"}}>2) 계약기간 3개월 단기상품 입니다.</p>
+                                    <p style={{margin:"0px"}}>3) Map 연금 상품은 수익을 보장하지 않으며 만기시점의 시장가격에 따라 원금 DKRW의 손실이 있을 수 있습니다. Map 프로젝트의 내용을 자세히 확인 후 본인의 판단에 따라 참여바랍니다.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="financial" onClick={() => {
+                        alert(``, <div className="Terms-center">
+                            <p>상품이 소진되어 조기 마감되었습니다.</p>
+                            <p>감사합니다.</p>
+                        </div>, [
+                            { text: `${i18n.t("confirm")}`, onPress: () => console.log('cancel'), style: { color: "#ffffff", background: "#fc752b" } },
+                        ])
+                    }
+                    }>
+                        <div className="financial-box">
+                            <div className="financial-header">
+                                <p>뿌리깊은 나무 House Bchain VIP (1호) </p>
+                            </div>
+                            <div className="financial-contet">
+                                <img src={bchain} />
+                            </div>
+
+                            <div className="financial-bottom">
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p>신청 대상</p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p>GINKGOBANK KYC 완료 회원</p>
+                                    </div>
+                                </div>
+
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p>신청 기간</p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p>2021.04.19(월)~2021.04.21 (수)</p>
+                                    </div>
+                                </div>
+
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p>개인 구매 한도</p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p>Fix 1,050,000DKRW(3,000P-Unit)</p>
+                                    </div>
+                                </div>
+                                <div className="financial-bottom-box">
+                                    <p style={{ background: "#df673470" }}>*자세한 사항은 홍보물을 참조해주세요.</p>
+                                </div>
+                            </div>
+                            <div className="financial-bottom" style={{ background: "#EEEDF0",paddind:"0px" }}>
+                                <div className="financial-bottom-box1">
+                                    <span style={{ color: "#EA572B", paddingTop: "10px", }}>*유의사항</span>
+                                </div>
+                            </div>
+                            <div style={{ background: "#EEEDF0", fontSize: "12px" }}>
+                                <div className="financial-bottom-box1" style={{ transform: "scale(0.8)" }}>
+                                    <p style={{margin:"0px"}}>본 House BChain VIP는 무조건적인 수익을 보장하는 것은 아니기에 신청 후 책임은 개인에게 있습니다.</p>
+                                    <p style={{margin:"0px"}}> House BChain VIP를 중간에 탈퇴할 시 환불이 불가하며 House BChain VIP 신청시 제출한 정보의 오기입, 개인의 부주의로 인하여 발생한 손실에 대해서 GINGKOBANKD(는 보상하지 않습니다. 향 후 법률 및 회사  의 사정으로 인하여 House BChain VIP 내용은 변동될 수 있습니다.</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                 </div>
-            </Nav>
+
+            </Nav >
         )
     }
 }

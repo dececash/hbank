@@ -282,7 +282,9 @@ contract Hbank is BaseInterface,Ownable {
             if(count.add(pageCount)>len){
                 pageCount=len.sub(count);
             }
+
             retcheck = new RetCheck[](pageCount);
+
             for(uint i=0;i<pageCount;i++){
                 
                 CheckList.Check memory each = withdrawList[count.add(i)];
@@ -334,10 +336,11 @@ contract Hbank is BaseInterface,Ownable {
         if(len == 0) {
             return (0, list, statusList);
         }
+
         if(index > len) {
-            index = len;
-            
+            index = len;    
         }
+        
         uint end;
         
         if(index > count ) {  

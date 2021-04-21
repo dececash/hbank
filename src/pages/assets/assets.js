@@ -12,7 +12,7 @@ import i18n from '../../i18n'
 import abi from '../../api/abi';
 import logo from '../../images/logo.png';
 
-import {DECE,DKRW,DHAPY,FPT,HAPY,PFID} from '../../images/cyicon/index'
+import {DECE,DKRW,DHAPY,FPT,HAPY,PFID,PUNIT} from '../../images/cyicon/index'
 
 import BigNumber from 'bignumber.js';
 const alert = Modal.alert;
@@ -59,6 +59,7 @@ class Assets extends Component {
     getBalances(mainPKr) {
         let self = this;
         abi.getBalances(mainPKr, function (res) {
+            console.log(res,">>>>>>>>>>>>>")
             let arr = [];
             for (let i = 0; i < res.length; i++) {
                 let obj = {
@@ -81,6 +82,8 @@ class Assets extends Component {
                     obj.url = HAPY;
                 }else if (res[i].cy == "PFID") {
                     obj.url = PFID;
+                }else if (res[i].cy == "PUNIT") {
+                    obj.url = PUNIT;
                 }
                 arr.push(obj);
             }

@@ -2611,7 +2611,7 @@ class Abi {
 	}
 
 	getBalances(mainPKr, callback) {
-		let value = ["DECE", "DKRW", "DHAPY","HAPY","FPT","PFID"];
+		let value = ["DECE", "DKRW", "DHAPY","HAPY","FPT","PFID","PUNIT"];
 		this.callMethod(hbank, 'getBalances', mainPKr, [value], function (res) {
 			callback(res.item);
 		})
@@ -2686,12 +2686,11 @@ class Abi {
 				})
 				callback(res.retuserInfo);
 			})
-
 		})
 	}
 
 	getInterestsList(mainPKr, callback) {
-		let value = ["DECE", "DKRW", "DHAPY","HAPY","FPT","PFID"];
+		let value = ["DECE", "DKRW", "DHAPY","HAPY","FPT","PFID","PUNIT"];
 		this.callMethod(hbank, 'getInterestsList', mainPKr, [value], function (res) {
 			callback(res.item);
 		})

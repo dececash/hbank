@@ -373,8 +373,7 @@ contract DkrwDelegate is BaseInterface, Ownable {
         if (dayInterval == 0) {
             return (0, 0);
         }
-        
-        
+            
         uint256 totalReward = (investmentAmount * REWARD_PERCENT * dayInterval);
         uint256 thisTimeReward = totalReward / REWARD_SPLIT / 100 ;
         
@@ -404,10 +403,8 @@ contract DkrwDelegate is BaseInterface, Ownable {
         
         uint256 totalRewardThisTime = 0;
         UserTapInRecords memory userTapInRecords = tapInRecordsMapping[userAddress];
-
         uint256 lastTapInDatetime = userTapInRecords.lastTapInTime;
         
-
         for (uint index = userInvestments.length - 1; index >= 0; index--) {
             Investment memory currentInvestment = userInvestments[index];
             uint256 secInterval = currentInvestment.investmentTime + (DAY_SECS * REWARD_SPLIT);
@@ -504,13 +501,11 @@ contract DkrwDelegate is BaseInterface, Ownable {
     function simulateTapIn(address userAddress, uint tapInTime) private returns (uint256, uint256) {
         return rewardDailyTapIn(userAddress, tapInTime);
     }
-    
-    
+        
     function simulateEstimate(address userAddress, uint tapInTime) private view returns (uint256) {
         uint256 estimateRewards = estimateTapInRewards(userAddress, tapInTime);
         return estimateRewards;
     }
-
 
     function dailyTapIn() public returns (uint256, uint256) {
         return rewardDailyTapIn(msg.sender, now);
@@ -524,7 +519,6 @@ contract DkrwDelegate is BaseInterface, Ownable {
         return delegateQueryTotalRevenue(msg.sender, now);
     }
     function queryUserRecommendRevenue(uint startIdx, uint256 perPage) public view returns (RecommendReward[] memory, uint256 totalRecords) {
-
         RecommendReward[] memory content = userRecommendRewardListMapping[msg.sender];
         
 		(uint256 startIndex, uint256 endIndex) = countPageIndexV2(content.length, startIdx, perPage);
