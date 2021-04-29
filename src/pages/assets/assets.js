@@ -59,7 +59,7 @@ class Assets extends Component {
     getBalances(mainPKr) {
         let self = this;
         abi.getBalances(mainPKr, function (res) {
-            console.log(res,">>>>>>>>>>>>>")
+            // console.log(res,">>>>>>>>>>>>>")
             let arr = [];
             for (let i = 0; i < res.length; i++) {
                 let obj = {
