@@ -82,6 +82,7 @@ class Register extends Component {
             var formData = new FormData();
             formData.append("image", img);
             abi.hash(self.state.account.pk, function (code) {
+                console.log(code,">>>>>>>>>>")
                 let urls = 'https://ginkgobank.dece.cash/upload/?nomark=0&accessToken=000&id=' + type + '&code=' + code;
                 axios({
                     method: 'post',
@@ -213,7 +214,7 @@ class Register extends Component {
     render() {
         let self = this;
         return (
-            <Nav selectedTab="4">
+            <Nav selectedTab="5">
                 <div className="tabcontent">
                     <Flex className="header">
                         <Flex.Item className="tabcontent-box">

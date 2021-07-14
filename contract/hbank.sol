@@ -359,7 +359,6 @@ contract Hbank is BaseInterface,Ownable {
             statusList[index-i]=checkList.getStatus(genKey(msg.sender, currency, i));
             
             if(i == 0) {
-                
                 break;
             }
         }
@@ -497,6 +496,7 @@ contract Hbank is BaseInterface,Ownable {
         return value;
      }
     
+    
     function financing(address financeAddr, string memory tokenStr, uint256 value, bytes memory params) public {
         
         _update(msg.sender, strings._stringToBytes32(tokenStr), value, OperateType.FINANCE);
@@ -633,14 +633,13 @@ contract Hbank is BaseInterface,Ownable {
     }
     
     function bytes32ToAddress(bytes32  datas) internal view returns (address addr) {
-        
           bytes memory tmp = new bytes(32);
         
           assembly {
             mstore(tmp, datas)
             addr := mload(tmp)
          }
-     }
+    }
      
     function addressToBytes32(address addr) internal view returns (bytes32 temp) {
          
@@ -650,6 +649,5 @@ contract Hbank is BaseInterface,Ownable {
             temp := mload(tmp)
          }
      }
-    
 }
 

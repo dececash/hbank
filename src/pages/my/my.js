@@ -18,6 +18,7 @@ class My extends Component {
             account: {},
             HbankisManager: false,
             isManager: false,
+            fixedprodManager: false,
             Kycstate: false
         }
     }
@@ -25,6 +26,7 @@ class My extends Component {
         let self = this;
         let obj = JSON.parse(sessionStorage.getItem('account'));
         self.getHbankIsManager(obj.mainPKr);
+        self.getFixedprodManager(obj.mainPKr);
         self.getIsManager(obj.mainPKr);
         self.getUser(obj.mainPKr);
         self.setState({
@@ -43,6 +45,14 @@ class My extends Component {
         })
     }
 
+    getFixedprodManager(mainPKr) {
+        let self = this;
+        abi.fixedprodisManager(mainPKr, function (res) {
+            self.setState({
+                fixedprodManager: res[0]
+            })
+        })
+    }
     getIsManager(mainPKr) {
         let self = this;
         abi.isOwner(mainPKr, function (res) {
@@ -59,7 +69,6 @@ class My extends Component {
 
     getHbankIsManager(mainPKr) {
         let self = this;
-
         abi.hbankisOwner(mainPKr, function (res) {
             abi.hbankisManager(mainPKr, function (data) {
                 if (res || data) {
@@ -70,10 +79,11 @@ class My extends Component {
             })
         })
     }
+
     render() {
         let self = this;
         return (
-            <Nav selectedTab="4">
+            <Nav selectedTab="5">
                 <div className="tabcontent">
                     <Flex className="header">
                         <Flex.Item className="tabcontent-box">
@@ -103,14 +113,14 @@ class My extends Component {
                                     </Flex>
                                 </div>
                             </Link> : <Link to={{ pathname: `/register` }} >
-                                    <div className="listItem">
-                                        <Flex>
-                                            <Flex.Item>
-                                                <span className="assetstitle">{i18n.t("register")}KYC</span>
-                                            </Flex.Item>
-                                        </Flex>
-                                    </div>
-                                </Link>
+                                <div className="listItem">
+                                    <Flex>
+                                        <Flex.Item>
+                                            <span className="assetstitle">{i18n.t("register")}KYC</span>
+                                        </Flex.Item>
+                                    </Flex>
+                                </div>
+                            </Link>
                         }
                         {
                             self.state.HbankisManager ? <div><Link to={{ pathname: `/withdrawlist` }} >
@@ -164,6 +174,22 @@ class My extends Component {
                                 </div>
                             </Link></div> : <div></div>
                         }
+
+
+                        {
+                            self.state.fixedprodManager ? <div> <Link to={{ pathname: `/regular` }} >
+                                <div className="listItem">
+                                    <Flex>
+                                        <Flex.Item>
+                                            <span className="assetstitle">{i18n.t("Regularmanagement")}</span>
+                                        </Flex.Item>
+                                    </Flex>
+                                </div>
+                            </Link></div> : <div></div>
+                        }
+
+
+
                         <div className="listItem">
                             <Flex>
                                 <Flex.Item>

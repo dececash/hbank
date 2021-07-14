@@ -49,7 +49,7 @@ class Ratesetting extends Component {
                 obj.token = res[i].cy;
                 if (res[i].cy == "DECE") {
                     obj.url = DECE;
-                } else if (res[i].cy == "DKRW") {
+                }else if (res[i].cy == "DKRW") {
                     obj.url = DKRW;
                 }else if (res[i].cy == "DHAPY") {
                     obj.url = DHAPY;
@@ -132,7 +132,7 @@ class Ratesetting extends Component {
     render() {
         let self = this;
         return (
-            <Nav selectedTab="4">
+            <Nav selectedTab="5">
                 <div className="tabcontent">
                     <Flex className="header">
                         <Flex.Item className="tabcontent-box">

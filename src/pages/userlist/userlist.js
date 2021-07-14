@@ -133,6 +133,8 @@ class Userlist extends Component {
             }
             let pageNum = Math.ceil(len / self.state.pageCount) - 1;
             let arr = [];
+            console.log(res,">>>>>>>>>>>>>>>>")
+
             for (let i = 0; i < res.length; i++) {
                 let codestr = res[i].info.code.substring(2, res[i].info.code.length);
                 let obj = {}
@@ -149,7 +151,6 @@ class Userlist extends Component {
                     arr.push(obj);
                 }
             }
-
             self.setState({
                 userlistitem: arr,
                 len: pageNum,
@@ -167,10 +168,11 @@ class Userlist extends Component {
             self.getUserList(self.state.account.mainPKr, pageIndex, self.state.pageCount);
         }
     }
+    
     render() {
         let self = this;
         return (
-            <Nav selectedTab="4">
+            <Nav selectedTab="5">
                 <div className="tabcontent">
                     <Flex className="header">
                         <Flex.Item className="tabcontent-box">

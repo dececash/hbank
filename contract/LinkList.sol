@@ -22,16 +22,17 @@ library LinkList {
             index = self.map[index].next;
         }
     }
-    
   
     function push(List storage self, bytes32 key) internal {
         if( self.map[key].key != bytes32(0)) {
             return;
         }
+        
         self.map[key]=Node({key:key,next:0});
         if(self.head == bytes32(0)) {
             self.head = key;
         }
+
         if( self.tail != bytes32(0)) {
              self.map[self.tail].next = key;
         }
@@ -52,12 +53,12 @@ library LinkList {
             }
             
             if(index != bytes32(0)) {
-                 self.map[index].next = self.map[key].next;
-                 delete self.map[key];
-                 if(key == self.tail) {
-                     self.tail = index;
-                 }
-                 self.len--;
+                self.map[index].next = self.map[key].next;
+                delete self.map[key];
+                if(key == self.tail) {
+                    self.tail = index;
+                }
+                self.len--;
             }
         }
         

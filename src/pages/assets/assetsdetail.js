@@ -87,7 +87,6 @@ class Assetsdetail extends Component {
         let self = this;
         let arr = [];
         abi.getRecords(mainPKr, cy, len, count, function (res) {
-            console.log(res);
             if (res.len == "0") {
                 callback([], 0, false)
             } else {

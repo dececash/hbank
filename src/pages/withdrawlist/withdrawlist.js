@@ -184,7 +184,7 @@ class Withdrawlist extends Component {
     render() {
         let self = this;
         return (
-            <Nav selectedTab="4">
+            <Nav selectedTab="5">
                 <div className="tabcontent">
                     <Flex className="header">
                         <Flex.Item className="tabcontent-box">
@@ -207,7 +207,7 @@ class Withdrawlist extends Component {
                                     useOnPan={false}
                                     renderTab={tab => <span>{tab.title}</span>
                                     }
-                                    onTabClick={console.log("111")}
+                                    onTabClick={console.log("")}
                                 >
                                     <div style={{ alignItems: 'center', justifyContent: 'center', minHeight: '150px', backgroundColor: '#fff' }}>
                                         <List className="mytabbox-item  listaddress">
@@ -239,7 +239,6 @@ class Withdrawlist extends Component {
                                                         </Flex.Item>
                                                     </Flex>
                                                     <WhiteSpace size="sm" />
-
                                                 </CheckboxItem>
                                             ))}
                                         </List>
@@ -261,11 +260,9 @@ class Withdrawlist extends Component {
                                         <WhiteSpace size="sm" />
                                     </div>
 
-
                                     <div style={{ alignItems: 'center', justifyContent: 'center', minHeight: '150px', backgroundColor: '#fff' }}>
                                         {self.state.Withdrawlist.map(item => (
                                             <List className="mytabbox-item">
-
                                                 <div key={item.i} >
                                                     <WhiteSpace size="sm" />
                                                     <Flex>

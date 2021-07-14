@@ -121,6 +121,7 @@ class Recommendlist extends Component {
                 }}
             />
         );
+        
         const row = (item, sectionID, rowID) => {
             return (
                 <div key={rowID}>
@@ -161,7 +162,6 @@ class Recommendlist extends Component {
                     </Flex.Item>
                 </Flex>
                 <div className="detailcontent">
-
                     <div className="detailcontent-box">
                         <ListView
                             ref={el => this.lv = el}
@@ -183,7 +183,6 @@ class Recommendlist extends Component {
                         />
                     </div>
                 </div>
-
             </Nav>
         )
     }

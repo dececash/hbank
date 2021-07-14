@@ -110,6 +110,33 @@ export default class nav extends React.Component {
                         {this.renderContent('financial')}
                     </TabBar.Item>
 
+                    {/* <TabBar.Item
+                        icon={
+                            <div style={{
+                                width: '32px',
+                                height: '32px',
+                                background: 'url(https://ginkgobank.dece.cash/images/test/access.png) center center /  31px 31px no-repeat'
+                            }}
+                            />
+                        }
+                        selectedIcon={
+                            <div style={{
+                                width: '32px',
+                                height: '32px',
+                                background: 'url(https://ginkgobank.dece.cash/images/test/accessed.png) center center /  31px 31px no-repeat'
+                            }}
+                            />
+                        }
+                        title={i18n.t("Depositandwithdrawal")}
+                        key="fixedprod"
+                        selected={this.props.selectedTab === '4'}
+                        onPress={() => {
+                            this.goPage("#/fixedprod")
+                        }}
+                    >
+                        {this.renderContent('fixedprod')}
+                    </TabBar.Item> */}
+
                     <TabBar.Item
                         icon={
                             <div style={{
@@ -129,7 +156,7 @@ export default class nav extends React.Component {
                         }
                         title={i18n.t("mine")}
                         key="my"
-                        selected={this.props.selectedTab === '4'}
+                        selected={this.props.selectedTab === '5'}
                         onPress={() => {
                             this.goPage("#/my")
                         }}

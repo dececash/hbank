@@ -10,6 +10,7 @@ import Withdrawlist from './pages/withdrawlist/withdrawlist';
 import Userlist from './pages/userlist/userlist';
 import Bank from './pages/bank/bank';
 import Rechange from './pages/rechange/rechange';
+import Regular from './pages/regular/regular';
 
 import Financial from './pages/financial/financial';
 import Worldshare from './pages/worldshare/worldshare';
@@ -19,6 +20,9 @@ import Recommendlist from './pages/worldshare/recommendlist';
 
 import Assets from './pages/assets/assets';
 import Assetsdetail from './pages/assets/assetsdetail';
+
+import Fixedprod from './pages/fixedprod/fixedprod';
+import FixedprodDetail from './pages/fixedprod/fixedproddetail';
 
 function App() {
   return (
@@ -40,14 +44,18 @@ function App() {
           <Route path="/userlist" component={Userlist} />
           <Route path="/bank" component={Bank} />
           <Route path="/rechange" component={Rechange} />
+          <Route path="/regular" component={Regular} />
 
           <Route path="/assets" component={Assets} />
           <Route path="/assetsdetail" component={Assetsdetail} />
+          
+          <Route path="/fixedprod" component={Fixedprod} />
+          <Route path="/fixedproddetail" component={FixedprodDetail} />
 
           <Route exact path="/" component={Assets} />
         </Switch>
       </Router>
-    </div>
+    </div>       
   );
 }
 

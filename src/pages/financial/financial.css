@@ -23,6 +23,47 @@
 .financial .financial-box .financial-contet img {
   width: 100%;
 }
+.financial .financial-box .fixedprod-contet {
+  width: 100%;
+  height: 120px;
+}
+.financial .financial-box .fixedprod-contet img {
+  width: 100%;
+}
+.financial .financial-box .financial-mindle {
+  background-color: #f8cbad;
+  padding: 40px 0 15px 0;
+}
+.financial .financial-box .financial-mindle p {
+  margin: 0 0 8px 0 !important;
+  text-align: center;
+}
+.financial .financial-box .financial-mindle .financial-rate {
+  color: #fc210a;
+  text-align: center;
+  font-weight: bold;
+  font-size: 24px;
+  padding: 20px 0 10px 0;
+}
+.financial .financial-box .financial-mindle .financial-date {
+  padding-top: 10px;
+  font-weight: bold;
+}
+.financial .financial-box .financial-info div {
+  width: 70%;
+  margin: 0 15%;
+  padding: 5px 0;
+}
+.financial .financial-box .financial-info div p {
+  text-align: center;
+  background-color: #ffc000;
+  padding: 5px 0;
+  font-size: 16px;
+}
+.financial .financial-box .financial-info div p span {
+  color: #fc210a;
+  margin-right: 5px;
+}
 .financial .financial-box .financial-bottom .financial-bottom-box {
   width: 90%;
   margin-left: 10%;

@@ -47,6 +47,7 @@ class Financial extends Component {
             }
         })
     }
+    
     goWorldShare(url) {
         let self = this;
         if (self.state.IsWorldShare) {
@@ -486,8 +487,6 @@ class Financial extends Component {
                             </div>
                         </div>
                     </div>
-
-
 
                     <div className="financial" onClick={() => {
                         alert(``, <div className="Terms-center">

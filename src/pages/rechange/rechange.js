@@ -9,7 +9,7 @@ import BigNumber from 'bignumber.js'
 import abi from '../../api/abi';
 import Nav from '../../component/nav'
 import logo from '../../images/logo.png';
-import {DHAPY} from "../../images/cyicon/index"
+import { DHAPY } from "../../images/cyicon/index"
 
 
 
@@ -72,7 +72,7 @@ class Rechange extends Component {
     render() {
         let self = this;
         return (
-            <Nav selectedTab="4">
+            <Nav selectedTab="5">
                 <div className="tabcontent">
                     <Flex className="header">
                         <Flex.Item className="tabcontent-box">
@@ -97,9 +97,7 @@ class Rechange extends Component {
                                         <Button size="small" onClick={() => {
                                             alert(<span>{i18n.t("Recharge")}</span>, <div>
                                                 <div>
-                                                    <InputItem
-                                                        placeholder="value"
-                                                        ref={el => this.valueInputRef = el}>VALUE:</InputItem>
+                                                    <InputItem placeholder="value" ref={el => this.valueInputRef = el}>VALUE:</InputItem>
                                                 </div>
                                             </div>, [
                                                 { text: `${i18n.t("cancel")}`, onPress: () => console.log('cancel') },

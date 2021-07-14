@@ -153,7 +153,7 @@ contract DkrwDelegate is BaseInterface, Ownable {
     uint DAY_SECS = 60*60*24;  // 60*60*24; 
     
     struct Investment {
-      
+        
         uint256 investmentTime;
         uint256 investmentAmount;
         

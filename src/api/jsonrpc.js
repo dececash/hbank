@@ -13,6 +13,7 @@ class JsonRpc {
             method: _method,
             params: _params,
         };
+        // console.log(rpc,data)
         axios.post(rpc, data).then(function (response) {
             let data = response.data
             if (callback) {

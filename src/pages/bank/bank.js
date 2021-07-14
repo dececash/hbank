@@ -36,6 +36,7 @@ class Bank extends Component {
     getList(mainPKr) {
         let self = this;
         abi.pairList(mainPKr, function (data) {
+            // console.log(data,">>>>>>>>>>");
             let arr = [];
             if (data != []) {
                 for (let i = 0; i < data.length; i++) {
@@ -80,7 +81,7 @@ class Bank extends Component {
     getBalanceOf(arr) {
         let self = this;
         abi.balanceOf(function (res) {
-            console.log(res)
+            // console.log(res)
             if (res != []) {
                 for (let i = 0; i < res.length; i++) {
                     for (let j = 0; j < arr.length; j++) {
@@ -151,7 +152,7 @@ class Bank extends Component {
         let self = this;
         return (
             <WingBlank>
-                <Nav selectedTab="4">
+                <Nav selectedTab="5">
                     <div className="tabcontent">
                         <Flex className="header">
                             <Flex.Item className="tabcontent-box">
@@ -313,3 +314,4 @@ class Bank extends Component {
 }
 
 export default Bank;
+
