@@ -1,23 +1,43 @@
 import seropp from 'sero-pp'
 import serojs from "serojs";
 import BigNumber from 'bignumber.js'
-import { Toast } from "antd-mobile";
+import {
+	Toast
+} from "antd-mobile";
 import i18n from '../i18n';
 import { JsonRpc } from "./jsonrpc";
 import keccak256 from "keccak256";
+import {
+	dkrwJson,
+	abiJson,
+	hbankJson,
+	dkrwdelegateJson,
+	iclassJson,
+	kycJson,
+	fixedprodJson,
+	dkrwBrigeJson
+} from './abijson';
+import base58 from 'bs58';
+
+
 const Web3EthAbi = require('web3-eth-abi');
-const bs58 = require('bs58')
+const bs58 = require('bs58');
 const rpc = new JsonRpc();
+const ed25519 = require('ed25519-wasm-pro');
 
 const config = {
 	name: " WS BANK",
-	
+
 	contractAddress: "5sDcSj6m1NL1ho5jczaFf1zYHG1yymW6WW1SsxxDnud92mrgjNDRZFGdNKDK15rJ3PC9Ca2HyWBgdi5YuLCX8yYc",
 	hbankAddress: "2LaPfgdkTzWPxy6o2e81PFpU5oBAZdy58eE1ScdHGeeov9oxaAmBybJ8C2DBH8o7fKSjPgR25gTC7zDnGehymj4V",
 	dkrwdelegateAddress: "5sWtPb2ap1ABpHYM1uBEEMVLJgaYmRVLaxik9u83JUoiUubzmSKB5HwRhm2SKAuGzL7eE2gcTYMENuTJ5sqgy34k",
 	dkrwAddress: "48jaTaWHnoGivTRMdZHEUuDktA4hkL68qaJF5P1za52HQymezdtaJdmZTWJs1fuZmzbpW7sU3sUYGjW9hBwDcrEo",
 	iclassAddress: "7kQ4X5WruzD1ukRkcRWWdawHqLUQBuwyEmSHsk25oRAozwefNdTEh3MC9ZY7waEh2tHFHDV4DNxsnMMsh6cAGQz",
-	fixedprodAddress:"sujKP6EL4fgGz4hvhroyD9KBWkkBKwE9pqnA18udcvHdeKEEVjDL2VYXixQDKT8sEoQN16WAcdJDsF1q8nU7URf",
+	fixedprodAddress: "sujKP6EL4fgGz4hvhroyD9KBWkkBKwE9pqnA18udcvHdeKEEVjDL2VYXixQDKT8sEoQN16WAcdJDsF1q8nU7URf",
+	kycaddress: "4iaZ8dYDxbJ2G1qHwwM1cskkSpPnpCPkwG1KEASLM1HWLZdcvZ5FHqunJcPzQhZfVTzXSoSDmcyLQvPdwA13Eg71",
+
+	dkrwBrigeAddress: "3MjQztAi7Jw1N28PzJGou4Mc88ur5h26YyrtfUoyRNhi1PYhd7KDw7LYtZRmd5CDvLRYaxRy4iW2b9TYTVoT7Zoi",
+
 
 	github: "https://github.com/dececash/hbank",
 	author: "WS BANK",
@@ -29,2820 +49,24 @@ const config = {
 	navMode: "light"
 };
 
-const abiJson = [
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "previousOwner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipTransferred",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "tokenA",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "tokenB",
-				"type": "string"
-			}
-		],
-		"name": "delPair",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "token",
-				"type": "string"
-			}
-		],
-		"name": "exchange",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "value",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "tokenA",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "tokenB",
-				"type": "string"
-			}
-		],
-		"name": "getPrice",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "keys",
-		"outputs": [
-			{
-				"internalType": "bytes32",
-				"name": "head",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "bytes32",
-				"name": "tail",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "uint256",
-				"name": "len",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "manager",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_start",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_end",
-				"type": "uint256"
-			}
-		],
-		"name": "pairList",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "bytes32",
-						"name": "tokenA",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "bytes32",
-						"name": "tokenB",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "uint256",
-						"name": "price",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "feeRate",
-						"type": "uint256"
-					}
-				],
-				"internalType": "struct Swap.Pair[]",
-				"name": "rets",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "",
-				"type": "bytes32"
-			}
-		],
-		"name": "pairs",
-		"outputs": [
-			{
-				"internalType": "bytes32",
-				"name": "tokenA",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "bytes32",
-				"name": "tokenB",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "uint256",
-				"name": "price",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "feeRate",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "tokenA",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "tokenB",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "feeRate",
-				"type": "uint256"
-			}
-		],
-		"name": "setFeeRate",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_manager",
-				"type": "address"
-			}
-		],
-		"name": "setManager",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "tokenA",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "tokenB",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "price",
-				"type": "uint256"
-			}
-		],
-		"name": "setPair",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "token",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "value",
-				"type": "uint256"
-			}
-		],
-		"name": "withdraw",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"stateMutability": "payable",
-		"type": "receive"
-	}
-]
-
 const contract = serojs.callContract(abiJson, config.contractAddress);
-
-const hbankJson = [
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_swap",
-				"type": "address"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "previousOwner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipTransferred",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32[]",
-				"name": "keys",
-				"type": "bytes32[]"
-			},
-			{
-				"internalType": "bool",
-				"name": "flag",
-				"type": "bool"
-			}
-		],
-		"name": "check",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address[]",
-				"name": "list",
-				"type": "address[]"
-			},
-			{
-				"internalType": "bool",
-				"name": "flag",
-				"type": "bool"
-			}
-		],
-		"name": "checkUsers",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_tokenA",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "value",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "_tokenB",
-				"type": "string"
-			}
-		],
-		"name": "exchange",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "financeAddr",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "tokenStr",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "value",
-				"type": "uint256"
-			},
-			{
-				"internalType": "bytes",
-				"name": "params",
-				"type": "bytes"
-			}
-		],
-		"name": "financing",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32[]",
-				"name": "currencys",
-				"type": "bytes32[]"
-			}
-		],
-		"name": "getBalances",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "string",
-						"name": "cy",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "value",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "lasttime",
-						"type": "uint256"
-					}
-				],
-				"internalType": "struct Hbank.RetAsset[]",
-				"name": "item",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getCheckList",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "bytes32",
-						"name": "key",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "address",
-						"name": "owner",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "value",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "time",
-						"type": "uint256"
-					},
-					{
-						"internalType": "string",
-						"name": "currency",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "status",
-						"type": "uint256"
-					}
-				],
-				"internalType": "struct Hbank.RetCheck[]",
-				"name": "retcheck",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32[]",
-				"name": "currencys",
-				"type": "bytes32[]"
-			}
-		],
-		"name": "getInterestsList",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "string",
-						"name": "cy",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "iRate",
-						"type": "uint256"
-					}
-				],
-				"internalType": "struct Hbank.RetInterest[]",
-				"name": "item",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "currency",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "index",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "count",
-				"type": "uint256"
-			}
-		],
-		"name": "getRecords",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "len",
-				"type": "uint256"
-			},
-			{
-				"components": [
-					{
-						"internalType": "uint256",
-						"name": "value",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "time",
-						"type": "uint256"
-					},
-					{
-						"internalType": "enum Hbank.OperateType",
-						"name": "rType",
-						"type": "uint8"
-					}
-				],
-				"internalType": "struct Hbank.Record[]",
-				"name": "list",
-				"type": "tuple[]"
-			},
-			{
-				"internalType": "uint256[]",
-				"name": "statusList",
-				"type": "uint256[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getRegisterList",
-		"outputs": [
-			{
-				"components": [
-					{
-						"components": [
-							{
-								"internalType": "string",
-								"name": "name",
-								"type": "string"
-							},
-							{
-								"internalType": "string",
-								"name": "phone",
-								"type": "string"
-							},
-							{
-								"internalType": "string",
-								"name": "email",
-								"type": "string"
-							},
-							{
-								"internalType": "bytes32",
-								"name": "code",
-								"type": "bytes32"
-							},
-							{
-								"internalType": "enum Hbank.KycState",
-								"name": "state",
-								"type": "uint8"
-							}
-						],
-						"internalType": "struct Hbank.UserInfo",
-						"name": "info",
-						"type": "tuple"
-					},
-					{
-						"internalType": "address",
-						"name": "owner",
-						"type": "address"
-					}
-				],
-				"internalType": "struct Hbank.RetuserInfo[]",
-				"name": "retuserInfo",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "UserAddress",
-				"type": "address"
-			}
-		],
-		"name": "getUserInfo",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "string",
-						"name": "name",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "phone",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "email",
-						"type": "string"
-					},
-					{
-						"internalType": "bytes32",
-						"name": "code",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "enum Hbank.KycState",
-						"name": "state",
-						"type": "uint8"
-					}
-				],
-				"internalType": "struct Hbank.UserInfo",
-				"name": "",
-				"type": "tuple"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "pageIndex",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "pageCount",
-				"type": "uint256"
-			}
-		],
-		"name": "getUserInfoList",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "len",
-				"type": "uint256"
-			},
-			{
-				"components": [
-					{
-						"components": [
-							{
-								"internalType": "string",
-								"name": "name",
-								"type": "string"
-							},
-							{
-								"internalType": "string",
-								"name": "phone",
-								"type": "string"
-							},
-							{
-								"internalType": "string",
-								"name": "email",
-								"type": "string"
-							},
-							{
-								"internalType": "bytes32",
-								"name": "code",
-								"type": "bytes32"
-							},
-							{
-								"internalType": "enum Hbank.KycState",
-								"name": "state",
-								"type": "uint8"
-							}
-						],
-						"internalType": "struct Hbank.UserInfo",
-						"name": "info",
-						"type": "tuple"
-					},
-					{
-						"internalType": "address",
-						"name": "owner",
-						"type": "address"
-					}
-				],
-				"internalType": "struct Hbank.RetuserInfo[]",
-				"name": "retuserInfo",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "pageIndex",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "pageCount",
-				"type": "uint256"
-			}
-		],
-		"name": "getWithdrawList",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "len",
-				"type": "uint256"
-			},
-			{
-				"components": [
-					{
-						"internalType": "bytes32",
-						"name": "key",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "address",
-						"name": "owner",
-						"type": "address"
-					},
-					{
-						"internalType": "uint256",
-						"name": "value",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "time",
-						"type": "uint256"
-					},
-					{
-						"internalType": "string",
-						"name": "currency",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "status",
-						"type": "uint256"
-					}
-				],
-				"internalType": "struct Hbank.RetCheck[]",
-				"name": "retcheck",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "token",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "value",
-				"type": "uint256"
-			}
-		],
-		"name": "hbankWithdraw",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "interests",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "time",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "iRate",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "manager",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "userAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "phone",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "email",
-				"type": "string"
-			}
-		],
-		"name": "modifyInformation",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes",
-				"name": "data",
-				"type": "bytes"
-			}
-		],
-		"name": "recharge",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "phone",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "email",
-				"type": "string"
-			},
-			{
-				"internalType": "bytes32",
-				"name": "code",
-				"type": "bytes32"
-			}
-		],
-		"name": "register",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_swap",
-				"type": "address"
-			}
-		],
-		"name": "setHSwap",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "currency",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "iRate",
-				"type": "uint256"
-			}
-		],
-		"name": "setInterest",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_manager",
-				"type": "address"
-			}
-		],
-		"name": "setManager",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "currency",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "value",
-				"type": "uint256"
-			}
-		],
-		"name": "withDraw",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"stateMutability": "payable",
-		"type": "receive"
-	}
-]
 
 const hbank = serojs.callContract(hbankJson, config.hbankAddress);
 
-const dkrwdelegateJson = [
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_dkrw",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "_baseInfo",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "_hbank",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "_hSwap",
-				"type": "address"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "previousOwner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipTransferred",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "RewardLog",
-		"type": "event"
-	},
-	{
-		"inputs": [],
-		"name": "contractOwner",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "dailyTapIn",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "userAddress",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "estimateTapInTime",
-				"type": "uint256"
-			}
-		],
-		"name": "delegateQueryTotalRevenue",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "refferCode",
-				"type": "string"
-			},
-			{
-				"internalType": "bool",
-				"name": "flag",
-				"type": "bool"
-			}
-		],
-		"name": "doInvest",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes",
-				"name": "opData",
-				"type": "bytes"
-			}
-		],
-		"name": "financing",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "refferCode",
-				"type": "string"
-			},
-			{
-				"internalType": "address",
-				"name": "investorAddr",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "investmentAmount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "happenedTime",
-				"type": "uint256"
-			}
-		],
-		"name": "investAction",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "manager",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "queryTapInRevenueCount",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "index",
-				"type": "uint256"
-			}
-		],
-		"name": "queryTapInRevenueDetail",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "queryTotalRevenue",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "start",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "perPage",
-				"type": "uint256"
-			}
-		],
-		"name": "queryUserInvestment",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "uint256",
-						"name": "investmentTime",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "investmentAmount",
-						"type": "uint256"
-					}
-				],
-				"internalType": "struct DkrwDelegate.Investment[]",
-				"name": "",
-				"type": "tuple[]"
-			},
-			{
-				"internalType": "uint256",
-				"name": "totalRecords",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "start",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "perPage",
-				"type": "uint256"
-			}
-		],
-		"name": "queryUserInvestmentTapInRevenue",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "uint256",
-						"name": "tapInDatetime",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "tapInRewardAmount",
-						"type": "uint256"
-					}
-				],
-				"internalType": "struct DkrwDelegate.UserTapInDailyReward[]",
-				"name": "",
-				"type": "tuple[]"
-			},
-			{
-				"internalType": "uint256",
-				"name": "totalRecords",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "startIdx",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "perPage",
-				"type": "uint256"
-			}
-		],
-		"name": "queryUserRecommendRevenue",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "uint256",
-						"name": "rewardTime",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "rewardAmount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "string",
-						"name": "uname",
-						"type": "string"
-					}
-				],
-				"internalType": "struct DkrwDelegate.RecommendReward[]",
-				"name": "",
-				"type": "tuple[]"
-			},
-			{
-				"internalType": "uint256",
-				"name": "totalRecords",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "queryUserRecommendRevenueCount",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "index",
-				"type": "uint256"
-			}
-		],
-		"name": "queryUserRecommendRevenueDetail",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "baseInfoAddress",
-				"type": "address"
-			}
-		],
-		"name": "setBaseInfo",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "dkrwAddress",
-				"type": "address"
-			}
-		],
-		"name": "setDkrw",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "bankAddress",
-				"type": "address"
-			}
-		],
-		"name": "setHBank",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "swapAddress",
-				"type": "address"
-			}
-		],
-		"name": "setHSwap",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_manager",
-				"type": "address"
-			}
-		],
-		"name": "setManager",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "tapInRecordsMapping",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "lastTapInTime",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "userInvestmentsMapping",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "investmentTime",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "investmentAmount",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "userRecommendRewardListMapping",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "rewardTime",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "rewardAmount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "uname",
-				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "userTotalRevenueMapping",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "totalTapInRevenue",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "totalRecommendRevenue",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "tapInRewardEstimate",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "token",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "value",
-				"type": "uint256"
-			}
-		],
-		"name": "withdraw",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"stateMutability": "payable",
-		"type": "receive"
-	}
-]
-
 const dkrwdelegate = serojs.callContract(dkrwdelegateJson, config.dkrwdelegateAddress);
 
-const dkrwJson = [
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_marketAddr",
-				"type": "address"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "previousOwner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipTransferred",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "id",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "level",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "string",
-				"name": "reffer",
-				"type": "string"
-			}
-		],
-		"name": "avatarLog",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "id",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "refferId",
-				"type": "uint256"
-			}
-		],
-		"name": "generationLog",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "id",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "pType",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "value",
-				"type": "uint256"
-			},
-			{
-				"indexed": false,
-				"internalType": "uint256",
-				"name": "profit",
-				"type": "uint256"
-			}
-		],
-		"name": "profitLog",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "refferCode",
-				"type": "string"
-			},
-			{
-				"internalType": "address",
-				"name": "addr",
-				"type": "address"
-			}
-		],
-		"name": "agent",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "code",
-				"type": "string"
-			}
-		],
-		"name": "decode",
-		"outputs": [
-			{
-				"internalType": "uint64",
-				"name": "",
-				"type": "uint64"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "details",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "uint256",
-						"name": "ID",
-						"type": "uint256"
-					},
-					{
-						"internalType": "string",
-						"name": "idLeft",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "idRight",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "leftAchievement",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "rightAchievement",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "boosterLevel",
-						"type": "uint256"
-					},
-					{
-						"components": [
-							{
-								"internalType": "uint256",
-								"name": "refferId",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "value",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "returnValue",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "canDrawupValue",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "level",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "recommendProfit",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "boosterProfit",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "roolupProfit",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "suportProfit",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "achievement",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "otherAchievement",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "avatarValue",
-								"type": "uint256"
-							},
-							{
-								"internalType": "uint256",
-								"name": "overflowValue",
-								"type": "uint256"
-							}
-						],
-						"internalType": "struct NewDKRW.Player",
-						"name": "player",
-						"type": "tuple"
-					},
-					{
-						"internalType": "string",
-						"name": "reffer",
-						"type": "string"
-					}
-				],
-				"internalType": "struct NewDKRW.Detail",
-				"name": "detail",
-				"type": "tuple"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint64",
-				"name": "number",
-				"type": "uint64"
-			}
-		],
-		"name": "encode",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "referId",
-				"type": "uint256"
-			}
-		],
-		"name": "findLocation",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "flags",
-		"outputs": [
-			{
-				"internalType": "uint8",
-				"name": "",
-				"type": "uint8"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "id",
-				"type": "uint256"
-			}
-		],
-		"name": "getBotherId",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "childId",
-				"type": "uint256"
-			}
-		],
-		"name": "getParentId",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "idsMap",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "x",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "y",
-				"type": "uint256"
-			}
-		],
-		"name": "locationToId",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "",
-				"type": "bytes32"
-			}
-		],
-		"name": "locationToIdMap",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "locations",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "x",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "y",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "players",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "refferId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "value",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "returnValue",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "canDrawupValue",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "level",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "recommendProfit",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "boosterProfit",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "roolupProfit",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "suportProfit",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "achievement",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "otherAchievement",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "avatarValue",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "overflowValue",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "refferCode",
-				"type": "string"
-			}
-		],
-		"name": "register",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_marketAddr",
-				"type": "address"
-			}
-		],
-		"name": "setMarketAddr",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "start",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "withdraw",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	}
-];
 const dkrw = serojs.callContract(dkrwJson, config.dkrwAddress)
-
-const iclassJson = [
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "previousOwner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipTransferred",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "token",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "uint256",
-				"name": "nDay",
-				"type": "uint256"
-			}
-		],
-		"name": "getClassRate",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "manager",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_manager",
-				"type": "address"
-			},
-			{
-				"internalType": "bool",
-				"name": "flag",
-				"type": "bool"
-			}
-		],
-		"name": "setManager",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "token",
-				"type": "string"
-			},
-			{
-				"internalType": "uint16",
-				"name": "rate",
-				"type": "uint16"
-			},
-			{
-				"internalType": "uint256",
-				"name": "index",
-				"type": "uint256"
-			}
-		],
-		"name": "setRate",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	}
-];
 
 const iclass = serojs.callContract(iclassJson, config.iclassAddress);
 
-const fixedprodJson=[
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_classManager",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "_bank",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "_swap",
-				"type": "address"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "previousOwner",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "OwnershipTransferred",
-		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_token",
-				"type": "string"
-			},
-			{
-				"internalType": "bool",
-				"name": "flag",
-				"type": "bool"
-			}
-		],
-		"name": "allow",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes32",
-				"name": "",
-				"type": "bytes32"
-			}
-		],
-		"name": "allowTokens",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "depositTokenStr",
-				"type": "string"
-			}
-		],
-		"name": "deposit",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "bytes",
-				"name": "opData",
-				"type": "bytes"
-			}
-		],
-		"name": "financing",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "manager",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "token",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "value",
-				"type": "uint256"
-			}
-		],
-		"name": "managerWithdraw",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "owner",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "startIndex",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "pageCount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "string",
-				"name": "_token",
-				"type": "string"
-			},
-			{
-				"internalType": "address",
-				"name": "self",
-				"type": "address"
-			}
-		],
-		"name": "prodList",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "len",
-				"type": "uint256"
-			},
-			{
-				"components": [
-					{
-						"internalType": "address",
-						"name": "owner",
-						"type": "address"
-					},
-					{
-						"internalType": "bytes32",
-						"name": "token",
-						"type": "bytes32"
-					},
-					{
-						"internalType": "uint256",
-						"name": "amount",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "createTime",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "withdrawValue",
-						"type": "uint256"
-					}
-				],
-				"internalType": "struct fixedprod.Product[]",
-				"name": "prodList",
-				"type": "tuple[]"
-			},
-			{
-				"internalType": "uint256[]",
-				"name": "indexs",
-				"type": "uint256[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "prods",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "owner",
-				"type": "address"
-			},
-			{
-				"internalType": "bytes32",
-				"name": "token",
-				"type": "bytes32"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "createTime",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "withdrawValue",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "classAddress",
-				"type": "address"
-			}
-		],
-		"name": "setClass",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "bankAddress",
-				"type": "address"
-			}
-		],
-		"name": "setHBank",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_swap",
-				"type": "address"
-			}
-		],
-		"name": "setHSwap",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_manager",
-				"type": "address"
-			},
-			{
-				"internalType": "bool",
-				"name": "flag",
-				"type": "bool"
-			}
-		],
-		"name": "setManager",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "newOwner",
-				"type": "address"
-			}
-		],
-		"name": "transferOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "index",
-				"type": "uint256"
-			}
-		],
-		"name": "withdraw",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"stateMutability": "payable",
-		"type": "receive"
-	}
-]
-
 const fixedprod = serojs.callContract(fixedprodJson, config.fixedprodAddress);
 
-const proxyAddr = bs58.encode(Buffer.from(bs58.decode(config.fixedprodAddress).toString('hex')
-	+ '0000000000000000000000000000000000000000000000000000000000000000', 'hex'))
+const kyc = serojs.callContract(kycJson, config.kycaddress);
+
+const dkrwBrige = serojs.callContract(dkrwBrigeJson, config.dkrwBrigeAddress);
+
+const proxyAddr = bs58.encode(Buffer.from(bs58.decode(config.fixedprodAddress).toString('hex') +
+	'0000000000000000000000000000000000000000000000000000000000000000', 'hex'))
 class Abi {
 
 	constructor() {
@@ -2868,6 +92,7 @@ class Abi {
 	getFullAddress(pkrs, callback) {
 		seropp.getInfo(function (info) {
 			rpc.seroRpc(info.rpc, "dece_getFullAddress", [pkrs], function (rets) {
+				// console.log(rets)
 				callback(rets);
 			});
 		});
@@ -2925,10 +150,12 @@ class Abi {
 		seropp.getAccountList(function (datas) {
 			for (var i = 0; i < datas.length; i++) {
 				if (datas[i].IsCurrent == undefined || datas[i].IsCurrent) {
+					// console.log(datas[i].Balance.get("DKRW"))
 					callback({
 						pk: datas[i].PK,
 						mainPKr: datas[i].MainPKr,
 						name: datas[i].Name,
+						dkrwAmount: datas[i].Balance.get("DKRW") || 0,
 						index: i
 					});
 					break;
@@ -2942,7 +169,12 @@ class Abi {
 			return;
 		}
 		seropp.getAccountDetail(pk, function (item) {
-			callback({ pk: item.PK, mainPKr: item.MainPKr, name: item.Name })
+			callback({
+				pk: item.PK,
+				mainPKr: item.MainPKr,
+				name: item.Name,
+				balance : item.Balance.get("DKRW") || 0,
+			});
 		});
 	}
 
@@ -2955,13 +187,16 @@ class Abi {
 					mainPKr: item.MainPKr,
 					name: item.Name,
 					IsCurrent: item.IsCurrent,
-					index: index
+					index: index,
+					dkrwAmount: item.Balance.get("DKRW") || 0,
 				})
 			});
 			callback(accounts)
 		});
 	}
-
+	/**
+	 * contract
+	 */
 	isManager(mainPKr, callback) {
 		let self = this;
 		this.callMethod(contract, 'manager', mainPKr, [], function (ret) {
@@ -2991,7 +226,10 @@ class Abi {
 				if (rets.result.tkn) {
 					let map = new Map(Object.entries(rets.result.tkn));
 					map.forEach((val, key) => {
-						balances.push({ token: key, value: new BigNumber(val).dividedBy(1e18).toFixed(3) });
+						balances.push({
+							token: key,
+							value: new BigNumber(val).dividedBy(1e18).toFixed(3)
+						});
 					})
 				}
 				if (callback) {
@@ -3008,7 +246,10 @@ class Abi {
 				if (rets.result.tkn) {
 					let map = new Map(Object.entries(rets.result.tkn));
 					map.forEach((val, key) => {
-						balances.push({ token: key, value: new BigNumber(val).dividedBy(1e18).toFixed(3) });
+						balances.push({
+							token: key,
+							value: new BigNumber(val).dividedBy(1e18).toFixed(3)
+						});
 					})
 				}
 				if (callback) {
@@ -3050,8 +291,9 @@ class Abi {
 		this.executeMethod(contract, '', pk, mainPKr, [], token, value, callback);
 	}
 
-
-
+	/**
+	 * hbank
+	 */
 	WithdrawIsManager(pk, mainPKr, token, value, callback) {
 		this.executeMethod(hbank, 'hbankWithdraw', pk, mainPKr, [token, value], "DECE", 0, callback);
 	}
@@ -3110,7 +352,6 @@ class Abi {
 			callback(res);
 		})
 	}
-
 
 	getUserInfoList(mainPKr, pageindex, pagecount, callback) {
 		let self = this;
@@ -3190,6 +431,7 @@ class Abi {
 	}
 
 	register(pk, mainPKr, name, phone, email, code, callback) {
+		// console.log(pk, mainPKr, name, phone, email, code,"register")
 		this.executeMethod(hbank, 'register', pk, mainPKr, [name, phone, email, code], "DECE", 0, callback)
 	}
 
@@ -3205,6 +447,22 @@ class Abi {
 
 	review(pk, mainPKr, keys, whether, callback) {
 		this.executeMethod(hbank, 'check', pk, mainPKr, [keys, whether], "DECE", 0, callback);
+	}
+
+	getkyc(mainPKr, pageindex, pagecount, callback) {
+		let self = this;
+		self.callMethod(kyc, 'getUserInfoList', mainPKr, [pageindex, pagecount], function (res) {
+			let pkrs = [];
+			res.retuserInfo.forEach(each => {
+				pkrs.push(each.owner);
+			})
+			self.getFullAddress(pkrs, function (rets) {
+				res.retuserInfo.forEach(each => {
+					each.owner = rets.result[each.owner];
+				})
+				callback(res.retuserInfo, res.len);
+			})
+		})
 	}
 
 	dailyTapIn(pk, mainPKr, callback) {
@@ -3241,12 +499,6 @@ class Abi {
 		this.executeMethod(dkrwdelegate, 'financing', pk, mainPKr, [data], "DKRW", value, callback)
 	}
 
-	dkrwDetail(mainPKr, callback) {
-		this.callMethod(dkrw, 'details', mainPKr, [], function (res) {
-			callback(res);
-		})
-	}
-
 	dkrwwithdraw(pk, mainPKr, token, value, callback) {
 		this.executeMethod(dkrwdelegate, 'withdraw', pk, mainPKr, [token, value], "DECE", 0, callback);
 	}
@@ -3255,18 +507,30 @@ class Abi {
 		this.executeMethod(dkrwdelegate, '', pk, mainPKr, [], token, value, callback);
 	}
 
+	dkrwDetail(mainPKr, callback) {
+		this.callMethod(dkrw, 'details', mainPKr, [], function (res) {
+			callback(res);
+		})
+	}
+
 	dkrwbalanceOf(callback) {
 		seropp.getInfo(function (info) {
 			rpc.seroRpc(info.rpc, "dece_getBalance", [dkrwdelegate.address, "latest"], function (rets) {
 				let balances = [];
+				console.log(rets, "bal")
 				if (rets.result.tkn) {
 					let map = new Map(Object.entries(rets.result.tkn));
-					// console.log(map, ">>>>>>>map")
 					map.forEach((val, key) => {
-						balances.push({ token: key, value: new BigNumber(val).dividedBy(1e18).toFixed(3) });
+						balances.push({
+							token: key,
+							value: new BigNumber(val).dividedBy(1e18).toFixed(3)
+						});
 					})
 				} else {
-					balances.push({ token: "DHAPY", value: "0.00" });
+					balances.push({
+						token: "DHAPY",
+						value: "0.00"
+					});
 				}
 				if (callback) {
 					callback(balances);
@@ -3274,8 +538,6 @@ class Abi {
 			});
 		});
 	}
-
-
 
 	classGetClassRate(mainPKr, cy, nDay, callback) {
 		this.callMethod(iclass, 'getClassRate', mainPKr, [cy, nDay], function (res) {
@@ -3327,7 +589,10 @@ class Abi {
 				if (rets.result.tkn) {
 					let map = new Map(Object.entries(rets.result.tkn));
 					map.forEach((val, key) => {
-						balances.push({ token: key, value: new BigNumber(val).dividedBy(1e18).toFixed(3) });
+						balances.push({
+							token: key,
+							value: new BigNumber(val).dividedBy(1e18).toFixed(3)
+						});
 					})
 				}
 				if (callback) {
@@ -3353,6 +618,131 @@ class Abi {
 		});
 	}
 
+	dkrweAccessBalance(callback) {
+		let self = this;
+		seropp.getInfo(function (info) {
+			rpc.seroRpc(info.rpc, "dece_getBalance", [dkrwBrige.address, "latest"], function (rets) {
+				let balances = [];
+				if (rets.result.tkn) {
+					let map = new Map(Object.entries(rets.result.tkn));
+					map.forEach((val, key) => {
+						balances.push({
+							token: key,
+							value: new BigNumber(val).dividedBy(1e18).toFixed(3)
+						});
+					})
+				}
+				if (callback) {
+					callback(balances);
+				}
+			});
+		});
+	}
+
+	dkrweAccessisManager(mainPKr, callback) {
+		let self = this;
+		self.callMethod(dkrwBrige, 'manager', mainPKr, [], function (ret) {
+			self.getFullAddress([ret[0]], function (rets) {
+				if (callback) {
+					callback(rets.result[ret[0]] == mainPKr);
+				}
+			})
+		});
+	}
+
+	dkrwAccessAccountToAddrs(mainPKr, account, callback) {
+		let self = this;
+		self.callMethod(dkrwBrige, 'accountToAddrs', mainPKr, [account], function (res) {
+			callback(res[0]);
+		});
+	}
+
+	brigeRechargeAudited(mainPKr, trxId, callback) {
+		let self = this;
+		self.callMethod(dkrwBrige, 'rechargeAudited', mainPKr, [trxId], function (res) {
+			callback(res);
+		});
+	}
+
+	brigeRegisister(pk, mainPKr, userId, callback) {
+		this.executeMethod(dkrwBrige, 'register', pk, mainPKr, [userId], "DECE", 0, callback);
+	}
+
+	dkrwaccess(pk, mainPKr, trxId, userId, token, amount, flag, callback) {
+		this.executeMethod(dkrwBrige, 'auditing', pk, mainPKr, [trxId, userId, token, amount, flag], "DECE", 0, callback);
+	}
+
+	dkrwAccessRecharge(pk, mainPKr, value, currency, callback) {
+		this.executeMethod(dkrwBrige, 'dkrwRecharge', pk, mainPKr, [], currency, value, callback);
+	}
+
+	dkrwAccessWithdraw(pk, mainPKr, value, token, callback) {
+		this.executeMethod(dkrwBrige, 'dkrwWithdraw', pk, mainPKr, [value.toString()], "DECE", 0, callback);
+	}
+
+	dkrwAccessUserwithdraw(pk, mainPKr, token, value, callback) {
+		this.executeMethod(dkrwBrige, 'withdraw', pk, mainPKr, [], token, value, callback);
+	}
+
+	brigeWithDrawList(mainPKr, pageIndex, pageCount, owner, callback) {
+		let self = this;
+		if (owner) {
+			self.callMethod(dkrwBrige, 'getRecordsByUser', mainPKr, [pageIndex, pageCount, owner], function (res) {
+				callback(res[0]);
+			});
+		} else {
+			self.callMethod(dkrwBrige, 'getRecords', mainPKr, [pageIndex, pageCount], function (res) {
+				callback(res[0]);
+			});
+		}
+	}
+
+	brigeLockedBalance(mainPKr, callback) {
+		let self = this;
+		self.callMethod(dkrwBrige, 'lockedBalance', mainPKr, [mainPKr], function (res) {
+			callback(res);
+		});
+	}
+
+	dkrwAccessAuditingRechareg(pk, mainPKr, trxId, account, amount, flag, callback) {
+		// console.log("dkrwAccessAuditingRechareg",  trxId, account, amount, flag);
+		this.executeMethod(dkrwBrige, 'auditingRechareg', pk, mainPKr, [trxId, account, amount, flag], "DECE", 0, callback);
+	}
+
+	dkrwAccessAuditingWithdraw(pk, mainPKr, list, flag, callback) {
+		this.executeMethod(dkrwBrige, 'auditingWithdraw', pk, mainPKr, [list, flag], "DECE", 0, callback);
+	}
+
+	// pkrEncrypt(pkr, data, callback) {
+	//     seropp.pkrEncrypt({pkr: pkr, data: data}, callback)
+	// }
+
+	pkrDecrypt(pk, data, callback) {
+	    seropp.pkrDecrypt({pk: pk, data: data}, callback)
+	}
+
+	sign(pk, pkr, msgHash, callback) {
+		let datas = bs58.decode(pk).slice(20,52);
+		console.log(`datas`, datas,msgHash)
+		seropp.pkrCrypto({pk: pk, pkr: pkr, data: datas}, function(ret, err) {
+			let seed = Buffer.from(ret, 'hex');
+			let keys = ed25519.createKeyPair(seed);
+			let signature = ed25519.sign(new Uint8Array(msgHash.slice(2,msgHash.length)),keys.publicKey, keys.secretKey);
+			// console.log("result", ed25519.verify(signature, new Uint8Array(seed), keys.publicKey),keys.publicKey);
+			callback(signature);
+		});
+	}
+
+	publicKey(pk, pkr, callback) {
+		let datas = bs58.decode(pk).slice(20,52);
+		seropp.pkrCrypto({pk: pk, pkr: pkr, data: datas}, function(ret) {
+			let seed = Buffer.from(ret, 'hex');
+			let keys = ed25519.createKeyPair(seed);
+			
+			callback("0x"+Buffer.from(keys.publicKey).toString('hex'));
+		});
+    }
+
 	callMethod(contract, _method, from, _args, callback) {
 		let packData = contract.packData(_method, _args);
 		let callParams = {
@@ -3376,9 +766,7 @@ class Abi {
 	}
 
 	executeMethod(contract, _method, pk, mainPKr, args, tokenName, value, callback) {
-
 		let packData = "0x";
-
 		if ("" !== _method) {
 			packData = contract.packData(_method, args);
 		}
@@ -3403,8 +791,8 @@ class Abi {
 
 		seropp.getInfo(function (info) {
 			rpc.seroRpc(info.rpc, "dece_estimateGas", [estimateParam], function (ret) {
+
 				if (ret.error) {
-					console.log(ret)
 					Toast.fail("Failed to execute smart contract")
 				} else {
 					executeData["gas"] = "0x" + new BigNumber(ret.result).multipliedBy(2).toString(16);

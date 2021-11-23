@@ -5,10 +5,9 @@ import React, { Component } from 'react';
 import 'antd-mobile/dist/antd-mobile.css';
 import { Flex, List, Toast, Checkbox, Button, WhiteSpace, TextareaItem, Modal, Pagination, Tabs } from 'antd-mobile';
 import BigNumber from 'bignumber.js';
-import i18n from '../../i18n'
+import i18n from '../../i18n';
 import Nav from '../../component/nav';
 import logo from '../../images/logo.png';
-import './withdrawlist.css';
 import abi from '../../api/abi';
 const CheckboxItem = Checkbox.CheckboxItem;
 const tabs2 = [
@@ -160,7 +159,6 @@ class Withdrawlist extends Component {
         Toast.loading("Loading...", 5)
         abi.getUserInfo(mainPKr, function (res) {
             let codestr = res[0].code.substring(2, res[0].code.length);
-            console.log(res, ">>>>>>")
             self.setState({
                 username: res[0].name,
                 useremail: res[0].email,

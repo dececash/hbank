@@ -18,7 +18,6 @@ import BigNumber from 'bignumber.js';
 const alert = Modal.alert;
 const operation = Modal.operation;
 
-
 class Assets extends Component {
     constructor(props) {
         super(props);
@@ -40,6 +39,7 @@ class Assets extends Component {
     componentDidMount() {
         let self = this;
         let obj = JSON.parse(sessionStorage.getItem('account'));
+
         if (obj == null) {
             abi.currentAccount(function (account) {
                 self.getBalances(account.mainPKr);
@@ -69,6 +69,9 @@ class Assets extends Component {
                 }
                 obj.token = res[i].cy;
                 obj.value = new BigNumber(res[i].value).div(10 ** 18).toNumber().toFixed(3, 1);
+                // let arr=[DECE,DKRW,DHAPY,FPT,HAPY,PFID,PUNIT]
+                // let index=arr.indexOf(res[i].cy);
+                // console.log(index,res[i].cy,res[i].cy.length,res[i].cy.slice(0,res[i].cy.length-1));
                 if (res[i].cy == "DECE") {
                     obj.url = DECE;
                 } else if (res[i].cy == "DKRW") {
@@ -84,6 +87,7 @@ class Assets extends Component {
                 }else if (res[i].cy == "PUNIT") {
                     obj.url = PUNIT;
                 }
+
                 arr.push(obj);
             }
 

@@ -19,7 +19,8 @@ class My extends Component {
             HbankisManager: false,
             isManager: false,
             fixedprodManager: false,
-            Kycstate: false
+            Kycstate: false,
+            dkrwAccessIsManager:false
         }
     }
     componentDidMount() {
@@ -29,6 +30,7 @@ class My extends Component {
         self.getFixedprodManager(obj.mainPKr);
         self.getIsManager(obj.mainPKr);
         self.getUser(obj.mainPKr);
+        self.getDkrwAccessIsManager(obj.mainPKr);
         self.setState({
             account: obj
         })
@@ -47,6 +49,7 @@ class My extends Component {
 
     getFixedprodManager(mainPKr) {
         let self = this;
+
         abi.fixedprodisManager(mainPKr, function (res) {
             self.setState({
                 fixedprodManager: res[0]
@@ -55,6 +58,7 @@ class My extends Component {
     }
     getIsManager(mainPKr) {
         let self = this;
+
         abi.isOwner(mainPKr, function (res) {
             abi.isManager(mainPKr, function (data) {
 
@@ -69,6 +73,7 @@ class My extends Component {
 
     getHbankIsManager(mainPKr) {
         let self = this;
+
         abi.hbankisOwner(mainPKr, function (res) {
             abi.hbankisManager(mainPKr, function (data) {
                 if (res || data) {
@@ -76,6 +81,15 @@ class My extends Component {
                         HbankisManager: true
                     })
                 }
+            })
+        })
+    }
+
+    getDkrwAccessIsManager(mainPKr) {
+        let self = this;
+        abi.dkrweAccessisManager(mainPKr, function (res) {
+            self.setState({
+                dkrwAccessIsManager:res
             })
         })
     }
@@ -188,7 +202,17 @@ class My extends Component {
                             </Link></div> : <div></div>
                         }
 
-
+                        {
+                            self.state.dkrwAccessIsManager ? <div> <Link to={{ pathname: `/dkrwaccessmanager` }} >
+                                <div className="listItem">
+                                    <Flex>
+                                        <Flex.Item>
+                                            <span className="assetstitle">{i18n.t("brigeNavigation")}</span>
+                                        </Flex.Item>
+                                    </Flex>
+                                </div>
+                            </Link></div> : <div></div>
+                        }
 
                         <div className="listItem">
                             <Flex>

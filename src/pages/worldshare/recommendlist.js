@@ -46,10 +46,8 @@ class Recommendlist extends Component {
         if (self.state.isLoading && !self.state.hasMore) {
             return;
         }
-        console.log(event)
         self.setState({ isLoading: true });
         self.queryUserRecommendRevenue(self.state.account.mainPKr, self.state.pagestart, self.state.pagecount + 10, function (res) {
-            console.log(res)
             self.setState({
                 dataSource: self.state.dataSource.cloneWithRows(res),
                 isLoading: false,
@@ -74,7 +72,6 @@ class Recommendlist extends Component {
         let self = this;
         let arr = [];
         abi.queryUserRecommendRevenue(mainPKr, pagestart, pagecount, function (res) {
-            console.log(res);
             let list = res[0];
             for (let i = 0; i < list.length; i++) {
                 let obj = {};
@@ -83,7 +80,6 @@ class Recommendlist extends Component {
                 obj.refferCode = list[i].uname;
                 arr.push(obj)
             }
-            console.log(arr)
             callback(arr)
         })
     }

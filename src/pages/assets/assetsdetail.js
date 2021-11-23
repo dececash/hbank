@@ -33,6 +33,7 @@ class Assetsdetail extends Component {
             rowHasChanged: (row1, row2) => row1 !== row2,
             sectionHeaderHasChanged: (s1, s2) => s1 !== s2,
         });
+        
         this.state = {
             dataSource,
             isLoading: true,

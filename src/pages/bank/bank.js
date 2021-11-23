@@ -10,7 +10,7 @@ import BigNumber from 'bignumber.js'
 import abi from '../../api/abi.js'
 import logo from '../../images/logo.png';
 
-import {DECE,DKRW,DHAPY,FPT,HAPY,PFID,PUNIT} from '../../images/cyicon/index'
+import {DECE,DKRW,DHAPY,FPT,HAPY,PFID,PUNIT} from '../../images/cyicon/index';
 import { bytes32ToToken } from "../../api/common";
 
 
@@ -81,7 +81,6 @@ class Bank extends Component {
     getBalanceOf(arr) {
         let self = this;
         abi.balanceOf(function (res) {
-            // console.log(res)
             if (res != []) {
                 for (let i = 0; i < res.length; i++) {
                     for (let j = 0; j < arr.length; j++) {

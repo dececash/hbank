@@ -29,7 +29,6 @@ class Material extends Component {
         self.setState({
             account: obj
         })
-
     }
     getUserInfo = (mainPKr) => {
         let self = this;
@@ -48,7 +47,7 @@ class Material extends Component {
     goCommodity(url) {
         let self = this;
         if (self.state.isKYC) {
-            this.props.history.push(url);
+            this.props.history.push({ pathname: url, state: { cy:"HAPY" } });
         } else {
             Toast.info(`${i18n.t("PleaseregisterKYCfirst")}!`)
         }

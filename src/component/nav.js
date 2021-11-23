@@ -2,7 +2,7 @@
 import React from 'react';
 import 'antd-mobile/dist/antd-mobile.css';
 import { TabBar } from 'antd-mobile';
-import i18n from '../i18n'
+import i18n from '../i18n';
 
 export default class nav extends React.Component {
     constructor(props) {
@@ -11,6 +11,7 @@ export default class nav extends React.Component {
             fullScreen: true,
         };
     }
+
     goPage = (uri) => {
         window.location.href = uri
     }
@@ -110,7 +111,7 @@ export default class nav extends React.Component {
                         {this.renderContent('financial')}
                     </TabBar.Item>
 
-                    {/* <TabBar.Item
+                    <TabBar.Item
                         icon={
                             <div style={{
                                 width: '32px',
@@ -128,15 +129,14 @@ export default class nav extends React.Component {
                             />
                         }
                         title={i18n.t("Depositandwithdrawal")}
-                        key="fixedprod"
+                        key="dkrwaccess"
                         selected={this.props.selectedTab === '4'}
                         onPress={() => {
-                            this.goPage("#/fixedprod")
+                            this.goPage("#/dkrwaccess")
                         }}
                     >
                         {this.renderContent('fixedprod')}
-                    </TabBar.Item> */}
-
+                    </TabBar.Item>
                     <TabBar.Item
                         icon={
                             <div style={{

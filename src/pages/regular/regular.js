@@ -32,25 +32,16 @@ class Regular extends Component {
         self.setState({
             account: obj
         })
-
     }
-    onChangeColor = (color) => {
-        console.log(color)
-        this.setState({
-            colorValue: color,
-        });
-    };
 
     getBalance() {
         let self = this;
         abi.fixedprodBalance(function (res) {
-            console.log(res[0]);
             if (res[0] != undefined) {
                 self.setState({
                     balance: res[0]
                 })
             }
-
         })
     }
 
@@ -146,7 +137,6 @@ class Regular extends Component {
                                                                 text: `${i18n.t("confirm")}`, onPress: () => {
                                                                     let token = this.tokenInputRef.state.value.trim();
                                                                     let value = new BigNumber(this.valueInputRef.state.value).multipliedBy(1e18);
-                                                                    console.log(token, value)
                                                                     self.send(token, value);
                                                                 }
                                                             },
@@ -178,7 +168,6 @@ class Regular extends Component {
                                                         ])
                                                     }}>{i18n.t("withdraw")}</Button>
                                                 </Flex.Item>
-
                                                 {
                                                     self.state.classManager ? <Flex.Item>
                                                         <Button size="small" onClick={() => {
@@ -190,7 +179,7 @@ class Regular extends Component {
                                                                         </div>
                                                                         <div style={{ flex: "3" }}>
                                                                             <select style={{ width: "100%" }} onChange={(event) => {
-                                                                                console.log(event.target.value)
+                                                                                // console.log(event.target.value)
                                                                                 self.setState({
                                                                                     index: event.target.value
                                                                                 })

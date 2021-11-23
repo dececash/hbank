@@ -10,7 +10,7 @@ import './financial.css'
 import Nav from '../../component/nav'
 import i18n from '../../i18n';
 import logo from '../../images/logo.png'
-import {worldshareblack,commodity,pfid,map,bchain,bchain2 } from '../../images/financial'
+import {worldshareblack,commodity,pfid,map,bchain,bchain2,chain1,chain2 } from '../../images/financial'
 import abi from '../../api/abi';
 
 const alert = Modal.alert;
@@ -21,7 +21,7 @@ class Financial extends Component {
         super(props);
         this.state = {
             account: {},
-            IsWorldShare: true
+            IsWorldShare: true,
         }
     }
 
@@ -48,10 +48,21 @@ class Financial extends Component {
         })
     }
     
+
+    
     goWorldShare(url) {
         let self = this;
         if (self.state.IsWorldShare) {
             this.props.history.push(url);
+        } else {
+            Toast.info(`${i18n.t("PleaseregisterKYCfirst")}!`)
+        }
+    }
+
+    goCommodity(url,type) {
+        let self = this;
+        if (self.state.IsWorldShare) {
+            this.props.history.push({ pathname: url, state: { type} });
         } else {
             Toast.info(`${i18n.t("PleaseregisterKYCfirst")}!`)
         }
@@ -345,7 +356,7 @@ class Financial extends Component {
                             </div>
                         </div>
                     </div>
-
+                   
                     <div className="financial" onClick={() => {
                         alert(``, <div className="Terms-center">
                             <p>상품이 소진되어 조기 마감되었습니다.</p>
@@ -548,9 +559,92 @@ class Financial extends Component {
                             </div>
                         </div>
                     </div>
+                    
+                    <div className="financial" onClick={()=>{
+                        this.goCommodity("/fixedproddetail",0);
+                    }}>
+                        <div className="financial-box">
+                            <div className="financial-header">
+                                <p style={{fontSize:'12px'}}>DECE Chain X HAPY 프로모션(20210908_DECE 1호) </p>
+                            </div>
+                            <div className="financial-contet">
+                                <img src={chain1} />
+                            </div>
 
+                            <div className="financial-bottom">
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p>프로모션 대상</p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p>DECE기반 HAPY 보유자</p>
+                                    </div>
+                                </div>
+
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p>프로모션 기간</p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p>2021.09.08(수)~2021.09.15(수)</p>
+                                    </div>
+                                </div>
+
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p>프로모션 보상</p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p>DECE 코인 최대 20%</p>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                    </div>
+
+                    <div className="financial"  onClick={()=>{
+                        this.goCommodity("/fixedproddetail",1);
+                    }}>
+                        <div className="financial-box">
+                            <div className="financial-header">
+                                <p style={{fontSize:'12px'}}>DECE Chain X FPT 프로모션(20210908_DECE 2호) </p>
+                            </div>
+                            <div className="financial-contet">
+                                <img src={chain2} />
+                            </div>
+
+                            <div className="financial-bottom">
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p>프로모션 대상</p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p>DECE기반 FPT 보유자</p>
+                                    </div>
+                                </div>
+
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p>프로모션 기간</p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p>2021.09.08(수)~2021.09.15(수)</p>
+                                    </div>
+                                </div>
+
+                                <div className="financial-bottom-box">
+                                    <div className="financial-bottom-left">
+                                        <p>프로모션 보상</p>
+                                    </div>
+                                    <div className="financial-bottom-right">
+                                        <p>DECE 코인 최대 20%</p>
+                                    </div>
+                                </div>
+                            </div>
+                            </div>
+                    </div>
+                
                 </div>
-
             </Nav >
         )
     }

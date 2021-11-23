@@ -4,7 +4,7 @@
 import React, { Component } from 'react';
 import 'antd-mobile/dist/antd-mobile.css';
 import Nav from '../../component/nav'
-import i18n from '../../i18n'
+import i18n from '../../i18n';
 import { WingBlank, WhiteSpace, List, Flex, Modal, InputItem, Toast } from 'antd-mobile';
 import BigNumber from 'bignumber.js'
 import abi from '../../api/abi.js'
@@ -47,7 +47,7 @@ class Home extends Component {
 
         let self = this;
         abi.pairList(mainPKr, function (pairs) {
-            // console.log(pairs, "pairs>>>>>>>>>>>>>>>>")
+            console.log(pairs, "pairs>>>>>>>>>>>>>>>>")
             self.setState({ pairs: pairs });
         })
     }
@@ -90,29 +90,6 @@ class Home extends Component {
         })
     }
 
-    // changAccount() {
-    //     let self = this;
-    //     abi.init
-    //         .then(() => {
-    //             abi.accountList(function (accounts) {
-    //                 let actions = [];
-    //                 accounts.forEach(function (account, index) {
-    //                     actions.push(
-    //                         {
-    //                             text: <span key={index}>{account.name + ":" + showPK(account.pk)}</span>, onPress: () => {
-    //                                 self.getIsManager(account.mainPKr);
-    //                                 self.setState({
-    //                                     account: account
-    //                                 })
-    //                                 sessionStorage.setItem('account', JSON.stringify(account));
-    //                             }
-    //                         }
-    //                     );
-    //                 });
-    //                 operation(actions);
-    //             });
-    //         })
-    // }
 
     changeType() {
         let self = this;
@@ -128,89 +105,9 @@ class Home extends Component {
         });
         operation(actions);
     }
-
     render() {
         let self = this;
-        // console.log(this.state.pairs)
-        // let pairs = this.state.pairs.map((each, index) => {
-        //     console.log(each,">>>>>>>>>>>>>>>>>>>>")
-        //     let tokenA = bytes32ToToken(each.tokenA);
-        //     let tokenB = bytes32ToToken(each.tokenB);
-        //     console.log(tokenA,tokenB,">>>>>>>>>>>>>")
-        //     if (!tokenA || !tokenB) {
-        //         return;
-        //     }
-        //     if (new BigNumber(each.price).isZero()) {
-        //         return;
-        //     }
-        //     let price = new BigNumber(each.price).div(1e9).toFixed(9);
-        //     if (each.flag) {
-        //         tokenA = bytes32ToToken(each.tokenB);
-        //         tokenB = bytes32ToToken(each.tokenA);
-        //         price = new BigNumber(1e9).div(each.price).toFixed(9);
-        //     }
-        //     price = trimNumber(price, 9);
 
-        //     return (
-        //         <List.Item key={index}>
-        //             <Flex style={{ textAlign: 'center' }}>
-        //                 <Flex.Item>
-        //                     {tokenA}
-        //                 </Flex.Item>
-        //                 <Flex.Item>
-        //                     <img src={swap_icon} />
-        //                 </Flex.Item>
-        //                 <Flex.Item>{tokenB}</Flex.Item>
-        //                 <Flex.Item>
-        //                     {price}
-        //                 </Flex.Item>
-        //                 <Flex.Item>
-        //                     <span className="exchange" onClick={() => {
-        //                         alert('', <div>
-        //                             <div>
-        //                                 <InputItem
-        //                                     value={price} disabled={true}
-        //                                 >Price</InputItem>
-        //                                 <InputItem
-        //                                     placeholder="amount" ref={el => this.sendInputRef = el}
-        //                                     onChange={(value) => {
-        //                                         this.retInputRef.value = new BigNumber(value * Number(price)).toFixed(6);
-        //                                     }}>{tokenA}</InputItem>
-        //                                 <div className="am-list-item am-input-item am-list-item-middle">
-        //                                     <div className="am-list-line">
-        //                                         <div className="am-input-label am-input-label-5">{tokenB}</div>
-        //                                         <div className="am-input-control">
-        //                                             <input disabled placeholder="amount"
-        //                                                 ref={el => this.retInputRef = el} type="text" value="" />
-        //                                         </div>
-        //                                     </div>
-        //                                 </div>
-        //                             </div>
-        //                         </div>, [
-        //                             { text: `${i18n.t("cancel")}`, onPress: () => console.log('cancel') },
-        //                             {
-        //                                 text: `${i18n.t("confirm")}`, onPress: () => {
-        //                                     let value = new BigNumber(this.sendInputRef.state.value).multipliedBy(1e18);
-        //                                     abi.hbankexchange(this.state.account.pk, this.state.account.mainPKr, tokenB, value.toFixed(0), tokenA, function (hash, err) {
-        //                                         if (err) {
-        //                                             Toast.fail(err);
-        //                                         } else {
-        //                                             abi.startGetTxReceipt(hash, function (data) {
-        //                                                 self.getIsManager(self.state.account.mainPKr);
-        //                                                 self.fetchInfo(self.state.account.mainPKr);
-        //                                             });
-        //                                         }
-        //                                     });
-        //                                 }
-        //                             },
-        //                         ])
-        //                     }}>{i18n.t("exchange")}</span>
-        //                 </Flex.Item>
-        //             </Flex>
-        //         </List.Item>
-        //     )
-        // });
-        // console.log(pairs)
         return (
             <WingBlank>
                 <Nav selectedTab="2">
@@ -252,16 +149,33 @@ class Pair extends React.Component {
             tokenA: "",
             tokenB: "",
             price: 0,
-            account: {}
+            account: {},
+            isManager:false
         }
     }
 
     componentDidMount() {
+        console.log(1)
         let self = this;
         let obj = JSON.parse(sessionStorage.getItem('account'));
+        self.getIsManager(obj.mainPKr)
         self.pairDetail(self.props.Item);
         self.setState({
             account: obj
+        })
+    }
+
+    getIsManager(mainPKr) {
+        let self = this;
+        abi.isOwner(mainPKr, function (res) {
+            abi.isManager(mainPKr, function (data) {
+
+                if (res || data) {
+                    self.setState({
+                        isManager: true
+                    })
+                }
+            })
         })
     }
 
@@ -294,7 +208,7 @@ class Pair extends React.Component {
         let self = this;
         return (<>
             {
-                self.state.tokenA == "DHAPY" ? <List.Item>
+                self.state.tokenA == "DHAPY" || self.state.isManager ? <List.Item>
                     <Flex style={{ textAlign: 'center' }}>
                         <Flex.Item>
                             {self.state.tokenA}
@@ -306,7 +220,7 @@ class Pair extends React.Component {
                         <Flex.Item>
                             {self.state.price}
                         </Flex.Item>
-                        <Flex.Item>
+                        <Flex.Item >
                             <span className="exchange" onClick={() => {
                                 alert('', <div>
                                     <div>
@@ -333,7 +247,6 @@ class Pair extends React.Component {
                                     {
                                         text: `${i18n.t("confirm")}`, onPress: () => {
                                             let value = new BigNumber(this.sendInputRef.state.value).multipliedBy(1e18);
-                                            console.log(this.state.account.pk, this.state.account.mainPKr, self.state.tokenB, value.toFixed(0), self.state.tokenA, ">>>>>>>>>>>")
                                             abi.hbankexchange(this.state.account.pk, this.state.account.mainPKr, self.state.tokenB, value.toFixed(0), self.state.tokenA, function (hash, err) {
                                                 if (err) {
                                                     Toast.fail(err);
@@ -352,6 +265,6 @@ class Pair extends React.Component {
                     </Flex>
                 </List.Item> : <></>
             }
-        </>);
+            </>);
     }
 }

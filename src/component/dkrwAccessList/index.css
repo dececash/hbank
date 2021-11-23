@@ -1,0 +1,106 @@
+.dkrw-template .dkrw-item {
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+}
+.dkrw-template .dkrw-item .dkrw-header {
+  display: flex;
+  font-size: 18px;
+  padding: 10px 10px;
+}
+.dkrw-template .dkrw-item .dkrw-header .user-id {
+  flex: 1;
+}
+.dkrw-template .dkrw-item .dkrw-header .user-id p {
+  margin: 0;
+}
+.dkrw-template .dkrw-item .dkrw-header .user-pkr {
+  flex: 2;
+}
+.dkrw-template .dkrw-item .dkrw-header .user-pkr p {
+  margin: 0;
+}
+.dkrw-template .dkrw-item .content .tab-item {
+  display: flex;
+  padding: 5px;
+  font-size: 16px;
+  text-align: center;
+}
+.dkrw-template .dkrw-item .content .tab-item .dkrw-amount {
+  flex: 1;
+}
+.dkrw-template .dkrw-item .content .tab-item .dkrw-amount p {
+  margin: 0;
+  word-break: break-word;
+}
+.dkrw-template .dkrw-item .content .tab-item .dkrw-time {
+  flex: 1;
+}
+.dkrw-template .dkrw-item .content .tab-item .dkrw-time p {
+  margin: 0;
+  word-break: break-word;
+}
+.dkrw-template .dkrw-item .content .tab-item .dkrw-state {
+  flex: 1;
+}
+.dkrw-template .dkrw-item .content .tab-item .dkrw-state p {
+  margin: 0;
+  word-break: break-word;
+}
+.dkrw-template .dkrw-item .content .tab-item .dkrw-btn {
+  flex: 1;
+}
+.dkrw-template .dkrw-item .content .tab-item .dkrw-btn p {
+  margin: 0;
+  word-break: break-word;
+}
+.dkrw-template .dkrw-item .content .list .list-item {
+  display: flex;
+  padding: 3px 0;
+  border-bottom: 1px solid #cccccc;
+  font-size: 14px;
+  text-align: center;
+}
+.dkrw-template .dkrw-item .content .list .list-item .dkrw-amount {
+  flex: 1;
+}
+.dkrw-template .dkrw-item .content .list .list-item .dkrw-amount p {
+  line-height: 32px;
+  margin: 0;
+}
+.dkrw-template .dkrw-item .content .list .list-item .dkrw-time {
+  flex: 1;
+}
+.dkrw-template .dkrw-item .content .list .list-item .dkrw-time p {
+  margin: 0;
+}
+.dkrw-template .dkrw-item .content .list .list-item .dkrw-state {
+  flex: 1;
+  line-height: 32px;
+}
+.dkrw-template .dkrw-item .content .list .list-item .dkrw-state p {
+  margin: 0 ;
+}
+.dkrw-template .dkrw-item .content .list .list-item .dkrw-btn {
+  background-color: #108ee9;
+  color: #fff;
+  border-radius: 3px;
+  padding: 3px;
+  line-height: 16px;
+  margin-top: 5px !important;
+}
+.dkrw-template .dkrw-item .content .operation-item {
+  display: flex;
+  text-align: center;
+}
+.dkrw-template .dkrw-item .content .operation-item .left-icon {
+  flex: 1;
+}
+.dkrw-template .dkrw-item .content .operation-item .operation-content {
+  flex: 2;
+}
+.dkrw-template .dkrw-item .content .operation-item .operation-content p {
+  margin: 0;
+}
+.dkrw-template .dkrw-item .content .operation-item .right-icon {
+  flex: 1;
+}

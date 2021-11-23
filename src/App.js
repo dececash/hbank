@@ -24,6 +24,9 @@ import Assetsdetail from './pages/assets/assetsdetail';
 import Fixedprod from './pages/fixedprod/fixedprod';
 import FixedprodDetail from './pages/fixedprod/fixedproddetail';
 
+import Dkrwaccess from './pages/dkrwaccess/dkrwaccess';
+import DkrwAccessManager from './pages/dkrwaccess/dkrwaccessmanager';
+
 function App() {
   return (
     <div className="App">
@@ -51,6 +54,9 @@ function App() {
           
           <Route path="/fixedprod" component={Fixedprod} />
           <Route path="/fixedproddetail" component={FixedprodDetail} />
+
+          <Route path="/dkrwaccess" component={Dkrwaccess} />
+          <Route path="/dkrwaccessmanager" component={DkrwAccessManager} />
 
           <Route exact path="/" component={Assets} />
         </Switch>

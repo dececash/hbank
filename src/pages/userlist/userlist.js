@@ -9,7 +9,8 @@ import i18n from '../../i18n'
 import logo from '../../images/logo.png';
 import './userlist.css';
 import abi from '../../api/abi';
-
+import { saveAs } from 'file-saver';
+var FileSaver = require('file-saver');
 const CheckboxItem = Checkbox.CheckboxItem;
 const tabs2 = [
     { title: `${i18n.t("Auditlist")}`, sub: '1' },
@@ -39,8 +40,10 @@ class Userlist extends Component {
     componentWillMount() {
         let self = this;
         let obj = JSON.parse(sessionStorage.getItem('account'));
+       
         self.getUsers(obj.mainPKr);
-        self.getUserList(obj.mainPKr, 0, self.state.pageCount)
+        self.getUserList(obj.mainPKr, 0, self.state.pageCount);
+        
         self.setState({
             account: obj
         })
@@ -49,7 +52,6 @@ class Userlist extends Component {
     getUsers(mainPKr) {
         let self = this;
         abi.getRegisterList(mainPKr, function (res) {
-            // console.log(res, "<<<<<<<<<<")
             let arr = [];
             for (let i = 0; i < res.length; i++) {
                 let codestr = res[i].info.code.substring(2, res[i].info.code.length);
@@ -125,7 +127,12 @@ class Userlist extends Component {
 
     getUserList = (mainPKr, pageIndex, pageCount) => {
         let self = this;
+
+        
         abi.getUserInfoList(mainPKr, pageIndex, pageCount, function (res, len) {
+            // var blob = new Blob([res], {type: "text/plain;charset=utf-8"});
+            // FileSaver.saveAs(blob, "hello world.txt");
+
             if (len == 0) {//eslint-disable-line
                 self.setState({
                     userlistitemState: false
@@ -133,7 +140,6 @@ class Userlist extends Component {
             }
             let pageNum = Math.ceil(len / self.state.pageCount) - 1;
             let arr = [];
-            console.log(res,">>>>>>>>>>>>>>>>")
 
             for (let i = 0; i < res.length; i++) {
                 let codestr = res[i].info.code.substring(2, res[i].info.code.length);
@@ -168,7 +174,7 @@ class Userlist extends Component {
             self.getUserList(self.state.account.mainPKr, pageIndex, self.state.pageCount);
         }
     }
-    
+
     render() {
         let self = this;
         return (
@@ -180,7 +186,7 @@ class Userlist extends Component {
                             <p className='title'>
                                 {i18n.t("RegistrationReview")}
                             </p>
-                        </Flex.Item>
+                        </Flex.Item >
                     </Flex>
                     <WhiteSpace size="sm" />
                     <WhiteSpace size="sm" />
@@ -236,7 +242,6 @@ class Userlist extends Component {
                                         }
                                     </div>
                                 </Modal>
-
                                 <WhiteSpace size="sm" />
                                 <WhiteSpace size="sm" />
                                 <Tabs tabs={tabs2}

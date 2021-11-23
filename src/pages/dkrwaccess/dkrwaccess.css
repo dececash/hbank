@@ -1,0 +1,245 @@
+.dkrwaccess-index .generalization {
+  background: #f8cba4;
+  font-size: 16px;
+}
+.dkrwaccess-index .generalization .generalization-item {
+  padding: 10px 15px;
+  display: flex;
+}
+.dkrwaccess-index .generalization .generalization-item .left {
+  margin: 0 10px;
+  flex: 2;
+}
+.dkrwaccess-index .generalization .generalization-item .right {
+  margin: 0 10px;
+  flex: 3;
+  text-align: right;
+}
+.dkrwaccess-index .generalization .generalization-btn {
+  padding: 10px 15px;
+  display: flex;
+}
+.dkrwaccess-index .generalization .generalization-btn .left {
+  margin: 0 10px;
+  flex: 1;
+}
+.dkrwaccess-index .generalization .generalization-btn .right {
+  margin: 0 10px;
+  flex: 1;
+  text-align: right;
+}
+.dkrwaccess-index .dkrwaccess-title {
+  display: flex;
+  font-size: 20px;
+  padding: 10px 15px;
+}
+.dkrwaccess-index .dkrwaccess-title .left {
+  flex: 2;
+}
+.dkrwaccess-index .dkrwaccess-title .left p span {
+  font-weight: bold;
+}
+.dkrwaccess-index .dkrwaccess-title .right {
+  flex: 1;
+}
+.dkrwaccess-index .dkrwaccess-title .right select {
+  padding: 5px 20px;
+  margin-top: 7px;
+}
+.register-dkrw {
+  background: #767777;
+}
+.register-dkrw .register-dkrw-box {
+  position: absolute;
+  width: 100%;
+}
+.register-dkrw .register-dkrw-box .register-dkrw-header {
+  background: #cf4b04;
+  padding: 10px 0;
+}
+.register-dkrw .register-dkrw-box .register-dkrw-header p {
+  text-align: center;
+  color: #ffffff;
+  font-size: 20px;
+  margin: 0;
+}
+.register-dkrw .register-dkrw-box .register-dkrw-content {
+  margin: 50% 20px;
+}
+.register-dkrw .register-dkrw-box .register-dkrw-content .content-header {
+  display: flex;
+}
+.register-dkrw .register-dkrw-box .register-dkrw-content .content-header .left {
+  flex: 1;
+}
+.register-dkrw .register-dkrw-box .register-dkrw-content .content-header .left p {
+  margin: 0;
+  border: 1px solid #dddddd;
+  text-align: center;
+  color: #ffffff;
+  font-size: 20px;
+  padding: 5px 0;
+}
+.register-dkrw .register-dkrw-box .register-dkrw-content .content-header .right {
+  flex: 2;
+}
+.register-dkrw .register-dkrw-box .register-dkrw-content .content-header .right p {
+  text-align: center;
+  color: #ffffff;
+  font-size: 20px;
+  margin: 0;
+  line-height: 32px;
+}
+.register-dkrw .register-dkrw-box .register-dkrw-content .content-center {
+  display: flex;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 10px 15px;
+  margin-top: 20px;
+}
+.register-dkrw .register-dkrw-box .register-dkrw-content .content-center .card-icon {
+  flex: 1;
+}
+.register-dkrw .register-dkrw-box .register-dkrw-content .content-center .card-icon p {
+  color: red;
+  font-size: 40px ;
+  font-weight: bold;
+}
+.register-dkrw .register-dkrw-box .register-dkrw-content .content-center .card-center {
+  flex: 4;
+}
+.register-dkrw .register-dkrw-box .register-dkrw-content .content-center .card-center .card-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+.register-dkrw .register-dkrw-box .register-dkrw-content .content-center .card-img {
+  flex: 3;
+}
+.register-dkrw .register-dkrw-box .user-register {
+  margin: 50% 20px;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 10px 15px;
+  font-size: 18px;
+}
+.register-dkrw .register-dkrw-box .user-register .register-message {
+  display: flex;
+}
+.register-dkrw .register-dkrw-box .user-register .register-message .left {
+  flex: 2;
+}
+.register-dkrw .register-dkrw-box .user-register .register-message .left p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 44px;
+}
+.register-dkrw .register-dkrw-box .user-register .register-message .left p span {
+  border: 1px solid #000000;
+  padding: 5px 14px;
+}
+.register-dkrw .register-dkrw-box .user-register .register-message .left select {
+  line-height: 44px;
+  margin: 7px 0;
+}
+.register-dkrw .register-dkrw-box .user-register .register-message .right {
+  flex: 3;
+}
+.register-dkrw .register-dkrw-box .user-register .register-message .right p {
+  margin: 0;
+  line-height: 44px;
+  font-size: 16px;
+  padding-left: 15px;
+}
+.register-dkrw .register-dkrw-box .user-register .operation-register p {
+  text-align: center;
+}
+.register-dkrw .register-dkrw-box .user-register .operation-register p span {
+  padding: 3px 10px;
+}
+.register-dkrw .register-dkrw-box .user-register .operation-register p span .operation-icon {
+  background-color: #ffb000;
+  color: #cf4b04;
+}
+.register-dkrw .register-dkrw-box .user-register .operation-register p span .operation-ok {
+  background-color: #ffb000;
+}
+.register-dkrw .register-dkrw-box .user-register .operation-register p span .operation-close {
+  padding-left: 30px;
+}
+.bind .bind-header {
+  background-color: #cf4b04;
+}
+.bind .bind-header p {
+  margin: 0;
+  text-align: center;
+  font-size: 20px;
+  padding: 10px 0;
+}
+.bind .bind-btn {
+  background: #f8cba4;
+  padding: 40px 0px;
+}
+.bind .bind-btn p {
+  margin: 0;
+  font-size: 18px;
+  text-align: center;
+  border: 1px solid #cf4b04;
+  margin: 0 20px;
+  padding: 5px 0;
+}
+.bind .bind-describe {
+  margin: 50px 30px 10px 30px;
+}
+.bind .bind-describe .bind-describe-title {
+  font-size: 14px;
+}
+.bind .bind-describe ul li p {
+  font-size: 12px;
+  line-height: 18px;
+}
+.bind .bind-describe-success {
+  font-size: 14px;
+}
+.bind .bind-describe-success span {
+  font-size: 16px;
+  font-weight: bold;
+}
+.bind .bind-account {
+  margin: 50px 30px 40px 30px;
+}
+.bind .bind-account .bind-account-describe .left p {
+  text-align: center;
+  border: 1px solid #cccccc;
+  margin: 0px 10px;
+  line-height: 30px;
+}
+.bind .bind-account .bind-account-describe .right {
+  margin-top: 30px;
+}
+.bind .bind-account .bind-account-describe .right p {
+  text-align: center;
+  margin: 0;
+}
+.bind .bind-account .bind-account-describe .right p span {
+  border: 1px solid #cccccc;
+  line-height: 30px;
+  padding: 5px 10px;
+}
+.bind .bind-btn-confirm p {
+  text-align: center;
+}
+.bind .bind-btn-confirm p span {
+  background-color: #ffb000;
+  padding: 3px 10px;
+}
+.bind .bind-btn-confirm p span .operation-icon {
+  color: #cf4b04;
+}
+.publickey {
+  background-color: #ffffff;
+  margin: 0 20px;
+}
+.publickey p {
+  padding: 20px;
+  word-break: break-word;
+}

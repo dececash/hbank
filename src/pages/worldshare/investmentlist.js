@@ -46,7 +46,6 @@ class Investmentlist extends Component {
         if (self.state.isLoading && !self.state.hasMore) {
             return;
         }
-        console.log(event)
         self.setState({ isLoading: true });
         self.queryUserInvestment(self.state.account.mainPKr, self.state.pagestart, self.state.pagecount + 10, function (res) {
             self.setState({
@@ -80,7 +79,6 @@ class Investmentlist extends Component {
                 obj.investmentTime = self.formatTime(list[i].investmentTime * 1000, 'Y.M.D h:m');
                 arr.push(obj)
             }
-            console.log(arr)
             callback(arr)
         })
     }

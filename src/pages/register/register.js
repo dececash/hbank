@@ -77,12 +77,10 @@ class Register extends Component {
     handlePhoto = async (event, type) => {
         let self = this;
         const files = [...event.target.files];
-        console.log(files[0])
         self.compressImage(files[0], function (img) {
             var formData = new FormData();
             formData.append("image", img);
             abi.hash(self.state.account.pk, function (code) {
-                console.log(code,">>>>>>>>>>")
                 let urls = 'https://ginkgobank.dece.cash/upload/?nomark=0&accessToken=000&id=' + type + '&code=' + code;
                 axios({
                     method: 'post',
@@ -116,7 +114,6 @@ class Register extends Component {
         } else {
             quality = new BigNumber(maxsize).div(file.size).toFixed(1);
         }
-        console.log(quality)
         var name = file.name;
         var reader = new FileReader();
         reader.readAsDataURL(file);
