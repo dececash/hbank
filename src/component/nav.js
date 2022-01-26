@@ -111,7 +111,7 @@ export default class nav extends React.Component {
                         {this.renderContent('financial')}
                     </TabBar.Item>
 
-                    <TabBar.Item
+                    {/* <TabBar.Item
                         icon={
                             <div style={{
                                 width: '32px',
@@ -136,7 +136,7 @@ export default class nav extends React.Component {
                         }}
                     >
                         {this.renderContent('fixedprod')}
-                    </TabBar.Item>
+                    </TabBar.Item> */}
                     <TabBar.Item
                         icon={
                             <div style={{

@@ -78,7 +78,7 @@ export default class Dkrwaccess extends Component {
     getUserInfo(callback) {
         let self = this;
         let mainPKr = this.state.account.mainPKr;
-        pgnode.getUserInfo(mainPKr, function (vaccount) {
+        pgnode.getUserInfo(mainPKr, function (vaccount,bankName) {
             if (vaccount) {
                 abi.dkrwAccessAccountToAddrs(mainPKr, vaccount, function (shortAddress) {
                     abi.getFullAddress([shortAddress], function (rest) {
@@ -87,12 +87,14 @@ export default class Dkrwaccess extends Component {
                             callback({
                                 hasBound: true,
                                 registered: true,
-                                vaccount: vaccount
+                                vaccount: vaccount,
+                                bankName:bankName
                             })
                         } else {
                             callback({
                                 registered: true,
-                                vaccount: vaccount
+                                vaccount: vaccount,
+                                bankName:bankName
                             });
                         }
                     });
@@ -117,6 +119,7 @@ export default class Dkrwaccess extends Component {
                         showInfo = <BindAccount pk={self.state.account.pk} 
                             mainPKr={self.state.account.mainPKr} 
                             vaccount={this.state.vaccount}
+                            bankName={this.state.bankName}
                             hasBound={this.state.hasBound} callback={self.refresh.bind(this)}/>
                     } else {
                         showInfo = <UserInfo pk={self.state.account.pk} vaccount={this.state.vaccount} callback={self.refresh.bind(this)}/>;
@@ -126,6 +129,7 @@ export default class Dkrwaccess extends Component {
                         showInfo = <BindAccount pk={self.state.account.pk} 
                             mainPKr={self.state.account.mainPKr} 
                             vaccount={this.state.vaccount}
+                            bankName={this.state.bankName}
                             hasBound={this.state.hasBound} callback={self.refresh.bind(this)}/>
                     } else {
                         showInfo = <PGRegister mainPKr={self.state.account.mainPKr} 
@@ -134,7 +138,6 @@ export default class Dkrwaccess extends Component {
                 }
             }
         }
-        
 
         return (
             <Nav selectedTab="4">
@@ -230,6 +233,7 @@ class PGRegister extends Component{
             } else {
                 self.props.callback({
                     vaccount: res.vaccnt.account,
+                    bankName:res.vaccnt.bankName,
                     registered: true
                 });
             }
@@ -387,6 +391,7 @@ class BindAccount extends Component{
             pk: props.pk,
             mainPKr: props.mainPKr,
             vaccount: props.vaccount,
+            bankName: props. bankName,
             notBound: !props.hasBound,
         }
     }
@@ -440,8 +445,16 @@ class BindAccount extends Component{
                             {/* 存款专用虚拟账号 */}
                             {i18n.t("brigeDedicated")}
                         </p>
+                        
                         <div className="bind-account-describe">
                             <div className="left">
+                                <p>
+                                    {
+                                        self.state.bankName
+                                    }
+                                </p>
+                            </div>
+                            <div className="right">
                                 <p>
                                     {/* {
                                         self.state.vaccount?.slice(0, 8) + "******" + self.state.vaccount?.slice(self.state.vaccount.length - 8)
@@ -451,15 +464,13 @@ class BindAccount extends Component{
                                     }
                                 </p>
                             </div>
-                            <div className="right">
-                                <p>
-                                    <span onClick={()=>{copy(self.state.vaccount);Toast.success("复制成功",1)}}>
-                                        {/* 复制 */}
-                                        {i18n.t("copy")}
-                                    </span>
-                                </p>
-                            </div>
                         </div>
+                        <p className="copy">
+                            <span onClick={()=>{copy(self.state.vaccount);Toast.success("复制成功",1)}}>
+                                    {/* 复制 */}
+                                {i18n.t("copy")}
+                            </span>
+                        </p>
                     </div>
                     <div className="bind-btn-confirm">
                         <p>

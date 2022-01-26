@@ -47,9 +47,7 @@ class Bank extends Component {
             let arrimg = [];
 
             if (Array.from(new Set(arr)) != []) {
-                
                 for (let i = 0; i < Array.from(new Set(arr)).length; i++) {
-
                     let obj = {
                         token: "",
                         value: '0.000',
@@ -64,11 +62,11 @@ class Bank extends Component {
                         obj.url = DHAPY;
                     } else if (Array.from(new Set(arr))[i] == "FPT") {
                         obj.url = FPT;
-                    }else if (Array.from(new Set(arr))[i] == "HAPY") {
+                    } else if (Array.from(new Set(arr))[i] == "HAPY") {
                         obj.url = HAPY;
-                    }else if (Array.from(new Set(arr))[i] == "PFID") {
+                    } else if (Array.from(new Set(arr))[i] == "PFID") {
                         obj.url = PFID;
-                    }else if (Array.from(new Set(arr))[i] == "PUNIT") {
+                    } else if (Array.from(new Set(arr))[i] == "PUNIT") {
                         obj.url = PUNIT;
                     }
                     arrimg.push(obj);

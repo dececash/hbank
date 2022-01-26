@@ -246,9 +246,13 @@ class Pair extends React.Component {
                                     { text: `${i18n.t("cancel")}`, onPress: () => console.log('cancel') },
                                     {
                                         text: `${i18n.t("confirm")}`, onPress: () => {
+                                            console.log(1)
                                             let value = new BigNumber(this.sendInputRef.state.value).multipliedBy(1e18);
+                                            console.log(this.state.account.pk, this.state.account.mainPKr, self.state.tokenB, value.toFixed(0), self.state.tokenA)
                                             abi.hbankexchange(this.state.account.pk, this.state.account.mainPKr, self.state.tokenB, value.toFixed(0), self.state.tokenA, function (hash, err) {
+                                                console.log(err,"err",hash)
                                                 if (err) {
+                                                    console.log(err)
                                                     Toast.fail(err);
                                                 } else {
                                                     abi.startGetTxReceipt(hash, function (data) {

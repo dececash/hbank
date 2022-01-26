@@ -255,7 +255,6 @@ contract DkrwDelegate is BaseInterface, Ownable {
     
     event RewardLog(uint256);
     
-    
     function rewardAction(uint256 rewardAmount, uint level,  address rewardAddress, uint time) private returns (uint256) {
         
         uint256 amount = getActualReward(rewardAmount);

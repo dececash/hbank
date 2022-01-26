@@ -22,9 +22,8 @@ instance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+
 export const post = (url, params) => {
     console.log(url,">>>>>")
   return instance.post(url, params);
 };
-
-

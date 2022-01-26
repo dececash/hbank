@@ -53,7 +53,7 @@ class PGNode {
                 callback(null);
             } else {
                 // return info.vaccnt.account
-                callback(info.vaccnt.account);
+                callback(info.vaccnt.account,info.vaccnt.bankName,);
             }
         });
     }

@@ -26,8 +26,7 @@ const rpc = new JsonRpc();
 const ed25519 = require('ed25519-wasm-pro');
 
 const config = {
-	name: " WS BANK",
-
+	name: "METAHUB",
 	contractAddress: "5sDcSj6m1NL1ho5jczaFf1zYHG1yymW6WW1SsxxDnud92mrgjNDRZFGdNKDK15rJ3PC9Ca2HyWBgdi5YuLCX8yYc",
 	hbankAddress: "2LaPfgdkTzWPxy6o2e81PFpU5oBAZdy58eE1ScdHGeeov9oxaAmBybJ8C2DBH8o7fKSjPgR25gTC7zDnGehymj4V",
 	dkrwdelegateAddress: "5sWtPb2ap1ABpHYM1uBEEMVLJgaYmRVLaxik9u83JUoiUubzmSKB5HwRhm2SKAuGzL7eE2gcTYMENuTJ5sqgy34k",
@@ -35,12 +34,10 @@ const config = {
 	iclassAddress: "7kQ4X5WruzD1ukRkcRWWdawHqLUQBuwyEmSHsk25oRAozwefNdTEh3MC9ZY7waEh2tHFHDV4DNxsnMMsh6cAGQz",
 	fixedprodAddress: "sujKP6EL4fgGz4hvhroyD9KBWkkBKwE9pqnA18udcvHdeKEEVjDL2VYXixQDKT8sEoQN16WAcdJDsF1q8nU7URf",
 	kycaddress: "4iaZ8dYDxbJ2G1qHwwM1cskkSpPnpCPkwG1KEASLM1HWLZdcvZ5FHqunJcPzQhZfVTzXSoSDmcyLQvPdwA13Eg71",
-
 	dkrwBrigeAddress: "3MjQztAi7Jw1N28PzJGou4Mc88ur5h26YyrtfUoyRNhi1PYhd7KDw7LYtZRmd5CDvLRYaxRy4iW2b9TYTVoT7Zoi",
 
-
 	github: "https://github.com/dececash/hbank",
-	author: "WS BANK",
+	author: "METAHUB",
 	url: document.location.href,
 	logo: document.location.protocol + '//' + document.location.host + '/logo.png',
 	barColor: "#cf4b04",
@@ -248,7 +245,7 @@ class Abi {
 					map.forEach((val, key) => {
 						balances.push({
 							token: key,
-							value: new BigNumber(val).dividedBy(1e18).toFixed(3)
+							value: new BigNumber(val).dividedBy(1e18).toFixed(2)
 						});
 					})
 				}
@@ -650,6 +647,17 @@ class Abi {
 		});
 	}
 
+	dkrweAccessisOwner(mainPKr, callback) {
+		let self = this;
+		self.callMethod(dkrwBrige, 'owner', mainPKr, [], function (ret) {
+			self.getFullAddress([ret[0]], function (rets) {
+				if (callback) {
+					callback(rets.result[ret[0]] == mainPKr);
+				}
+			})
+		});
+	}
+
 	dkrwAccessAccountToAddrs(mainPKr, account, callback) {
 		let self = this;
 		self.callMethod(dkrwBrige, 'accountToAddrs', mainPKr, [account], function (res) {
@@ -791,7 +799,7 @@ class Abi {
 
 		seropp.getInfo(function (info) {
 			rpc.seroRpc(info.rpc, "dece_estimateGas", [estimateParam], function (ret) {
-
+				console.log(ret)
 				if (ret.error) {
 					Toast.fail("Failed to execute smart contract")
 				} else {

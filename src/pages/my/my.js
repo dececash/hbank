@@ -20,7 +20,8 @@ class My extends Component {
             isManager: false,
             fixedprodManager: false,
             Kycstate: false,
-            dkrwAccessIsManager:false
+            dkrwAccessIsManager:false,
+            dkrwAccessOwner:false,
         }
     }
     componentDidMount() {
@@ -31,6 +32,7 @@ class My extends Component {
         self.getIsManager(obj.mainPKr);
         self.getUser(obj.mainPKr);
         self.getDkrwAccessIsManager(obj.mainPKr);
+        self.getDkrwAccessOwner(obj.mainPKr);
         self.setState({
             account: obj
         })
@@ -90,6 +92,15 @@ class My extends Component {
         abi.dkrweAccessisManager(mainPKr, function (res) {
             self.setState({
                 dkrwAccessIsManager:res
+            })
+        })
+    }
+
+    getDkrwAccessOwner(mainPKr){
+        let self =this;
+        abi.dkrweAccessisOwner(mainPKr,function(res){
+            self.setState({
+                dkrwAccessOwner:res
             })
         })
     }
@@ -202,8 +213,8 @@ class My extends Component {
                             </Link></div> : <div></div>
                         }
 
-                        {
-                            self.state.dkrwAccessIsManager ? <div> <Link to={{ pathname: `/dkrwaccessmanager` }} >
+                        {/* {
+                            self.state.dkrwAccessIsManager || self.state.dkrwAccessOwner ? <div> <Link to={{ pathname: `/dkrwaccessmanager` }} >
                                 <div className="listItem">
                                     <Flex>
                                         <Flex.Item>
@@ -212,7 +223,7 @@ class My extends Component {
                                     </Flex>
                                 </div>
                             </Link></div> : <div></div>
-                        }
+                        } */}
 
                         <div className="listItem">
                             <Flex>
